@@ -3,31 +3,26 @@
 
 #include "StompBox.h"
 #include "CircularBuffer.hpp"
+#define REQUEST_BUFFER_SIZE 262144
 
-// #define DELAY_BUFFER_LENGTH 32768 // must be a power of 2
-
-template<unsigned int bufsize>
-class LpfDelayPhaserPatch : public Patch {
-    
+class LpfDelayPhaserPatch : public Patch {    
 private:
-    float* outBuf;
-    
+  CircularBuffer delayBuffer;
 public:    
   LpfDelayPhaserPatch() : x1(0.0f), x2(0.0f), y1(0.0f), y2(0.0f),
 			  _lfoPhase( 0.f ), depth( 1.f ),
 			  feedback( .7f ),_zm1( 0.f ) {        
-    registerParameter(PARAMETER_A, "Delay");
-    registerParameter(PARAMETER_B, "Feedback");
-    registerParameter(PARAMETER_C, "Fc");
-    registerParameter(PARAMETER_D, "Dry/Wet");
+    AudioBuffer* buffer = createMemoryBuffer(1, REQUEST_BUFFER_SIZE);
+    delayBuffer.initialise(buffer->getSamples(0), buffer->getSize());
+    registerParameter(PARAMETER_A, "Delay", "Delay time");
+    registerParameter(PARAMETER_B, "Feedback", "Delay loop feedback");
+    registerParameter(PARAMETER_C, "Fc", "Filter cutoff frequency");
+    registerParameter(PARAMETER_D, "Dry/Wet", "Dry/wet mix");
     setCoeffs(getLpFreq()/getSampleRate(), 0.6f) ;
-    Range( 440.f, 1600.f );
-    Rate( .5f );
-    outBuf = new float[getBlockSize()];
+    setRange( 440.f, 1600.f );
+    getRate( .5f );
   }
-  ~LpfDelayPhaserPatch() {
-     delete outBuf;
-  }
+  ~LpfDelayPhaserPatch() {}
         
   void initLpf (){        
     for (int i=0 ; i<3 ; i++){
@@ -67,12 +62,12 @@ public:
       return true;
   }
     
-  void Range( float fMin, float fMax ){ // Hz
+  void setRange( float fMin, float fMax ){ // Hz
     _dmin = fMin / (getSampleRate()/2.f);
     _dmax = fMax / (getSampleRate()/2.f);
   }
     
-  float Rate( float rate ){ // cps
+  float getRate( float rate ){ // cps
     _lfoInc = 2.f * M_PI * (rate / getSampleRate());
     return _lfoInc * 1000.f;
   }
@@ -122,10 +117,10 @@ public:
     }
   }
     
-  void processAudio(AudioBuffer &buffer){
-      
-    int size = buffer.getSize();
-    float w, z;  //implement with less arrays?
+  void processAudio(AudioBuffer &buffer){        
+    float y[getBlockSize()];
+    float z;
+
     setCoeffs(getLpFreq(), 0.8f);
     rate = 0.01f, depth = 0.3f;
         
@@ -133,38 +128,31 @@ public:
     float feedback  = getParameterValue(PARAMETER_B); // get feedback value
     float wetDry    = getParameterValue(PARAMETER_D); // get gain value
         
-    float delaySamples = delayTime * (DELAY_BUFFER_LENGTH-1);
-      
-      for (int ch = 0; ch<buffer.getChannels(); ++ch) {
-          
-          float* buf = buffer.getSamples(ch);
-          process(size, buf, outBuf);     // low pass filter for delay buffer
-          
-          float d  = _dmin + (_dmax-_dmin) * ((sin( _lfoPhase ) + 1.f)/2.f);
-          
-          _lfoPhase += rate;
-          if( _lfoPhase >= M_PI * 2.f )
-              _lfoPhase -= M_PI * 2.f;
-          
-          //update filter coeffs
-          for( int i=0; i<6; i++ )
-              _alps[i].Delay( d );
-          
-          for (int i = 0; i < size; i++){
-              
-              outBuf[i] = outBuf[i] + feedback * delayBuffer.read(delaySamples);
-              buf[i] = (1.f - wetDry) * buf[i] + wetDry * outBuf[i];  //crossfade for wet/dry balance
-              delayBuffer.write(buf[i]);
-              
-              //calculate output
-              z = _alps[0].Update(_alps[1].Update(_alps[2].Update(_alps[3].Update(_alps[4].Update(_alps[5].Update(buf[i] + _zm1 * (feedback*0.1)))))));
-              
-              _zm1 = z;
-              
-              buf[i] = buf[i] + z * depth;
-          }
-      }
+    float delaySamples = delayTime * (delayBuffer.getSize()-1);
+    int size = buffer.getSize();
+    float* x = buffer.getSamples(0);
+    process(size, x, y);     // low pass filter for delay buffer
+    float d  = _dmin + (_dmax-_dmin) * ((sin( _lfoPhase ) + 1.f)/2.f);
         
+    _lfoPhase += rate;
+    if( _lfoPhase >= M_PI * 2.f )
+      _lfoPhase -= M_PI * 2.f;
+        
+    //update filter coeffs
+    for( int i=0; i<6; i++ )
+      _alps[i].Delay( d );
+        
+    for (int n = 0; n < size; n++){            
+      y[n] = y[n] + feedback * delayBuffer.read(delaySamples);
+      y[n] = (1.f - wetDry) * x[n] + wetDry * y[n];  //crossfade for wet/dry balance
+      delayBuffer.write(y[n]);
+            
+      //calculate output
+      z = _alps[0].Update(_alps[1].Update(_alps[2].Update(_alps[3].Update(_alps[4].Update(_alps[5].Update(y[n] + _zm1 * (feedback*0.1)))))));
+      _zm1 = z;
+            
+      x[n] = y[n] + z * depth;
+    }
   }
     
 private:
@@ -204,7 +192,7 @@ private:
   float _lfoInc;
   float depth, rate, feedback;    
   float _zm1;
-  CircularBuffer<float, bufsize> delayBuffer;    
+//   CircularBuffer<float, bufsize> delayBuffer;    
 };
 
 #endif

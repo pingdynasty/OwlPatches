@@ -68,9 +68,9 @@ public:
       _alps[i].Delay( d );
       
       
-      for (int ch = 0; ch<buffer.getChannels(); ++ch) {
+//       for (int ch = 0; ch<buffer.getChannels(); ++ch) {
           
-            float* buf  = buffer.getSamples(ch);
+            float* buf  = buffer.getSamples(0);
             for (int i = 0; i < size; i++) {
               //calculate output
               y = _alps[0].Update(_alps[1].Update(_alps[2].Update(_alps[3].Update(_alps[4].Update(
@@ -79,7 +79,7 @@ public:
                 
               buf[i] = buf[i] + y * depth;
                 
-            }
+//             }
       }
   }
     

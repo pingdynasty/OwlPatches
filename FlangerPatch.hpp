@@ -5,21 +5,24 @@
 #include "CircularBuffer.hpp"
 #include "math.h"
 
-// #define FLANGER_DELAY_BUFFER_LENGTH 1024 //must be power of 2
+#define REQUEST_BUFFER_SIZE 262144
 
 class FlangerPatch : public Patch {
+private:
+  CircularBuffer delayBuffer;
+  double sampleRate;
+  float rate, depth, wetDry, feedback, phase;
+  unsigned int delaySamples;    
+
 public:
   FlangerPatch(){
+    AudioBuffer* buffer = createMemoryBuffer(1, REQUEST_BUFFER_SIZE);
+    delayBuffer.initialise(buffer->getSamples(0), buffer->getSize());
     registerParameter(PARAMETER_A, "Rate", "Phaser speed");
     registerParameter(PARAMETER_B, "Depth", "Depth of modulation");
     registerParameter(PARAMETER_C, "Feedback", "Amount of feedback");
     registerParameter(PARAMETER_D, "Dry/Wet", "Wet / Dry mix");
   }
-
-  double sampleRate;
-  float rate, depth, wetDry, feedback, phase;
-  unsigned int delaySamples;    
-//   CircularBuffer<float, FLANGER_DELAY_BUFFER_LENGTH> delayBuffer;    
     
   float modulate(float rate) {    
     float output;        
@@ -45,7 +48,7 @@ public:
               
               float* buf = buffer.getSamples(ch);
               
-              delaySamples = (depth * modulate(rate)) * (DELAY_BUFFER_LENGTH-1);
+              delaySamples = (depth * modulate(rate)) * (delayBuffer.getSize()-1);
               y = buf[i] + feedback * delayBuffer.read(delaySamples);
               buf[i] = buf[i] * (1.f - wetDry)+ wetDry * y;
               delayBuffer.write(buf[i]);

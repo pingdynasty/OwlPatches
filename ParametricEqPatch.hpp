@@ -55,19 +55,13 @@ private:
  * Parametric EQ OWL Patch
  */
 class ParametricEqPatch : public Patch {
-private:
-    float* outBuf;
 public:
   ParametricEqPatch() {
-    registerParameter(PARAMETER_A, "Freq");
-    registerParameter(PARAMETER_B, "Q");
-    registerParameter(PARAMETER_C, "Gain");
+    registerParameter(PARAMETER_A, "Freq", "Freq");
+    registerParameter(PARAMETER_B, "Q", "Q");
+    registerParameter(PARAMETER_C, "Gain", "Gain");
     peq.setCoeffsPEQ(getFrequency()/getSampleRate(), getQ(), getDbGain()) ;
-    outBuf = new float[getBlockSize()];
   }    
-    ~ParametricEqPatch() {
-        delete outBuf;
-    }
 
   void processAudio(AudioBuffer &buffer){
     // update filter coefficients
@@ -78,14 +72,14 @@ public:
     peq.setCoeffsPEQ(fn, Q, g) ;
       
     int size = buffer.getSize();
-
-    for (int ch = 0; ch<buffer.getChannels(); ++ch) {
+    float outBuf[size];
+//     for (int ch = 0; ch<buffer.getChannels(); ++ch) {
         
-        float* buf = buffer.getSamples(ch);
+        float* buf = buffer.getSamples(0);
         peq.process(size, buf, outBuf);
         memcpy(buf, outBuf, size*sizeof(float));
 
-    }
+//     }
 
   }
     

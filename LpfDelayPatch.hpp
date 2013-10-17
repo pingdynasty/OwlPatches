@@ -3,26 +3,23 @@
 
 #include "StompBox.h"
 #include "CircularBuffer.hpp"
+#define REQUEST_BUFFER_SIZE 262144
+#include <math.h>
 
-template<unsigned int bufsize>
-class LpfDelayPatch : public Patch {
-    
+class LpfDelayPatch : public Patch {    
 private:
-    float* outBuf;
-    
+  CircularBuffer delayBuffer;
 public:    
   LpfDelayPatch() : x1(0.0f), x2(0.0f), y1(0.0f), y2(0.0f) {
-    registerParameter(PARAMETER_A, "Delay");
-    registerParameter(PARAMETER_B, "Feedback");
-    registerParameter(PARAMETER_C, "Fc");
-    registerParameter(PARAMETER_D, "Dry/Wet");
+    AudioBuffer* buffer = createMemoryBuffer(1, REQUEST_BUFFER_SIZE);
+    delayBuffer.initialise(buffer->getSamples(0), buffer->getSize());
+    registerParameter(PARAMETER_A, "Delay", "Delay time");
+    registerParameter(PARAMETER_B, "Feedback", "Delay loop feedback");
+    registerParameter(PARAMETER_C, "Fc", "Filter cutoff frequency");
+    registerParameter(PARAMETER_D, "Dry/Wet", "Dry/wet mix");
     setCoeffs(getLpFreq()/getSampleRate(), 0.6f);
-    outBuf = new float[getBlockSize()];
-      
   }    
-  ~LpfDelayPatch() {
-    delete outBuf;
-  }
+  ~LpfDelayPatch() {}
         
   void initLpf (){        
     for (int i=0 ; i<3 ; i++){
@@ -65,7 +62,7 @@ public:
     
   void process(int numSamples, float* input, float* output){
     // process a block of more than 2 samples. Basic implementation without coeffs interpolation.
-        
+
     if (paramChange()) {
       output[0] = (b[0]*input[0]+b[1]*x1+b[2]*x2-a[1]*y1-a[2]*y2)/a[0] ;
       output[1] = (b[0]*input[1]+b[1]*input[0]+b[2]*x1-a[1]*output[0]-a[2]*y1)/a[0] ;
@@ -112,29 +109,23 @@ public:
   }
     
   void processAudio(AudioBuffer &buffer){
-    
+    float y[getBlockSize()];
+        
     setCoeffs(getLpFreq(), 0.8f);
         
     float delayTime = getParameterValue(PARAMETER_A); // get delay time value    
     float feedback  = getParameterValue(PARAMETER_B); // get feedback value
     float wetDry    = getParameterValue(PARAMETER_D); // get gain value
         
-    float delaySamples = delayTime * (DELAY_BUFFER_LENGTH-1);
-        
+    float delaySamples = delayTime * (delayBuffer.getSize()-1);        
     int size = buffer.getSize();
-      
-      for (int ch = 0; ch<buffer.getChannels(); ++ch) {
-          
-          float* buf = buffer.getSamples(ch);
-          process(size, buf, outBuf);     // low pass filter for delay buffer
-          
-          for(int i = 0; i < size; i++){
-
-              outBuf[i] = outBuf[i] + feedback * delayBuffer.read(delaySamples);
-              buf[i] = (1.f - wetDry) * buf[i] + wetDry * outBuf[i];  //crossfade for wet/dry balance
-              delayBuffer.write(buf[i]);
-          }
-      }
+    float* x = buffer.getSamples(0);
+    process(size, x, y);     // low pass filter for delay buffer
+    for(int n = 0; n < size; n++){
+      y[n] = y[n] + feedback * delayBuffer.read(delaySamples);            
+      x[n] = (1.f - wetDry) * x[n] + wetDry * y[n];  //crossfade for wet/dry balance
+      delayBuffer.write(x[n]);
+    }
   }
     
 private:
@@ -143,8 +134,6 @@ private:
   float pa[3] ; // previous ai coefficients
   float pb[3] ; // previous bi coefficients
   float x1, x2, y1, y2 ; // state variables to compute samples    
-  CircularBuffer<float, bufsize> delayBuffer;
 };
 
 #endif
-
