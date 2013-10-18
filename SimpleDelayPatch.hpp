@@ -3,8 +3,7 @@
 
 #include "StompBox.h"
 #include "CircularBuffer.hpp"
-
-#include "fsmc_sram.h"
+#include <stdint.h>
 
 #define REQUEST_BUFFER_SIZE 262144
 

@@ -9,6 +9,7 @@
 class LpfDelayPatch : public Patch {    
 private:
   CircularBuffer delayBuffer;
+  float time;
 public:    
   LpfDelayPatch() : x1(0.0f), x2(0.0f), y1(0.0f), y2(0.0f) {
     AudioBuffer* buffer = createMemoryBuffer(1, REQUEST_BUFFER_SIZE);
@@ -110,12 +111,15 @@ public:
     
   void processAudio(AudioBuffer &buffer){
     float y[getBlockSize()];
-        
     setCoeffs(getLpFreq(), 0.8f);
-        
     float delayTime = getParameterValue(PARAMETER_A); // get delay time value    
     float feedback  = getParameterValue(PARAMETER_B); // get feedback value
     float wetDry    = getParameterValue(PARAMETER_D); // get gain value
+
+    if(abs(time - delayTime) < 0.01)
+      delayTime = time;
+    else
+      time = delayTime;
         
     float delaySamples = delayTime * (delayBuffer.getSize()-1);        
     int size = buffer.getSize();
