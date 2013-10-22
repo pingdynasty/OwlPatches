@@ -62,21 +62,27 @@ public:
     registerParameter(PARAMETER_C, "Bias");
     registerParameter(PARAMETER_D, "Dry/Wet");
     memset(oldVal, 0, sizeof(oldVal));
+
+    AudioBuffer* buffer = createMemoryBuffer(1, MAX_DELAY * getSampleRate());
+    bufferSize = buffer->getSize();    
+    circularBuffer = buffer->getSamples(0);
   }
+
+//     if (circularBuffer==NULL)
+//     {
+//       bufferSize = MAX_DELAY * rate;
+//       circularBuffer = new float[bufferSize];
+//       memset(circularBuffer, 0, bufferSize*sizeof(float));
+//       writeIdx = 0;
+//     }
 
     void processAudio(AudioBuffer &buffer){
 
     double rate = getSampleRate();
     
-    if (circularBuffer==NULL)
-    {
-      bufferSize = MAX_DELAY * rate;
-      circularBuffer = new float[bufferSize];
-      memset(circularBuffer, 0, bufferSize*sizeof(float));
-      writeIdx = 0;
-    }
 
     unsigned int sampleDelay = getSampleDelay(getRampedParameterValue(PARAMETER_A), rate);
+    sampleDelay = min(sampleDelay, bufferSize);
     float feedback = getRampedParameterValue(PARAMETER_B);
     float bias = getBiasExponent(1 - getRampedParameterValue(PARAMETER_C));
     float dryWetMix = getRampedParameterValue(PARAMETER_D);
