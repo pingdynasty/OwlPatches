@@ -24,7 +24,6 @@ public:
       
       for (int ch = 0; ch<buffer.getChannels(); ++ch) {     //for each channel
           float* buf = buffer.getSamples(ch);
-
           for (int i = 0; i < size; ++i) {                  //process each sample
               buf[i] = gain*nonLinear((buf[i]+offset)*drive);
           }

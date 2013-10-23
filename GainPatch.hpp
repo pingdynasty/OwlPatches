@@ -5,6 +5,9 @@
 
 class GainPatch : public Patch {
 public:
+  GainPatch(){
+    registerParameter(PARAMETER_A, "Gain");    
+  }
   void processAudio(AudioBuffer &buffer){
     float gain = getParameterValue(PARAMETER_A);
     int size = buffer.getSize();

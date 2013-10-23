@@ -12,7 +12,10 @@ private:
   float lambda, gain;
   float y1;
 public:
-  LeakyIntegratorPatch() : y1(0.0) {}
+  LeakyIntegratorPatch() : y1(0.0) {
+    registerParameter(PARAMETER_A, "Lambda");    
+    registerParameter(PARAMETER_A, "Gain");    
+  }
   void prepare(){
     lambda = getParameterValue(PARAMETER_A);
     gain = getParameterValue(PARAMETER_D);
