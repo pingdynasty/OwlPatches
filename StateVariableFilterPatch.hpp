@@ -37,7 +37,11 @@ private:
   float f, q;
   float gain;
 public:
-  StateVariableFilterPatch() : low(0), band(0) {}
+  StateVariableFilterPatch() : low(0), band(0) {
+    registerParameter(PARAMETER_A, "Fc");
+    registerParameter(PARAMETER_B, "Q");
+    registerParameter(PARAMETER_D, "Gain");
+  }
   void prepare(){
     float fc;
     fc = getParameterValue(PARAMETER_A);

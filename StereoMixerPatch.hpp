@@ -5,6 +5,12 @@
 
 class StereoMixerPatch : public Patch {
 public:
+  StereoMixerPatch(){
+    registerParameter(PARAMETER_A, "LL");
+    registerParameter(PARAMETER_B, "LR");
+    registerParameter(PARAMETER_C, "RL");
+    registerParameter(PARAMETER_D, "RR");
+  }
   void processAudio(AudioBuffer &buffer){
 //     assert_param(buffer.getChannels() > 1);
     float gainLL = getParameterValue(PARAMETER_A);

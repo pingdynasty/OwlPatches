@@ -16,6 +16,9 @@ public:
   SimpleDelayPatch() : delay(0), time(0.0) {
     AudioBuffer* buffer = createMemoryBuffer(1, REQUEST_BUFFER_SIZE);
     delayBuffer.initialise(buffer->getSamples(0), buffer->getSize());
+    registerParameter(PARAMETER_A, "Delay");
+    registerParameter(PARAMETER_B, "Feedback");
+    registerParameter(PARAMETER_D, "Mix");
   }
   void processAudio(AudioBuffer &buffer) {
     float delayTime, feedback, wetDry;

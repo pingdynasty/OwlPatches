@@ -7,7 +7,10 @@ class TestTonePatch : public Patch {
 private:
   float leftpos, rightpos;
 public:
-  TestTonePatch() : leftpos(0.0f), rightpos(0.0f) {}
+  TestTonePatch() : leftpos(0.0f), rightpos(0.0f) {
+    registerParameter(PARAMETER_A, "Frequency");
+    registerParameter(PARAMETER_B, "Amplitude");
+  }
   void processAudio(AudioBuffer &buffer) {
     float frequency = getParameterValue(PARAMETER_A) * 10000;
     float amplitude = getParameterValue(PARAMETER_B) * 2;

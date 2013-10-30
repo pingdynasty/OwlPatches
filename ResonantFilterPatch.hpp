@@ -32,7 +32,10 @@ private:
   float buf0, buf1;
   float q, f, fb;
 public:
-  ResonantFilterPatch() :buf0(0), buf1(0) {}
+  ResonantFilterPatch() :buf0(0), buf1(0) {
+    registerParameter(PARAMETER_A, "Fc", "Cutoff Frequency");
+    registerParameter(PARAMETER_B, "Q", "Resonance");
+  }
   void prepare(){
     f = getParameterValue(PARAMETER_A);
     q = getParameterValue(PARAMETER_B);
