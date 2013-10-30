@@ -18,7 +18,7 @@ public:
     memset(buffer, 0, size*sizeof(float));
   }
   inline void write(float value){
-    if(++writeIndex > size)
+    if(++writeIndex == size)
       writeIndex = 0;
     buffer[writeIndex] = value;
   }  
