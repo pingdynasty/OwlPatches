@@ -3,61 +3,56 @@
 
 #include "StompBox.h"
 #include "CircularBuffer.hpp"
-#include <stdint.h>
 
-#define REQUEST_BUFFER_SIZE 262144
+#define REQUEST_BUFFER_SIZE 32768
 
 class SimpleDelayPatch : public Patch {
-private:
-  CircularBuffer delayBuffer;
-  int32_t delay;
-  float time;
+    
+private: 
+    
+    CircularBuffer delayBuffer;
+    float delayTime, feedback, wetDry, olddelaySamples = 0, dSamples;
+    
 public:
-  SimpleDelayPatch() : delay(0), time(0.0) {
-    AudioBuffer* buffer = createMemoryBuffer(1, REQUEST_BUFFER_SIZE);
-    delayBuffer.initialise(buffer->getSamples(0), buffer->getSize());
-    registerParameter(PARAMETER_A, "Delay");
-    registerParameter(PARAMETER_B, "Feedback");
-    registerParameter(PARAMETER_D, "Mix");
-  }
-  void processAudio(AudioBuffer &buffer) {
-    float delayTime, feedback, wetDry;
-    delayTime = getParameterValue(PARAMETER_A);
-    feedback  = getParameterValue(PARAMETER_B);
-    wetDry    = getParameterValue(PARAMETER_D);
-    int size = buffer.getSize();
-    int32_t newDelay;
-    if(abs(time - delayTime) > 0.01){
-      newDelay = delayTime * (delayBuffer.getSize()-1);
-      time = delayTime;
-    }else{
-      newDelay = delay;
+    SimpleDelayPatch() : olddelaySamples(0.0f) {
+        
+        AudioBuffer* buffer = createMemoryBuffer(1, REQUEST_BUFFER_SIZE);
+        delayBuffer.initialise(buffer->getSamples(0), buffer->getSize());
+        registerParameter(PARAMETER_A, "Delay");
+        registerParameter(PARAMETER_B, "Feedback");
+        registerParameter(PARAMETER_C, "Dry/Wet");
     }
-    float* x = buffer.getSamples(0);
-    float y;
-    for (int n = 0; n < size; n++){
-//       y = buf[i] + feedback * delayBuffer.read(delay);
-//       buf[i] = wetDry * y + (1.f - wetDry) * buf[i];
-//       delayBuffer.write(buf[i]);
-      if(newDelay - delay > 4){
-	y = getDelayAverage(delay-5, 5);
-	delay -= 5;
-      }else if(delay - newDelay > 4){
-	y = getDelayAverage(delay+5, 5);
-	delay += 5;
-      }else{
-	y = delayBuffer.read(delay);
-      }
-      x[n] = wetDry * y + (1.f - wetDry) * x[n];  // crossfade for wet/dry balance
-      delayBuffer.write(feedback * x[n]);
+    
+    void processAudio(AudioBuffer &buffer) {
+        
+        const int size = buffer.getSize();          // samples in block
+        
+        delayTime          = getParameterValue(PARAMETER_A); // delay time
+        feedback           = getParameterValue(PARAMETER_B); // delay feedback
+        wetDry             = getParameterValue(PARAMETER_C); // wet/dry balance
+        float delaySamples = delayTime * (delayBuffer.getSize()-1);
+        
+        for (int ch = 0; ch<buffer.getChannels(); ++ch) {   //for each channel
+            
+            float* buf = buffer.getSamples(ch);
+            float y;
+            
+            for (int i = 0; i < size; ++i) {  //for each sample
+                
+                //linear interpolation for delaySamples
+                dSamples = olddelaySamples + (delaySamples - olddelaySamples) * i / size;
+                
+                y = buf[i] + feedback * delayBuffer.read(dSamples);      //delay
+                buf[i] = wetDry * y + (1.f - wetDry) * buf[i];           //wet/dry balance
+                delayBuffer.write(buf[i]);
+                
+            }
+        }
+        
+        olddelaySamples = delaySamples;
+        
     }
-  }
-  float getDelayAverage(int index, int points){
-    float result = delayBuffer.read(index);
-    for(int i=1; i<points; ++i)
-      result += delayBuffer.read(index+i);
-    return result/points;
-  }
+    
 };
 
 #endif   // __SimpleDelayPatch_hpp__
