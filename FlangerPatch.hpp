@@ -5,41 +5,44 @@
 #include "CircularBuffer.hpp"
 #include "math.h"
 
-#define REQUEST_BUFFER_SIZE 262144
+#define REQUEST_BUFFER_SIZE 1024
 
 class FlangerPatch : public Patch {
 private:
   CircularBuffer delayBuffer;
-  double sampleRate;
-  float rate, depth, wetDry, feedback, phase;
-  unsigned int delaySamples;    
+    float rate, depth, wetDry, feedback, phase;
+    unsigned int olddelaySamples = 0, dSamples;
 
 public:
   FlangerPatch(){
     AudioBuffer* buffer = createMemoryBuffer(1, REQUEST_BUFFER_SIZE);
     delayBuffer.initialise(buffer->getSamples(0), buffer->getSize());
-    registerParameter(PARAMETER_A, "Rate", "Phaser speed");
-    registerParameter(PARAMETER_B, "Depth", "Depth of modulation");
-    registerParameter(PARAMETER_C, "Feedback", "Amount of feedback");
-    registerParameter(PARAMETER_D, "Dry/Wet", "Wet / Dry mix");
+      registerParameter(PARAMETER_A, "Rate");
+      registerParameter(PARAMETER_B, "Depth");
+      registerParameter(PARAMETER_C, "Feedback");
+      registerParameter(PARAMETER_D, "Dry/Wet");
   }
     
-  float modulate(float rate) {    
-    float output;        
-    if ( phase >= 1.0 ) phase -= 1.0;
-    phase += (1./(7200/(rate)));  //scaleable rate for AM!
-    output = sin(phase*(2*M_PI));    //sine function        
-    return output;
-  };
+    float modulate(float rate) {
+        
+        float output;
+        
+        if ( phase >= 1.0 ) phase -= 1.0;
+        phase += (1./(7200/rate));
+        output = sin(phase*(2*M_PI));    //sine function
+        
+        return output;
+    };
 
   void processAudio(AudioBuffer &buffer){
     int size = buffer.getSize();
-    float y;        
+    float y;
+    unsigned int delaySamples;
+      
     rate     = getParameterValue(PARAMETER_A);
     depth    = getParameterValue(PARAMETER_B);
     feedback = getParameterValue(PARAMETER_C);
-    wetDry   = getParameterValue(PARAMETER_D);    
-    unsigned int delaySamples;    
+    wetDry   = getParameterValue(PARAMETER_D);
     rate *= 0.1f;
       
       for (int ch = 0; ch<buffer.getChannels(); ++ch) {
@@ -54,6 +57,7 @@ public:
               delayBuffer.write(buf[i]);
           }
       }
+      olddelaySamples = delaySamples;
   }
     
 };
