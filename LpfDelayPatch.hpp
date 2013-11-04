@@ -3,15 +3,15 @@
 
 #include "StompBox.h"
 #include "CircularBuffer.hpp"
-#define REQUEST_BUFFER_SIZE 262144
+#define REQUEST_BUFFER_SIZE 32768
 #include <math.h>
 
 class LpfDelayPatch : public Patch {    
 private:
   CircularBuffer delayBuffer;
-  float time;
+  float time, olddelaySamples, dSamples;
 public:    
-  LpfDelayPatch() : x1(0.0f), x2(0.0f), y1(0.0f), y2(0.0f) {
+  LpfDelayPatch() : x1(0.0f), x2(0.0f), y1(0.0f), y2(0.0f), olddelaySamples(0.0f) {
     AudioBuffer* buffer = createMemoryBuffer(1, REQUEST_BUFFER_SIZE);
     delayBuffer.initialise(buffer->getSamples(0), buffer->getSize());
     registerParameter(PARAMETER_A, "Delay", "Delay time");
@@ -126,10 +126,15 @@ public:
     float* x = buffer.getSamples(0);
     process(size, x, y);     // low pass filter for delay buffer
     for(int n = 0; n < size; n++){
-      y[n] = y[n] + feedback * delayBuffer.read(delaySamples);            
+        
+      //linear interpolation for delayBuffer index
+      dSamples = olddelaySamples + (delaySamples - olddelaySamples) * n / size;
+        
+      y[n] = y[n] + feedback * delayBuffer.read(dSamples);
       x[n] = (1.f - wetDry) * x[n] + wetDry * y[n];  //crossfade for wet/dry balance
       delayBuffer.write(x[n]);
     }
+    olddelaySamples = delaySamples;
   }
     
 private:

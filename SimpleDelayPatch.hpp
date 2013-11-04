@@ -8,7 +8,7 @@
 
 class SimpleDelayPatch : public Patch {
     
-private: 
+private:
     
     CircularBuffer delayBuffer;
     float delayTime, feedback, wetDry, olddelaySamples = 0, dSamples;
@@ -39,7 +39,7 @@ public:
             
             for (int i = 0; i < size; ++i) {  //for each sample
                 
-                //linear interpolation for delaySamples
+                //linear interpolation for delayBuffer index
                 dSamples = olddelaySamples + (delaySamples - olddelaySamples) * i / size;
                 
                 y = buf[i] + feedback * delayBuffer.read(dSamples);      //delay

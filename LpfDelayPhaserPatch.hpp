@@ -3,16 +3,17 @@
 
 #include "StompBox.h"
 #include "CircularBuffer.hpp"
-#define REQUEST_BUFFER_SIZE 262144
+#define REQUEST_BUFFER_SIZE 32768
 
 class LpfDelayPhaserPatch : public Patch {    
 private:
   CircularBuffer delayBuffer;
-  float time;
+  float time, olddelaySamples, dSamples;
 public:    
   LpfDelayPhaserPatch() : x1(0.0f), x2(0.0f), y1(0.0f), y2(0.0f),
 			  _lfoPhase( 0.f ), depth( 1.f ),
-			  feedback( .7f ),_zm1( 0.f ) {        
+			  feedback( .7f ),_zm1( 0.f ),
+              olddelaySamples (0.0f){
     AudioBuffer* buffer = createMemoryBuffer(1, REQUEST_BUFFER_SIZE);
     delayBuffer.initialise(buffer->getSamples(0), buffer->getSize());
     registerParameter(PARAMETER_A, "Delay", "Delay time");
@@ -146,8 +147,12 @@ public:
     for( int i=0; i<6; i++ )
       _alps[i].Delay( d );
         
-    for (int n = 0; n < size; n++){            
-      y[n] = y[n] + feedback * delayBuffer.read(delaySamples);
+    for (int n = 0; n < size; n++){
+        
+      //linear interpolation for delayBuffer index
+      dSamples = olddelaySamples + (delaySamples - olddelaySamples) * n / size;
+        
+      y[n] = y[n] + feedback * delayBuffer.read(dSamples);
       y[n] = (1.f - wetDry) * x[n] + wetDry * y[n];  //crossfade for wet/dry balance
       delayBuffer.write(y[n]);
             
@@ -157,6 +162,7 @@ public:
             
       x[n] = y[n] + z * depth;
     }
+    olddelaySamples = delaySamples;
   }
     
 private:
