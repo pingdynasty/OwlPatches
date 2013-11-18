@@ -21,12 +21,12 @@ public:
     alpha = sinf(omega)/(2*Q);
     d = powf(10,dbGain/40);
     gamma = alpha*powf(10,fabsf(dbGain)/40);
-        
+      
     a[0] = 1+gamma/d;
-    a[1] = b[1]/a[0];
+    a[1] = -2*c/a[0];
     a[2] = (1-gamma/d)/a[0];
     b[0] = (1+gamma*d)/a[0];
-    b[1] = -2*c/a[0];
+    b[1] = a[1];
     b[2] = (1-gamma*d)/a[0];
     a[0] = 1.0;
   }
