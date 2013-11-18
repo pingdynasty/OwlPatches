@@ -9,7 +9,7 @@ public:
     registerParameter(PARAMETER_A, "Gain");    
   }
   void processAudio(AudioBuffer &buffer){
-    float gain = getParameterValue(PARAMETER_A);
+    float gain = getParameterValue(PARAMETER_A)*2;
     int size = buffer.getSize();
     for(int ch=0; ch<buffer.getChannels(); ++ch){
       float* buf = buffer.getSamples(ch);
