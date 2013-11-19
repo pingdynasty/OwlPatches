@@ -44,11 +44,25 @@ public:
     for(int i=2; i<numSamples; i++){
       out[i] = b[0]*input[i]+b[1]*input[i-1]+b[2]*input[i-2]-a[1]*out[i-1]-a[2]*out[i-2] ;
     }
+
+      
     // store values for next block
     x1 = input[numSamples-1];
     x2 = input[numSamples-2];
     y1 = out[numSamples-1];
     y2 = out[numSamples-2];
+  }
+    
+  void process (int numSamples, float* buf){
+    float out;
+    for (int i=0;i<numSamples;i++){
+        out = b[0]*buf[i]+b[1]*x1+b[2]*x2-a[1]*y1-a[2]*y2 ;
+        y2 = y1;
+        y1 = out;
+        x2 = x1;
+        x1 = buf[i];
+        buf[i]=out;
+    }
   }
     
 private:
@@ -73,20 +87,13 @@ public:
   void processAudio(AudioBuffer &buffer){
     // update filter coefficients
     float fn = getFrequency()/getSampleRate();
-       
     float Q = getQ();
     float g = getDbGain();
     peq.setCoeffsPEQ(fn, Q, g) ;
       
-    int size = buffer.getSize();
-    float outBuf[size];
-//     for (int ch = 0; ch<buffer.getChannels(); ++ch) {
-        
-        float* buf = buffer.getSamples(0);
-        peq.process(size, buf, outBuf);
-        memcpy(buf, outBuf, size*sizeof(float));
-
-//     }
+    // process
+    float* buf = buffer.getSamples(0);
+    peq.process(buffer.getSize(), buf);
 
   }
     
