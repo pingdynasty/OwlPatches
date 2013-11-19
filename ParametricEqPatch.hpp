@@ -44,7 +44,6 @@ public:
     for(int i=2; i<numSamples; i++){
       out[i] = b[0]*input[i]+b[1]*input[i-1]+b[2]*input[i-2]-a[1]*out[i-1]-a[2]*out[i-2] ;
     }
-
       
     // store values for next block
     x1 = input[numSamples-1];
@@ -105,7 +104,7 @@ private:
     // param_A = 0    <-> f=50;
     // param_A = 1    <-> f=10050;
 //      return powf(10,3*f+1)+40;
-      return (f*0.47 + 0.01);
+      return (f*8000)+50;
   }
         
   float getQ(){
