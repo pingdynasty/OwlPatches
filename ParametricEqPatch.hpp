@@ -104,7 +104,8 @@ private:
     float f = getParameterValue(PARAMETER_A);
     // param_A = 0    <-> f=50;
     // param_A = 1    <-> f=10050;
-      return powf(10,3*f+1)+40;
+//      return powf(10,3*f+1)+40;
+      return (f*0.47 + 0.01);
   }
         
   float getQ(){
