@@ -98,8 +98,8 @@ public:
   EnvelopeFilterPatch(){
     registerParameter(PARAMETER_A, "Cutoff");
     registerParameter(PARAMETER_B, "Range");
-    registerParameter(PARAMETER_C, "Q");
-    registerParameter(PARAMETER_D, "Attack");
+    registerParameter(PARAMETER_C, "Blend");
+    registerParameter(PARAMETER_D, "Q");
   //  registerParameter(PARAMETER_E, "E");
     env = 0;
     a = 0.999;
@@ -120,16 +120,19 @@ public:
     float gain = 1;//getParameterValue(PARAMETER_D);
     int size = buffer.getSize();
     float cutoff = getParameterValue(PARAMETER_A);
-	  float range = EnvelopeFilter::LPF::fastSqrt(getParameterValue(PARAMETER_B))*9000;
-    float Q = 3+getParameterValue(PARAMETER_C)*9;
+	  float range = //EnvelopeFilter::LPF::fastSqrt
+	  (getParameterValue(PARAMETER_B))*1000;
+    float Q = 3+getParameterValue(PARAMETER_D)*9;
+	  float mix = getParameterValue(PARAMETER_C)*0.5;
     sensitivity *= sensitivity*160;
-    a = 0.9995 + (1-0.9995) * getParameterValue(PARAMETER_D);
+    a = 0.9995 + (1-0.9995) * 0.05;//getParameterValue(PARAMETER_D);
     b = 1 - a;
     cutoff = 100 + cutoff * 1500;
 
 	float* x = buffer.getSamples(0);
+	float mixm1 = 1.0 - mix;
 	for(int i=0; i<size; ++i) {
-		x[i] = filter.process(x[i], cutoff+follow(x[i])*range, Q);
+		x[i] = x[i]*mix + (mixm1)*filter.process(x[i], cutoff+follow(x[i])*range, Q);
 	}
 
   }

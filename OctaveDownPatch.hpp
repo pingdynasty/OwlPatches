@@ -81,7 +81,7 @@ public:
       float o2 = in * out2Lpf.process(oct2?1:-1);
       lastOct1 = oct1;
       lastRect = rect;      
-      x[i] = in * gain + o1*o1g + o2*o2g;//*0.1*in;
+		x[i] = in * gain + o1*o1g + o2*o2g;
     }
     
   }

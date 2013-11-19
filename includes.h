@@ -23,6 +23,7 @@
 #include "Contest/DualTremoloPatch.hpp"
  #include "EnvelopeFilterPatch.hpp"
  #include "VibroFlangePatch.hpp"
+#include "RingModulatorPatch.hpp"
   /* too cpu intensive (sqrt...) */
 // #include "Contest/BiasedDelayPatch.hpp"  /* triggers NMI_Handler () */
 // #include "Contest/JumpDelay.hpp" /* uses calloc and free */
