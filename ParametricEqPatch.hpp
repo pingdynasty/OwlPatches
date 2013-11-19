@@ -9,9 +9,15 @@
  */
 class Biquad1 {
 public:
-  Biquad1() : x1(0.0f), x2(0.0f), y1(0.0f), y2(0.0f) {
-  }
+  Biquad1() {}
   ~Biquad1() {}
+    
+  void initStateVariables(){
+        x1=0.f;
+        x2=0.f;
+        y1=0.f;
+        y2=0.f;
+    }
     
   void setCoeffsPEQ(float normalizedFrequency, float Q, float dbGain) {
     // Compute the filters coefficients a[i] and b[i];
@@ -60,6 +66,7 @@ public:
     registerParameter(PARAMETER_A, "Freq", "Freq");
     registerParameter(PARAMETER_B, "Q", "Q");
     registerParameter(PARAMETER_C, "Gain", "Gain");
+    peq.initStateVariables();
     peq.setCoeffsPEQ(getFrequency()/getSampleRate(), getQ(), getDbGain()) ;
   }    
 
