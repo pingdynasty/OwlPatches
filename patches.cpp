@@ -21,8 +21,11 @@
   REGISTER_PATCH(ConnyPatch, "Contest/ConnyPatch");
   REGISTER_PATCH(DroneBoxPatch, "Contest/DroneBox");
   REGISTER_PATCH(DualTremoloPatch, "Contest/DualTremolo");
+  REGISTER_PATCH(VibroFlangePatch, "Vibro-Flange");
+  REGISTER_PATCH(RingModulatorPatch, "Ring Modulator");
+
 //   REGISTER_PATCH(HighPassFilterPatch, "a High Pass Filter");
-//   REGISTER_PATCH(EnvelopeFilterPatch, "Envelope Filter");
+  REGISTER_PATCH(EnvelopeFilterPatch, "Envelope Filter");
 //   REGISTER_PATCH(BiasedDelayPatch, "Contest/BiasedDelayPatch");
 //   REGISTER_PATCH(JumpDelay, "Contest/JumpDelay");
 //   REGISTER_PATCH(SampleJitterPatch, "Contest/SampleJitterPatch");

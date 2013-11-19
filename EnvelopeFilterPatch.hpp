@@ -33,7 +33,62 @@ namespace EnvelopeFilter {
       x *= r;
       return y; 
     }
+	  // by rbj
+	  static float fastSqrt(register float x)
+	  {
+		  
+		  if (x > 5.877471754e-39)
+		  {
+			  register float accumulator, xPower;
+			  register long intPart;
+			  register union {float f; long i;} xBits;
+			  
+			  xBits.f = x;
+			  
+			  intPart = ((xBits.i)>>23);	 /* get biased exponent */
+			  intPart -= 127;	 /* unbias it */
+			  
+			  x = (float)(xBits.i & 0x007FFFFF);	 /* mask off exponent leaving 0x800000*(mantissa - 1) */
+			  x *= 1.192092895507812e-07;	 /* divide by 0x800000 */
+			  
+			  accumulator =  1.0 + 0.49959804148061*x;
+			  xPower = x*x;
+			  accumulator += -0.12047308243453*xPower;
+			  xPower *= x;
+			  accumulator += 0.04585425015501*xPower;
+			  xPower *= x;
+			  accumulator += -0.01076564682800*xPower;
+			  
+			  if (intPart & 0x00000001)
+			  {
+				  accumulator *= SQRT2;	 /* an odd input exponent means an extra sqrt(2) in the output */
+			  }
+			  
+			  xBits.i = intPart >> 1;	 /* divide exponent by 2, lose LSB */
+			  xBits.i += 127;	 /* rebias exponent */
+			  xBits.i <<= 23;	 /* move biased exponent into exponent bits */
+			  
+			  return accumulator * xBits.f;
+		  }
+		  else
+		  {
+			  return 0.0;
+		  }
+		  
+	  }
   };
+	
+	
+	
+
+	
+	
+	
+	
+	
+	
+	
+	
 
 };
 
@@ -43,9 +98,9 @@ public:
   EnvelopeFilterPatch(){
     registerParameter(PARAMETER_A, "Cutoff");
     registerParameter(PARAMETER_B, "Range");
-    registerParameter(PARAMETER_C, "Q");
-    registerParameter(PARAMETER_D, "Attack");
-    registerParameter(PARAMETER_E, "E");
+    registerParameter(PARAMETER_C, "Blend");
+    registerParameter(PARAMETER_D, "Q");
+  //  registerParameter(PARAMETER_E, "E");
     env = 0;
     a = 0.999;
     b = 0.001;
@@ -60,23 +115,26 @@ public:
 	return env*env*160;
 	
   }
-
+	
   void processAudio(AudioBuffer& buffer){
     float gain = 1;//getParameterValue(PARAMETER_D);
     int size = buffer.getSize();
     float cutoff = getParameterValue(PARAMETER_A);
-    float range = getParameterValue(PARAMETER_B)*10000;
-    float Q = 1+getParameterValue(PARAMETER_C)*9;
+	  float range = //EnvelopeFilter::LPF::fastSqrt
+	  (getParameterValue(PARAMETER_B))*1000;
+    float Q = 3+getParameterValue(PARAMETER_D)*9;
+	  float mix = getParameterValue(PARAMETER_C)*0.5;
     sensitivity *= sensitivity*160;
-    a = 0.9995 + (1-0.9995) * getParameterValue(PARAMETER_D);
+    a = 0.9995 + (1-0.9995) * 0.05;//getParameterValue(PARAMETER_D);
     b = 1 - a;
     cutoff = 100 + cutoff * 1500;
-//     for(int ch = 0; ch<buffer.getChannels(); ++ch) {
-      float* x = buffer.getSamples(0);
-      for(int i=0; i<size; ++i) {
-	x[i] = filter.process(x[i], cutoff+follow(x[i])*range, Q);
-      }
-//     }
+
+	float* x = buffer.getSamples(0);
+	float mixm1 = 1.0 - mix;
+	for(int i=0; i<size; ++i) {
+		x[i] = x[i]*mix + (mixm1)*filter.process(x[i], cutoff+follow(x[i])*range, Q);
+	}
+
   }
 };
 
