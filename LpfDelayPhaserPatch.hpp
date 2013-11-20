@@ -123,10 +123,12 @@ public:
     float y[getBlockSize()];
     float z;
     setCoeffs(getLpFreq(), 0.8f);
-    rate = 0.01f, depth = 0.3f;        
+    rate = 0.01f;
+
     float delayTime = getParameterValue(PARAMETER_A); // get delay time value    
     float feedback  = getParameterValue(PARAMETER_B); // get feedback value
     float wetDry    = getParameterValue(PARAMETER_D); // get gain value
+    depth           = getParameterValue(PARAMETER_E);
 
     if(abs(time - delayTime) < 0.01)
       delayTime = time;
