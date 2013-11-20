@@ -15,18 +15,18 @@
   REGISTER_PATCH(OctaveDownPatch, "Octave Pitch Shifter");
   REGISTER_PATCH(TestTonePatch, "Test Tone");
   REGISTER_PATCH(StereoMixerPatch, "Stereo Mixer");
+  REGISTER_PATCH(VibroFlangePatch, "Vibro-Flange");
+  REGISTER_PATCH(RingModulatorPatch, "Ring Modulator");
+  REGISTER_PATCH(FourBandsEqPatch, "FourBandsEqPatch");
+  REGISTER_PATCH(EnvelopeFilterPatch, "Envelope Filter");
+//   REGISTER_PATCH(HighPassFilterPatch, "a High Pass Filter");
+//   REGISTER_PATCH(BiasedDelayPatch, "Contest/BiasedDelayPatch");
+//   REGISTER_PATCH(JumpDelay, "Contest/JumpDelay");
+//   REGISTER_PATCH(SampleJitterPatch, "Contest/SampleJitterPatch");
+//   REGISTER_PATCH(SirenPatch, "Contest/SirenPatch");
   REGISTER_PATCH(little_blo_bleep, "Contest/blo bleep");
   REGISTER_PATCH(BiasPatch, "Contest/Bias");
   REGISTER_PATCH(BitH8rPatch, "Contest/BitH8r");
   REGISTER_PATCH(ConnyPatch, "Contest/ConnyPatch");
   REGISTER_PATCH(DroneBoxPatch, "Contest/DroneBox");
   REGISTER_PATCH(DualTremoloPatch, "Contest/DualTremolo");
-  REGISTER_PATCH(VibroFlangePatch, "Vibro-Flange");
-  REGISTER_PATCH(RingModulatorPatch, "Ring Modulator");
-
-//   REGISTER_PATCH(HighPassFilterPatch, "a High Pass Filter");
-  REGISTER_PATCH(EnvelopeFilterPatch, "Envelope Filter");
-//   REGISTER_PATCH(BiasedDelayPatch, "Contest/BiasedDelayPatch");
-//   REGISTER_PATCH(JumpDelay, "Contest/JumpDelay");
-//   REGISTER_PATCH(SampleJitterPatch, "Contest/SampleJitterPatch");
-//   REGISTER_PATCH(SirenPatch, "Contest/SirenPatch");
