@@ -100,7 +100,7 @@ private:
   Biquad1 peq ; // PEQ filter
 
   float getFrequency() {
-    float f = getParameterValue(PARAMETER_A);
+    float f = getParameterValue(PARAMETER_A)+getParameterValue(PARAMETER_E)/2;
     // param_A = 0    <-> f=50;
     // param_A = 1    <-> f=10050;
 //      return powf(10,3*f+1)+40;

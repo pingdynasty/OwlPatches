@@ -12,7 +12,7 @@ public:
   }
   void processAudio(AudioBuffer &buffer){
       
-    float drive = getParameterValue(PARAMETER_A);     // get input drive value
+    float drive = getParameterValue(PARAMETER_E)*getParameterValue(PARAMETER_A);     // get input drive value
     float offset = getParameterValue(PARAMETER_B); 	  // get offset value
     float gain = getParameterValue(PARAMETER_D);      // get output gain value
     offset /= 10;
