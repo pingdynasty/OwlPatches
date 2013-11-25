@@ -21,10 +21,10 @@
  C) Decay time
  D) Dry/Wet mix
  
+ Updated to latest Owl APi by the Owl Team.
  
  TODO:
  
- - optimize for OWL hardware
  - push button to change tuning presets
  
  Copyright (C) 2013  Oliver Larkin
@@ -122,7 +122,7 @@ public:
 class DBCombFilter 
 {
 private:
-  float mBuffer[BUF_SIZE];
+  float* mBuffer = createMemoryBuffer(1,BUF_SIZE)->getSamples(0); // left input
   int mDTSamples;
   float mFbkScalar;
   int mWriteAddr;
