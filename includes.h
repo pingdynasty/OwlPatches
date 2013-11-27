@@ -24,8 +24,8 @@
 #include "VibroFlangePatch.hpp"
 #include "RingModulatorPatch.hpp"
 #include "FourBandsEqPatch.hpp"
-#include "EnvelopeFilterPatch.hpp"   /* too cpu intensive ? (sqrt...) */
-//#include "JotReverbPatch.hpp"   /* too cpu intensive ? (sqrt...) */
+#include "EnvelopeFilterPatch.hpp"
+#include "JotReverbPatch.hpp"
 // #include "EnvelopeFilterPatch.hpp" /* too cpu intensive (sqrt...) */
 // #include "Contest/BiasedDelayPatch.hpp"  /* triggers NMI_Handler () */
 // #include "Contest/JumpDelay.hpp" /* uses calloc and free */

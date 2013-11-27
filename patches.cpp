@@ -19,7 +19,7 @@
   REGISTER_PATCH(RingModulatorPatch, "Ring Modulator");
   REGISTER_PATCH(FourBandsEqPatch, "FourBandsEqPatch");
   REGISTER_PATCH(EnvelopeFilterPatch, "Envelope Filter");
-//REGISTER_PATCH(JotReverbPatch,"JotReverbPatch");
+REGISTER_PATCH(JotReverbPatch,"JotReverbPatch");
 //   REGISTER_PATCH(HighPassFilterPatch, "a High Pass Filter");
 //   REGISTER_PATCH(BiasedDelayPatch, "Contest/BiasedDelayPatch");
 //   REGISTER_PATCH(JumpDelay, "Contest/JumpDelay");
