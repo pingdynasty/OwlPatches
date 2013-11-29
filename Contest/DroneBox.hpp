@@ -21,10 +21,10 @@
  C) Decay time
  D) Dry/Wet mix
  
+ Updated to latest Owl APi by the Owl Team.
  
  TODO:
  
- - optimize for OWL hardware
  - push button to change tuning presets
  
  Copyright (C) 2013  Oliver Larkin
@@ -122,7 +122,7 @@ public:
 class DBCombFilter 
 {
 private:
-  float mBuffer[BUF_SIZE];
+  float* mBuffer; // left input
   int mDTSamples;
   float mFbkScalar;
   int mWriteAddr;
@@ -133,15 +133,19 @@ public:
   , mFbkScalar(0.5)
   , mWriteAddr(0)
   {
-    clearBuffer();
     setFreqCPS(440.);
     setDecayTimeMs(10.);
   }
   
-  void clearBuffer()
+  void setBuffer(float* buffer)
   {
-    memset(mBuffer, 0, BUF_SIZE * sizeof(float));
+      mBuffer = buffer;
   }
+    
+    void clearBuffer()
+    {
+        memset(mBuffer,0.,BUF_SIZE*sizeof(float));
+    }
   
   void setFreqCPS(float freqCPS)
   {
@@ -201,17 +205,22 @@ public:
   , mPrevFinePitch(-1.)
   , mPrevDecay(-1.)
   {
-    registerParameter(PARAMETER_A, "Coarse Pitch");
-    registerParameter(PARAMETER_B, "Fine Pitch");
-    registerParameter(PARAMETER_C, "Decay");
-    registerParameter(PARAMETER_D, "Mix");
+    registerParameter(PARAMETER_A, "Coarse Pitch", "Coarse Pitch");
+    registerParameter(PARAMETER_B, "Fine Pitch", "Fine Pitch");
+    registerParameter(PARAMETER_C, "Decay", "Decay");
+    registerParameter(PARAMETER_D, "Mix", "Mix");
 
     mOldValues[0] = 0.; 
     mOldValues[1] = 0.;
     mOldValues[2] = 0.;
     mOldValues[3] = 0.;
     
-    //printf("size of patch %ld bytes\n", sizeof(*this));
+      for (int c=0;c<NUM_COMBS;c++)
+      {
+          mCombs[c].setBuffer(createMemoryBuffer(1,BUF_SIZE)->getSamples(0));
+          mCombs[c].clearBuffer();
+      }
+      
   }
   
  void processAudio(AudioBuffer &buffer)
@@ -237,9 +246,9 @@ public:
       mPrevDecay = decay;
     }
       
-	  for(int ch = 0; ch<buffer.getChannels(); ++ch)
-	  {   
-	    float* buf = buffer.getSamples(ch);
+// 	  for(int ch = 0; ch<buffer.getChannels(); ++ch)
+// 	  {   
+	    float* buf = buffer.getSamples(0);
 	    
 	    for(int i = 0; i < size; i++)
 	    {
@@ -254,7 +263,7 @@ public:
 	      
 	      buf[i] = mDCBlocker.process( ((ops * 0.1) * smoothMix) + (ips * (1.-smoothMix)) );
 	    }
-	  }
+// 	  }
     
    
   }
