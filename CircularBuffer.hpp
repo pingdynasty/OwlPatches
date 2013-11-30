@@ -1,3 +1,31 @@
+////////////////////////////////////////////////////////////////////////////////////////////////////
+
+/*
+ 
+ 
+ LICENSE:
+ This program is free software: you can redistribute it and/or modify
+ it under the terms of the GNU General Public License as published by
+ the Free Software Foundation, either version 3 of the License, or
+ (at your option) any later version.
+ 
+ This program is distributed in the hope that it will be useful,
+ but WITHOUT ANY WARRANTY; without even the implied warranty of
+ MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ GNU General Public License for more details.
+ 
+ You should have received a copy of the GNU General Public License
+ along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ 
+ */
+
+
+/* created by the OWL team 2013 */
+
+
+////////////////////////////////////////////////////////////////////////////////////////////////////
+
+
 #ifndef __CircularBuffer_h__
 #define __CircularBuffer_h__
 
@@ -35,36 +63,5 @@ public:
     return size;
   }
 };
-
-// template<class T, unsigned int size, T* buffer>
-// class CircularBuffer {
-// private:
-// public:
-//   CircularBuffer():writeIndex(0) {
-//     memset(buffer, 0, size*sizeof(T));
-//   }
-//   inline void write(T value){
-//     if(++writeIndex > size)
-//       writeIndex = 0;
-//     buffer[writeIndex] = value;
-//   }
-// //   inline T head(){
-// //     return buffer[(writeIndex - 1) & (size-1)];
-// //   }
-// //   inline T tail(){
-// //     return buffer[(writeIndex) & (size-1)];
-// //   }
-//   /* get the value at @index positions previous to the last write */
-//   inline T read(int index){
-// //     index = writeIndex - index;
-// //     if(index < 0)
-// //       index += size;
-// //     return buffer[index];
-//     return buffer[(writeIndex + (~index)) & (size-1)];
-//   }
-//   inline unsigned int getSize(){
-//     return size;
-//   }
-// };
 
 #endif // __CircularBuffer_h__

@@ -6,7 +6,7 @@
 #include "PhaserPatch.hpp"
 #include "StateVariableFilterPatch.hpp"
 #include "ResonantFilterPatch.hpp"
-#include "FlangerPatch.hpp"
+// #include "FlangerPatch.hpp"
 #include "LeakyIntegratorPatch.hpp"
 #include "LpfDelayPatch.hpp"
 #include "LpfDelayPhaserPatch.hpp"

@@ -6,10 +6,10 @@
   REGISTER_PATCH(PhaserPatch, "Phaser");
   REGISTER_PATCH(StateVariableFilterPatch, "State Variable Filter");
   REGISTER_PATCH(ResonantFilterPatch, "Resonant Low Pass Filter");
-  REGISTER_PATCH(FlangerPatch, "Flanger");
+//  REGISTER_PATCH(FlangerPatch, "Flanger");
   REGISTER_PATCH(LeakyIntegratorPatch, "Leaky Integrator");
   REGISTER_PATCH(LpfDelayPatch, "Low Pass Filtered Delay");
-  REGISTER_PATCH(LpfDelayPhaserPatch, "Low Pass Filtered Delay with Phaser");
+  REGISTER_PATCH(LpfDelayPhaserPatch, "Low Pass Filtered Delay with Phaser")
   REGISTER_PATCH(WaveshaperPatch, "Waveshaper");
   REGISTER_PATCH(FreeVerbPatch, "FreeVerb");
   REGISTER_PATCH(OctaveDownPatch, "Octave Pitch Shifter");
@@ -19,7 +19,7 @@
   REGISTER_PATCH(RingModulatorPatch, "Ring Modulator");
   REGISTER_PATCH(FourBandsEqPatch, "FourBandsEqPatch");
   REGISTER_PATCH(EnvelopeFilterPatch, "Envelope Filter");
-REGISTER_PATCH(JotReverbPatch,"JotReverbPatch");
+  REGISTER_PATCH(JotReverbPatch,"JotReverbPatch");
 //   REGISTER_PATCH(HighPassFilterPatch, "a High Pass Filter");
 //   REGISTER_PATCH(BiasedDelayPatch, "Contest/BiasedDelayPatch");
 //   REGISTER_PATCH(JumpDelay, "Contest/JumpDelay");

@@ -1,28 +1,56 @@
-#ifndef __PhaserPatch_hpp__
-#define __PhaserPatch_hpp__
+////////////////////////////////////////////////////////////////////////////////////////////////////
+
 /*
-  class: Phaser
-  implemented by: Ross Bencina <rossb@kagi.com>
-  date: 24/8/98
  
-  Phaser is a six stage phase shifter, intended to reproduce the
-  sound of a traditional analogue phaser effect.
-  This implementation uses six first order all-pass filters in
-  series, with delay time modulated by a sinusoidal.
  
-  This implementation was created to be clear, not efficient.
-  Obvious modifications include using a table lookup for the lfo,
-  not updating the filter delay times every sample, and not
-  tuning all of the filters to the same delay time.
+ LICENSE:
+ This program is free software: you can redistribute it and/or modify
+ it under the terms of the GNU General Public License as published by
+ the Free Software Foundation, either version 3 of the License, or
+ (at your option) any later version.
  
-  Thanks to:
-  The nice folks on the music-dsp mailing list, including...
-  Chris Towsend and Marc Lindahl
+ This program is distributed in the hope that it will be useful,
+ but WITHOUT ANY WARRANTY; without even the implied warranty of
+ MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ GNU General Public License for more details.
  
-  ...and Scott Lehman's Phase Shifting page at harmony central:
-  http://www.harmony-central.com/Effects/Articles/Phase_Shifting/
+ You should have received a copy of the GNU General Public License
+ along with this program.  If not, see <http://www.gnu.org/licenses/>.
  
 */
+
+
+/*
+ class: Phaser
+ implemented by: Ross Bencina <rossb@kagi.com>
+ date: 24/8/98
+ 
+ Phaser is a six stage phase shifter, intended to reproduce the
+ sound of a traditional analogue phaser effect.
+ This implementation uses six first order all-pass filters in
+ series, with delay time modulated by a sinusoidal.
+ 
+ This implementation was created to be clear, not efficient.
+ Obvious modifications include using a table lookup for the lfo,
+ not updating the filter delay times every sample, and not
+ tuning all of the filters to the same delay time.
+ 
+ Thanks to:
+ The nice folks on the music-dsp mailing list, including...
+ Chris Towsend and Marc Lindahl
+ 
+ ...and Scott Lehman's Phase Shifting page at harmony central:
+ http://www.harmony-central.com/Effects/Articles/Phase_Shifting/
+ 
+ */
+
+
+////////////////////////////////////////////////////////////////////////////////////////////////////
+
+
+#ifndef __PhaserPatch_hpp__
+#define __PhaserPatch_hpp__
+
 
 #include "StompBox.h"
 
