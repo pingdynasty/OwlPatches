@@ -59,22 +59,21 @@ public:
     float* x = buffer.getSamples(0);
     float y;
     for (int n = 0; n < size; n++){
-//       y = buf[i] + feedback * delayBuffer.read(delay);
-//       buf[i] = wetDry * y + (1.f - wetDry) * buf[i];
-//       delayBuffer.write(buf[i]);
-      if(newDelay - delay > 4){
-	y = getDelayAverage(delay-5, 5);
-	delay -= 5;
-      }else if(delay - newDelay > 4){
-	y = getDelayAverage(delay+5, 5);
-	delay += 5;
-      }else{
-	y = delayBuffer.read(delay);
-      }
-      x[n] = wetDry * y + (1.f - wetDry) * x[n];  // crossfade for wet/dry balance
-      delayBuffer.write(feedback * x[n]);
+
+          if(newDelay - delay > 4){
+        y = getDelayAverage(delay-5, 5);
+        delay -= 5;
+          }else if(delay - newDelay > 4){
+        y = getDelayAverage(delay+5, 5);
+        delay += 5;
+          }else{
+        y = delayBuffer.read(delay);
+          }
+          x[n] = wetDry * y + (1.f - wetDry) * x[n];  // crossfade for wet/dry balance
+          delayBuffer.write(feedback * x[n]);
     }
   }
+    
   float getDelayAverage(int index, int points){
     float result = delayBuffer.read(index);
     for(int i=1; i<points; ++i)

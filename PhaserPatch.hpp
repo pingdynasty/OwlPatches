@@ -2,7 +2,6 @@
 
 /*
  
- 
  LICENSE:
  This program is free software: you can redistribute it and/or modify
  it under the terms of the GNU General Public License as published by
@@ -21,6 +20,7 @@
 
 
 /*
+ 
  class: Phaser
  implemented by: Ross Bencina <rossb@kagi.com>
  date: 24/8/98
