@@ -9,7 +9,7 @@
 //  REGISTER_PATCH(FlangerPatch, "Flanger");
   REGISTER_PATCH(LeakyIntegratorPatch, "Leaky Integrator");
   REGISTER_PATCH(LpfDelayPatch, "Low Pass Filtered Delay");
-  REGISTER_PATCH(LpfDelayPhaserPatch, "Low Pass Filtered Delay with Phaser")
+  REGISTER_PATCH(LpfDelayPhaserPatch, "Low Pass Filtered Delay with Phaser");
   REGISTER_PATCH(WaveshaperPatch, "Waveshaper");
   REGISTER_PATCH(FreeVerbPatch, "FreeVerb");
   REGISTER_PATCH(OctaveDownPatch, "Octave Pitch Shifter");
