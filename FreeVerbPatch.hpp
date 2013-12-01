@@ -65,9 +65,9 @@ public:
   inline  float process(float input) {
     float output;
     output = buffer[bufidx];
-    undenormalise(output);
+//    undenormalise(output);
     filterstore = (output*damp2) + (filterstore*damp1);
-    undenormalise(filterstore);
+//    undenormalise(filterstore);
     buffer[bufidx] = input + (filterstore*feedback);
     if(++bufidx>=bufsize) 
       bufidx = 0;
@@ -121,7 +121,7 @@ public:
     float bufout;
   
     bufout = buffer[bufidx];
-    undenormalise(bufout);
+//    undenormalise(bufout);
   
     output = -input + bufout;
     buffer[bufidx] = input + (bufout*feedback);
@@ -283,7 +283,7 @@ public:
 
   void	update() {
     // Recalculate internal values after parameter change
-    int i;
+//    int i;
   }
 
 
@@ -327,7 +327,7 @@ public:
     float _mix = getParameterValue(PARAMETER_A);
     float _roomsize = getParameterValue(PARAMETER_B);
     float _damp = getParameterValue(PARAMETER_C);
-    float _gain = getParameterValue(PARAMETER_D);
+//    float _gain = getParameterValue(PARAMETER_D);
     setdry(1.0f-_mix);
     setwet(_mix);
     setroomsize(_roomsize);
