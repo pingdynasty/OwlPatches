@@ -46,8 +46,6 @@ public:
         
         //Dist 1's parameter, needed to sanitize by *0.9 or the filter would be quiet. also the waveshaper wants a specific range.
         float paramA = getParameterValue(PARAMETER_A)*1.0;
-        //---float dist1_amount = 2.0*paramA/(1.0-paramA);
-        float dist1_amount = paramA;
         
         //Dist 2's parameter, since it's a bit shift distortion we needed to move the value to an int
         float paramB = getParameterValue(PARAMETER_B);

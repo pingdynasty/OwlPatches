@@ -137,7 +137,7 @@ public:
   }
 	
   void processAudio(AudioBuffer& buffer){
-    float gain = 1;//getParameterValue(PARAMETER_D);
+//    float gain = 1;//getParameterValue(PARAMETER_D);
     int size = buffer.getSize();
     float cutoff = getParameterValue(PARAMETER_A);
 	  float range = //EnvelopeFilter::LPF::fastSqrt
