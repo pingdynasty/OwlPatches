@@ -1,5 +1,5 @@
   REGISTER_PATCH(GainPatch, "Gain");
-  REGISTER_PATCH(TemplatePatch, "Template");
+  // REGISTER_PATCH(TemplatePatch, "Template");
   REGISTER_PATCH(SimpleDelayPatch, "Simple Delay");
   REGISTER_PATCH(ParametricEqPatch, "Parametric EQ");
   REGISTER_PATCH(OverdrivePatch, "Overdrive");
@@ -13,7 +13,7 @@
   REGISTER_PATCH(WaveshaperPatch, "Waveshaper");
   REGISTER_PATCH(FreeVerbPatch, "FreeVerb");
   REGISTER_PATCH(OctaveDownPatch, "Octave Pitch Shifter");
-  REGISTER_PATCH(TestTonePatch, "Test Tone");
+  // REGISTER_PATCH(TestTonePatch, "Test Tone");
   REGISTER_PATCH(StereoMixerPatch, "Stereo Mixer");
   REGISTER_PATCH(VibroFlangePatch, "Vibro-Flange");
   REGISTER_PATCH(RingModulatorPatch, "Ring Modulator");

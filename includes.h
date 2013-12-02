@@ -1,5 +1,5 @@
 #include "GainPatch.hpp"
-#include "TemplatePatch.hpp"
+/* #include "TemplatePatch.hpp" */
 #include "SimpleDelayPatch.hpp"
 #include "ParametricEqPatch.hpp"
 #include "OverdrivePatch.hpp"
@@ -13,7 +13,7 @@
 #include "WaveshaperPatch.hpp"
 #include "FreeVerbPatch.hpp"
 #include "OctaveDownPatch.hpp"
-#include "TestTonePatch.hpp"
+/* #include "TestTonePatch.hpp" */
 #include "StereoMixerPatch.hpp"
 #include "Contest/blo_bleep.hpp"
 #include "Contest/BiasPatch.hpp"
