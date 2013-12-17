@@ -52,7 +52,7 @@ public:
     
   float nonLinear(float x){ 		// Waveshaper curve
     float y;
-    int s = getParameterValue(PARAMETER_B)*3; // shape      
+    int s = lround(getParameterValue(PARAMETER_B)*3); // shape      
     switch (s) {
     case 0:
       y = 2*x*x - 1; // Chebyshef order 2
