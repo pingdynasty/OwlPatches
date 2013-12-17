@@ -120,7 +120,6 @@ public:
     registerParameter(PARAMETER_B, "Range");
     registerParameter(PARAMETER_C, "Blend");
     registerParameter(PARAMETER_D, "Q");
-  //  registerParameter(PARAMETER_E, "E");
     env = 0;
     a = 0.999;
     b = 0.001;

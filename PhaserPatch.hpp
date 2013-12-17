@@ -61,6 +61,7 @@ public:
     registerParameter(PARAMETER_A, "Rate", "Phaser speed");
     registerParameter(PARAMETER_B, "Depth", "Depth of modulation");
     registerParameter(PARAMETER_C, "Feedback", "Amount of feedback");
+    registerParameter(PARAMETER_D, "");
     Range( 440.f, 1600.f );
     Rate( .5f );
   }

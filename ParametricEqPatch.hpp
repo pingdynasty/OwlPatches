@@ -105,6 +105,7 @@ public:
     registerParameter(PARAMETER_A, "Freq", "Freq");
     registerParameter(PARAMETER_B, "Q", "Q");
     registerParameter(PARAMETER_C, "Gain", "Gain");
+    registerParameter(PARAMETER_D, "");
     peq.initStateVariables();
     peq.setCoeffsPEQ(getFrequency()/getSampleRate(), getQ(), getDbGain()) ;
   }    

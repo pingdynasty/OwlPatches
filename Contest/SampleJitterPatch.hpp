@@ -58,6 +58,7 @@ public:
   SampleJitterPatch() : MIN_DELAY(0.00001), MAX_DELAY(0.02), MIN_BIAS(0.1), MAX_BIAS(6), ramp(0.1) {
     registerParameter(PARAMETER_A, "Rate");
     registerParameter(PARAMETER_B, "Bias");
+    registerParameter(PARAMETER_C, "");
     registerParameter(PARAMETER_D, "Dry/Wet");
   }
  void processAudio(AudioBuffer &buffer) 

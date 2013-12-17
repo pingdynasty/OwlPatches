@@ -198,9 +198,7 @@ public:
     registerParameter(PARAMETER_A, "Mix");
     registerParameter(PARAMETER_B, "Room Size");
     registerParameter(PARAMETER_C, "Damp");
-    // registerParameter(PARAMETER_D, "D");
-    // registerParameter(PARAMETER_E, "E");
-
+    registerParameter(PARAMETER_D, "");
 
     // Tie the components to their buffers
     combL[0].setbuffer(bufcombL1,combtuningL1);

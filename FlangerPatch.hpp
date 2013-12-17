@@ -45,6 +45,7 @@ public:
     registerParameter(PARAMETER_A, "Rate");
     registerParameter(PARAMETER_B, "Depth");
     registerParameter(PARAMETER_C, "Feedback");
+    registerParameter(PARAMETER_D, "");    
     phase = 0;
   }
   float modulate(float rate) {

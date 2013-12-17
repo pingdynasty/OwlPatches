@@ -40,6 +40,10 @@ private:
   float time;
 public:
   SimpleDelayPatch() : delay(0), time(0.0) {
+    registerParameter(PARAMETER_A, "Delay");
+    registerParameter(PARAMETER_B, "Feedback");
+    registerParameter(PARAMETER_C, "");
+    registerParameter(PARAMETER_D, "Wet/Dry");
     AudioBuffer* buffer = createMemoryBuffer(1, REQUEST_BUFFER_SIZE);
     delayBuffer.initialise(buffer->getSamples(0), buffer->getSize());
   }
