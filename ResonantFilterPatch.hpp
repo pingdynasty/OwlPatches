@@ -62,6 +62,8 @@ public:
   ResonantFilterPatch() :buf0(0), buf1(0) {
     registerParameter(PARAMETER_A, "Fc", "Cutoff Frequency");
     registerParameter(PARAMETER_B, "Q", "Resonance");
+    registerParameter(PARAMETER_C, "");
+    registerParameter(PARAMETER_D, "");
   }
   void prepare(){
     f = getParameterValue(PARAMETER_A);

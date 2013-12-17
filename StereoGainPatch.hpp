@@ -33,6 +33,13 @@
 
 class StereoGainPatch : public Patch {
 public:
+  StereoGainPatch(){
+    registerParameter(PARAMETER_A, "Left");
+    registerParameter(PARAMETER_B, "Right");
+    registerParameter(PARAMETER_C, "");
+    registerParameter(PARAMETER_D, "");
+  }
+
   void processAudio(AudioBuffer &buffer){
     assert_param(buffer.getChannels() > 1);
     float gainL = getParameterValue(PARAMETER_A)*2;

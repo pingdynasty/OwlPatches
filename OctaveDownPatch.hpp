@@ -82,9 +82,10 @@ public:
     inLpf.setCoeffs(100, 0.5);
     out1Lpf.setCoeffs(200, 0.5);
     out2Lpf.setCoeffs(200, 0.5);
-    registerParameter(PARAMETER_A, "DRY");
-    registerParameter(PARAMETER_B, "Octave1");
-    registerParameter(PARAMETER_C, "Octave2");
+    registerParameter(PARAMETER_A, "Dry");
+    registerParameter(PARAMETER_B, "Octave 1");
+    registerParameter(PARAMETER_C, "Octave 2");
+    registerParameter(PARAMETER_D, "");
   }
 
   void processAudio(AudioBuffer& buffer){

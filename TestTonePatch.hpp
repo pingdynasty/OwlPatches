@@ -38,6 +38,8 @@ public:
   TestTonePatch() : leftpos(0.0f), rightpos(0.0f) {
     registerParameter(PARAMETER_A, "Frequency");
     registerParameter(PARAMETER_B, "Amplitude");
+    registerParameter(PARAMETER_C, "");
+    registerParameter(PARAMETER_D, "");
   }
   void processAudio(AudioBuffer &buffer) {
     float frequency = getParameterValue(PARAMETER_A) * 10000;

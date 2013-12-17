@@ -40,7 +40,9 @@ private:
 public:
   LeakyIntegratorPatch() : y1(0.0) {
     registerParameter(PARAMETER_A, "Lambda");    
-    registerParameter(PARAMETER_A, "Gain");    
+    registerParameter(PARAMETER_B, "");
+    registerParameter(PARAMETER_C, "");
+    registerParameter(PARAMETER_D, "Gain");    
   }
   void prepare(){
     lambda = getParameterValue(PARAMETER_A);

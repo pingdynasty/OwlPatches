@@ -52,6 +52,8 @@ public:
   BiasPatch() : MIN_BIAS(0.1), MED_BIAS(1), MAX_BIAS(6), ramp(0.1) 
   {
     registerParameter(PARAMETER_A, "Bias");
+    registerParameter(PARAMETER_B, "");
+    registerParameter(PARAMETER_C, "");
     registerParameter(PARAMETER_D, "Dry/Wet");
     memset(oldVal, 0, sizeof(oldVal));
   }

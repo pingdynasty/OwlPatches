@@ -35,6 +35,8 @@ class little_blo_bleep : public Patch {
         
       registerParameter(PARAMETER_A, "Pattern");
       registerParameter(PARAMETER_B, "BPM");
+      registerParameter(PARAMETER_C, "");
+      registerParameter(PARAMETER_D, "");
     }
     
     

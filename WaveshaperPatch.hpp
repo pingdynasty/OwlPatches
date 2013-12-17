@@ -37,6 +37,7 @@ public:
     registerParameter(PARAMETER_A, "Drive");
     registerParameter(PARAMETER_B, "Shape");
     registerParameter(PARAMETER_C, "Gain");
+    registerParameter(PARAMETER_D, "");
   }
   void processAudio(AudioBuffer& buffer){
     float drive = 1+ getParameterValue(PARAMETER_A) * 30 ; // get input drive value

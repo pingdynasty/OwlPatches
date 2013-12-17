@@ -69,6 +69,7 @@ public:
   StateVariableFilterPatch() : low(0), band(0) {
     registerParameter(PARAMETER_A, "Fc");
     registerParameter(PARAMETER_B, "Q");
+    registerParameter(PARAMETER_C, "");
     registerParameter(PARAMETER_D, "Gain");
   }
   void prepare(){

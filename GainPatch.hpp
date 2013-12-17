@@ -33,6 +33,9 @@ class GainPatch : public Patch {
 public:
   GainPatch(){
     registerParameter(PARAMETER_A, "Gain");    
+    registerParameter(PARAMETER_B, "");    
+    registerParameter(PARAMETER_C, "");    
+    registerParameter(PARAMETER_D, "");    
   }
   void processAudio(AudioBuffer &buffer){
     float gain = getParameterValue(PARAMETER_A)*2;

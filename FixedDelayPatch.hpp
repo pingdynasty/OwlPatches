@@ -42,6 +42,8 @@ public:
     delayBuffer.initialise(buffer->getSamples(0), buffer->getSize());
     registerParameter(PARAMETER_A, "Feedback");
     registerParameter(PARAMETER_B, "Mix");
+    registerParameter(PARAMETER_C, "");    
+    registerParameter(PARAMETER_D, "");    
   }
   void processAudio(AudioBuffer &buffer) {
     float* x = buffer.getSamples(0);
