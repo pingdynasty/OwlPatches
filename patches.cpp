@@ -31,3 +31,4 @@
   REGISTER_PATCH(ConnyPatch, "Contest/ConnyPatch");
   REGISTER_PATCH(DroneBoxPatch, "Contest/DroneBox");
   REGISTER_PATCH(DualTremoloPatch, "Contest/DualTremolo");
+//  REGISTER_PATCH(TannhauserPatch, "Tannhauser");
