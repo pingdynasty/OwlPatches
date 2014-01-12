@@ -47,6 +47,7 @@ public:
     registerParameter(PARAMETER_B, "Feedback", "Delay loop feedback");
     registerParameter(PARAMETER_C, "Fc", "Filter cutoff frequency");
     registerParameter(PARAMETER_D, "Dry/Wet", "Dry/wet mix");
+    registerParameter(PARAMETER_E, "DepthPedal", "DepthPedal");
     setCoeffs(getLpFreq()/getSampleRate(), 0.6f) ;
     setRange( 440.f, 1600.f );
     getRate( .5f );

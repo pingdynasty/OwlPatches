@@ -37,6 +37,7 @@ public:
     registerParameter(PARAMETER_B, "Offset");
     registerParameter(PARAMETER_C, "");
     registerParameter(PARAMETER_D, "Gain");
+    registerParameter(PARAMETER_E, "DrivePedal");
   }
   void processAudio(AudioBuffer &buffer){
       
