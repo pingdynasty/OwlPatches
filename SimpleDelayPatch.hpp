@@ -37,9 +37,8 @@ class SimpleDelayPatch : public Patch {
 private:
   CircularBuffer delayBuffer;
   int32_t delay;
-  float time;
 public:
-  SimpleDelayPatch() : delay(0), time(0.0)
+  SimpleDelayPatch() : delay(0)
   {
     registerParameter(PARAMETER_A, "Delay");
     registerParameter(PARAMETER_B, "Feedback");
