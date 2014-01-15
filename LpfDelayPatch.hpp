@@ -138,7 +138,7 @@ public:
   }
     
   void processAudio(AudioBuffer &buffer){
-    float y[getBlockSize()];
+    float *y = new float[getBlockSize()];
     setCoeffs(getLpFreq(), 0.8f);
     float delayTime = getParameterValue(PARAMETER_A); // get delay time value    
     float feedback  = getParameterValue(PARAMETER_B); // get feedback value
@@ -163,6 +163,8 @@ public:
       delayBuffer.write(x[n]);
     }
     olddelaySamples = delaySamples;
+
+	delete[] y;
   }
     
 private:

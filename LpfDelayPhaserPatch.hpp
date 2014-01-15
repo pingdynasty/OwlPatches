@@ -148,7 +148,7 @@ public:
   }
     
   void processAudio(AudioBuffer &buffer){        
-    float y[getBlockSize()];
+    float *y = new float[getBlockSize()];
     float z;
     setCoeffs(getLpFreq(), 0.8f);
     rate = 0.01f;
@@ -193,6 +193,8 @@ public:
       x[n] = y[n] + z * depth;
     }
     olddelaySamples = delaySamples;
+
+	delete[] y;
   }
     
 private:
