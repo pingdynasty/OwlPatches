@@ -27,6 +27,7 @@
 #include "EnvelopeFilterPatch.hpp"
 #include "JotReverbPatch.hpp"
 #include "mdaPorts/MdaBandistoPatch.cpp"
+#include "mdaPorts/MdaStereoPatch.cpp"
 // #include "EnvelopeFilterPatch.hpp" /* too cpu intensive (sqrt...) */
 // #include "Contest/BiasedDelayPatch.hpp"  /* triggers NMI_Handler () */
 // #include "Contest/JumpDelay.hpp" /* uses calloc and free */

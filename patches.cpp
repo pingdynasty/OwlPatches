@@ -32,3 +32,4 @@
   REGISTER_PATCH(DroneBoxPatch, "Contest/DroneBox");
   REGISTER_PATCH(DualTremoloPatch, "Contest/DualTremolo");
   REGISTER_PATCH(MdaBandistoPatch, "mdaPorts/MdaBandisto");
+  REGISTER_PATCH(MdaStereoPatch, "mdaPorts/MdaStereo");
