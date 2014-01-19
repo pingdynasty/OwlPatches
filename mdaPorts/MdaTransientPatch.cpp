@@ -27,15 +27,15 @@ public:
     {
 	registerParameter(PARAMETER_A, "Attack");
 	registerParameter(PARAMETER_B, "Release");
-	registerParameter(PARAMETER_C, "Attack Rel");
-	registerParameter(PARAMETER_D, "Release Att");
+	registerParameter(PARAMETER_C, "Attack Hold");
+	registerParameter(PARAMETER_D, "Release Hold");
 
 	fParam1 = (float)0.50; //attack
 	fParam2 = (float)0.50; //release
 	fParam3 = (float)0.50; //output
 	fParam4 = (float)0.49; //filter
-	fParam5 = (float)0.35; //att-rel
-	fParam6 = (float)0.35; //rel-att
+	fParam5 = (float)0.35; //attack hold
+	fParam6 = (float)0.35; //release hold
 
 	setParameters();
     }
@@ -50,8 +50,8 @@ public:
     {
 	fParam1 = getParameterValue(PARAMETER_A); // Attack
 	fParam2 = getParameterValue(PARAMETER_B); // Release
-	fParam5 = getParameterValue(PARAMETER_D); // Attack Rel
-	fParam6 = getParameterValue(PARAMETER_C); // Release Att
+	fParam5 = getParameterValue(PARAMETER_D); // Attack Hold
+	fParam6 = getParameterValue(PARAMETER_C); // Release Hold
 
 	// Don't recalc if nothing has changed
 	if (oldParam1 == fParam1 &&
@@ -67,6 +67,8 @@ public:
 
 	//calcs here
 	dry = (float)(pow(10.0, (2.0 * fParam3) - 1.0));
+
+	// Filter processing
 	if(fParam4>0.50)
 	{
 	    fili = 0.8f - 1.6f*fParam4;
@@ -80,7 +82,8 @@ public:
 	    filx = 0.f;
 	}
 
-	if(fParam1>0.5)
+	// Attack
+	if (fParam1>0.5)
 	{
 	    att1 = (float)pow(10.0, -1.5);
 	    att2 = (float)pow(10.0, 1.0 - 5.0 * fParam1);
@@ -90,9 +93,11 @@ public:
 	    att1 = (float)pow(10.0, -4.0 + 5.0 * fParam1);
 	    att2 = (float)pow(10.0, -1.5);
 	}
+	// Attack hold
 	rel12 = 1.f - (float)pow(10.0, -2.0 - 4.0 * fParam5);
 
-	if(fParam2>0.5)
+	// Release
+	if (fParam2>0.5)
 	{
 	    rel3 = 1.f - (float)pow(10.0, -4.5);
 	    rel4 = 1.f - (float)pow(10.0, -5.85 + 2.7 * fParam2);
@@ -102,6 +107,7 @@ public:
 	    rel3 = 1.f - (float)pow(10.0, -3.15 - 2.7 * fParam2);
 	    rel4 = 1.f - (float)pow(10.0, -4.5);
 	}
+	// Release Hold
 	att34 = (float)pow(10.0, - 4.0 * fParam6);
     }
 
@@ -140,12 +146,14 @@ public:
 	    a = *++in1;
 	    b = *++in2;
 
+	    // Filter processing
 	    fb1 = fo*fb1 + fi*a;
 	    fb2 = fo*fb2 + fi*b;
 	    e = fb1 + fx*a;
 	    f = fb2 + fx*b;
 
-	    i = a + b; i = (i>0)? i : -i;
+//	    i = a + b; i = (i>0)? i : -i;
+	    i = a + b; i = (i>1)? i : i-1.0; // CC fix for above line
 	    e1 = (i>e1)? e1 + a1 * (i-e1) : e1 * r12;
 	    e2 = (i>e2)? e2 + a2 * (i-e2) : e2 * r12;
 	    e3 = (i>e3)? e3 + a34 * (i-e3) : e3 * r3;
