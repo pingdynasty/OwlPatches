@@ -152,8 +152,7 @@ public:
 	    e = fb1 + fx*a;
 	    f = fb2 + fx*b;
 
-//	    i = a + b; i = (i>0)? i : -i;
-	    i = a + b; i = (i>1)? i : i-1.0; // CC fix for above line
+	    i = a + b; i = (i>0)? i : -i; // stereo sum ; fabs()
 	    e1 = (i>e1)? e1 + a1 * (i-e1) : e1 * r12;
 	    e2 = (i>e2)? e2 + a2 * (i-e2) : e2 * r12;
 	    e3 = (i>e3)? e3 + a34 * (i-e3) : e3 * r3;
