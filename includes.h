@@ -1,6 +1,7 @@
 #include "GainPatch.hpp"
 /* #include "TemplatePatch.hpp" */
-#include "SimpleDelayPatch.hpp"
+/* #include "SimpleDelayPatch.hpp" */
+#include "SimpleDriveDelayPatch.hpp"
 #include "ParametricEqPatch.hpp"
 #include "OverdrivePatch.hpp"
 #include "PhaserPatch.hpp"
@@ -23,10 +24,13 @@
 #include "Contest/DualTremoloPatch.hpp"
 #include "VibroFlangePatch.hpp"
 #include "RingModulatorPatch.hpp"
+#include "SynthPatch.hpp"
 #include "FourBandsEqPatch.hpp"
 #include "EnvelopeFilterPatch.hpp"
 #include "JotReverbPatch.hpp"
 #include "mdaPorts/MdaBandistoPatch.cpp"
+#include "Qompression.hpp"
+#include "PsycheFilter.hpp"
 // #include "EnvelopeFilterPatch.hpp" /* too cpu intensive (sqrt...) */
 // #include "Contest/BiasedDelayPatch.hpp"  /* triggers NMI_Handler () */
 // #include "Contest/JumpDelay.hpp" /* uses calloc and free */
