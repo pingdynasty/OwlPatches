@@ -17,6 +17,7 @@
   REGISTER_PATCH(StereoMixerPatch, "Stereo Mixer");
   REGISTER_PATCH(VibroFlangePatch, "Vibro-Flange");
   REGISTER_PATCH(RingModulatorPatch, "Ring Modulator");
+  REGISTER_PATCH(SynthPatch, "Synthesizer");
   REGISTER_PATCH(FourBandsEqPatch, "FourBandsEqPatch");
   REGISTER_PATCH(EnvelopeFilterPatch, "Envelope Filter");
   REGISTER_PATCH(JotReverbPatch,"JotReverbPatch");
@@ -34,3 +35,5 @@
   REGISTER_PATCH(MdaBandistoPatch, "mdaPorts/MdaBandisto");
   REGISTER_PATCH(MdaStereoPatch, "mdaPorts/MdaStereo");
   REGISTER_PATCH(MdaTransientPatch, "mdaPorts/MdaTransient");
+  REGISTER_PATCH(QompressionPatch, "Qompression");
+  REGISTER_PATCH(PsycheFilterPatch, "Psyche Filter");
