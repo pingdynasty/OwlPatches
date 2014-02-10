@@ -24,7 +24,7 @@
 //   REGISTER_PATCH(BiasedDelayPatch, "Contest/BiasedDelayPatch");
 //   REGISTER_PATCH(JumpDelay, "Contest/JumpDelay");
 //   REGISTER_PATCH(SampleJitterPatch, "Contest/SampleJitterPatch");
-//   REGISTER_PATCH(SirenPatch, "Contest/SirenPatch");
+  REGISTER_PATCH(SirenPatch, "Contest/SirenPatch");
   REGISTER_PATCH(little_blo_bleep, "Contest/blo bleep");
   REGISTER_PATCH(BiasPatch, "Contest/Bias");
   REGISTER_PATCH(BitH8rPatch, "Contest/BitH8r");
@@ -32,3 +32,5 @@
   REGISTER_PATCH(DroneBoxPatch, "Contest/DroneBox");
   REGISTER_PATCH(DualTremoloPatch, "Contest/DualTremolo");
   REGISTER_PATCH(MdaBandistoPatch, "mdaPorts/MdaBandisto");
+
+  REGISTER_PATCH(AutotalentPatch, "AutotalentPatch");

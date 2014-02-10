@@ -425,7 +425,7 @@ void ReverbFDN::processReplacing(float *inputBuffer, float *outputBuffer, int bu
     for (int i_samp=0 ; i_samp<bufferSize ; ++i_samp)
     {
         // keep track of input. Solves case where the same unique buffer is given as input and output
-        input = inputBuffer[i_samp];
+        input = inputBuffer[i_samp]; 
         
         // first set outputBuffer[i_samp] to 0
         outputBuffer[i_samp] = 0.;
@@ -537,6 +537,7 @@ void Siren::processReplacing(float *outputBuffer, int bufferSize)
  * Parameters :
  *      none
  **********************************************************/
+
 class SirenPatch : public Patch
 {    
 public:

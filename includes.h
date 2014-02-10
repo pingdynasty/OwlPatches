@@ -31,4 +31,5 @@
 // #include "Contest/BiasedDelayPatch.hpp"  /* triggers NMI_Handler () */
 // #include "Contest/JumpDelay.hpp" /* uses calloc and free */
 // #include "Contest/SampleJitterPatch.hpp" /* requires juce::Random */
-// #include "Contest/SirenPatch.hpp" /* causes assert_failed in DMA_GetFlagStatus() */
+#include "Contest/SirenPatch.hpp" /* causes assert_failed in DMA_GetFlagStatus() */
+#include "AutotalentPatch.hpp"
