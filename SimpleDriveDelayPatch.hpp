@@ -25,8 +25,8 @@
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 
-#ifndef __SimpleDelayPatch_hpp__
-#define __SimpleDelayPatch_hpp__
+#ifndef __SimpleDriveDelayPatch_hpp__
+#define __SimpleDriveDelayPatch_hpp__
 
 #include "StompBox.h"
 #include "CircularBuffer.hpp"
@@ -42,18 +42,24 @@ public:
   {
     registerParameter(PARAMETER_A, "Delay");
     registerParameter(PARAMETER_B, "Feedback");
-    registerParameter(PARAMETER_C, "");
+    registerParameter(PARAMETER_C, "Drive");
     registerParameter(PARAMETER_D, "Wet/Dry");
     AudioBuffer* buffer = createMemoryBuffer(1, REQUEST_BUFFER_SIZE);
     delayBuffer.initialise(buffer->getSamples(0), buffer->getSize());
   }
   void processAudio(AudioBuffer &buffer)
   {
-    float delayTime, feedback, wetDry;
+    float delayTime, feedback, wetDry,drive, offset;
     delayTime = getParameterValue(PARAMETER_A);
     feedback  = getParameterValue(PARAMETER_B);
+    drive     = getParameterValue(PARAMETER_C);
     wetDry    = getParameterValue(PARAMETER_D);
-    
+     
+      offset = 1;
+      offset /= 10;
+      drive += 0.03;
+      drive *= 40;
+      
     int32_t newDelay;
     newDelay = delayTime * (delayBuffer.getSize()-1);
       
@@ -62,10 +68,19 @@ public:
     for (int n = 0; n < size; n++)
     {
       x[n] = (delayBuffer.read(delay)*(size-1-n) + delayBuffer.read(newDelay)*n)*wetDry/size + (1.f - wetDry) * x[n];  // crossfade for wet/dry balance
-      delayBuffer.write(feedback * x[n]);
+        delayBuffer.write(feedback * nonLinear((x[n]+offset)*drive));
     }
     delay=newDelay;
   }
+    
+    float nonLinear(float x){ 		// Overdrive curve
+        if (x<-3)
+            return -1;
+        else if (x>3)
+            return 1;
+        else
+            return x * ( 27 + x*x ) / ( 27 + 9*x*x );
+    }
 };
 
 #endif   // __SimpleDelayPatch_hpp__
