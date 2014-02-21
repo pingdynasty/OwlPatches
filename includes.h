@@ -1,5 +1,4 @@
 #include "GainPatch.hpp"
-#include "MetronomePatch.hpp"
 
 #include "SimpleDelayPatch.hpp"
 
@@ -43,5 +42,5 @@
 // #include "LpfDelayPatch.hpp" /* not compatible with Windows yet */
 // #include "LpfDelayPhaserPatch.hpp" /* not compatible with Windows yet */
 // #include "WaveshaperPatch.hpp" /* not compatible with Windows yet */
-/* #include "TestTonePatch.hpp"
+// #include "TestTonePatch.hpp"
 // #include "FlangerPatch.hpp"
