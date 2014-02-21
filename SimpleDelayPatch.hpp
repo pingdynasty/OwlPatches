@@ -36,7 +36,7 @@
 class SimpleDelayPatch : public Patch {
 private:
   CircularBuffer delayBuffer;
-  int32_t delay;
+  int delay;
 public:
   SimpleDelayPatch() : delay(0)
   {
