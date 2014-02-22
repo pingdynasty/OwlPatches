@@ -1,5 +1,7 @@
 #include "GainPatch.hpp"
 
+#include "Autotalent/AutotalentPatch.hpp"
+
 #include "SimpleDelayPatch.hpp"
 
 #include "ParametricEqPatch.hpp"

@@ -5,6 +5,8 @@
                 numberOutputChannels);
 */
 
+REGISTER_PATCH(AutotalentPatch, "AutoTalent", 2, 2);
+
 REGISTER_PATCH(GainPatch, "Gain", 2, 2);
 REGISTER_PATCH(SimpleDelayPatch, "Simple Delay", 1, 1);
 REGISTER_PATCH(ParametricEqPatch, "Parametric EQ", 1, 1);
