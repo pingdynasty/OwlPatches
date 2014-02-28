@@ -31,20 +31,9 @@ Created by Tom on 17/01/2014.
 
 #define L2SC (float)3.32192809488736218171
 
+#include <stdlib.h>
 #include "StompBox.h"
 #include "fftsetup.h"
-#include "mayer_fft.h"
-
-extern "C" {
-void *
-     calloc(size_t count, size_t size);
-void *
-     malloc(size_t size);
-void
-     free(void *ptr);
-
-// #include <stdlib.h>
-}
 
 #ifndef PI
 #define PI 3.141592653589793238
@@ -1218,7 +1207,6 @@ extern "C" {
 #include "fftsetup.c"
 #include "mayer_fft.c"
 
-// #include <stdlib.h>
 }
 
 #endif  // __AutotalentPatch_hpp__
