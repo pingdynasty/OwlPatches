@@ -36,7 +36,7 @@
 class SimpleDelayPatch : public Patch {
 private:
   CircularBuffer delayBuffer;
-  int32_t delay;
+  int delay;
 public:
   SimpleDelayPatch() : delay(0)
   {
@@ -60,7 +60,7 @@ public:
       drive += 0.03;
       drive *= 40;
       
-    int32_t newDelay;
+    int newDelay;
     newDelay = delayTime * (delayBuffer.getSize()-1);
       
     float* x = buffer.getSamples(0);
