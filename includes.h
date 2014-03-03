@@ -1,6 +1,6 @@
 #include "GainPatch.hpp"
 /* #include "TemplatePatch.hpp" */
-/* #include "SimpleDelayPatch.hpp" */
+ #include "SimpleDelayPatch.hpp" 
 #include "SimpleDriveDelayPatch.hpp"
 #include "ParametricEqPatch.hpp"
 #include "OverdrivePatch.hpp"
