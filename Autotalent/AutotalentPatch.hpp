@@ -784,7 +784,8 @@ void Autotalent::processReplacing(float *inputBuffer, float *outputBuffer, int S
         // ********************
         
         // Every N/noverlap samples, run pitch estimation / manipulation code
-        if ((mcbiwr)%(N/mnoverlap) == 0) {
+        // if ((mcbiwr)%(N/mnoverlap) == 0) {
+        if ((mcbiwr & 0x3ff) == 0x200) { // every 512 samples
             
             // ---- Obtain autocovariance ----
             
@@ -1142,11 +1143,8 @@ class AutotalentPatch : public Patch {
 public:
 	
 	AutotalentPatch() : _Autotalent(getSampleRate()){
-        registerParameter(PARAMETER_A, "A"); //  ?
-        registerParameter(PARAMETER_B, "B"); //  ?
-        registerParameter(PARAMETER_C, "C"); //  ?
-        registerParameter(PARAMETER_D, "pitchshift"); //  ?
-        registerParameter(PARAMETER_E, "mix");
+        registerParameter(PARAMETER_A, "pitchshift");
+        registerParameter(PARAMETER_D, "mix");
         
 //        memBuf = createMemoryBuffer(this->getBufSize(getSampleRate()), sizeof(float));
         
@@ -1189,13 +1187,13 @@ private:
 
     float getMix()
     {
-        float mix = getParameterValue(PARAMETER_E);
+        float mix = getParameterValue(PARAMETER_D);
         return mix;
     }
     
     float getPitch()
     {
-        float pitch = getParameterValue(PARAMETER_D);
+        float pitch = getParameterValue(PARAMETER_A);
         return floor (pitch * 24 - 12);  //scale to +-12 semitones
     }
 
