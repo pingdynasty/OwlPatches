@@ -29,6 +29,7 @@
 #ifndef __SampleBasedPatch_hpp__
 #define __SampleBasedPatch_hpp__
 
+
 class SampleBasedPatch : public Patch {
 public:
   virtual void prepare() = 0;
@@ -36,11 +37,10 @@ public:
   void processAudio(AudioBuffer &buffer){
     prepare();
     int size = buffer.getSize();
-    for(int ch=0; ch<buffer.getChannels(); ++ch){
-      float* samples = buffer.getSamples(ch);
-      for(int i=0; i<size; ++i)
-	samples[i] = processSample(samples[i]);
-    }
+    float* samples = buffer.getSamples(0); // This Class is Mono (1in, 1out)
+      for(int i=0; i<size; ++i){
+          samples[i] = processSample(samples[i]);
+      }
   }
 };
 
