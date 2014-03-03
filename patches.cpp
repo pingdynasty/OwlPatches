@@ -5,8 +5,6 @@
                 numberOutputChannels);
 */
 
-REGISTER_PATCH(AutotalentPatch, "AutoTalent", 2, 2);
-
 REGISTER_PATCH(GainPatch, "Gain", 2, 2);
 REGISTER_PATCH(SimpleDelayPatch, "Simple Delay", 1, 1);
 REGISTER_PATCH(ParametricEqPatch, "Parametric EQ", 1, 1);
@@ -41,6 +39,8 @@ REGISTER_PATCH(ChorusPatch, "Chorus", 1, 1);
 /*
 TO BE WORKED ON
 */
+
+// REGISTER_PATCH(AutotalentPatch, "AutoTalent", 2, 2);
 
 // REGISTER_PATCH(EnvelopeFilterPatch, "Envelope Filter", 1, 1);
 // REGISTER_PATCH(TemplatePatch, "Template", 0, 0);
