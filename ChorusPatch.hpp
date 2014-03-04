@@ -59,13 +59,13 @@ public:
       if(voicesParam >= twoVoices && voicesParam < threeVoices)
       {
           numVoices = 2;
-          voiceWidth = 10 * (threeVoices - voicesParam);
+          voiceWidth = 20 * (threeVoices - voicesParam);
         
       }
       if(voicesParam >=threeVoices && voicesParam <= 1)
       {
           numVoices = 3;
-          voiceWidth = 10 * (1.0 - voicesParam);
+          voiceWidth = 20 * (1.0 - voicesParam);
           
       }
       
