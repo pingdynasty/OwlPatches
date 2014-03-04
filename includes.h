@@ -31,6 +31,7 @@
 #include "mdaPorts/MdaTransientPatch.cpp"
 #include "Qompression.hpp"
 #include "PsycheFilter.hpp"
+#include "Tremolo.hpp"
 
 #include "Contest/BiasedDelayPatch.hpp" 
 

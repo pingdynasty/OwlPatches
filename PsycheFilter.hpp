@@ -3,6 +3,7 @@
 // 2014-02-15 - blondinou - soft knobs
 //                          move resonance modulation computation inside main loop to avoid clicks
 //                          fix stereo
+//                          added expression pedal
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 
 #ifndef __PsycheFilterPatch_hpp__
@@ -105,7 +106,8 @@ private:
 		return getParameterValue(PARAMETER_A) != knobs[PARAMETER_A]
 			|| getParameterValue(PARAMETER_B) != knobs[PARAMETER_B]
 			|| getParameterValue(PARAMETER_C) != knobs[PARAMETER_C]
-			|| getParameterValue(PARAMETER_D) != knobs[PARAMETER_D];
+			|| getParameterValue(PARAMETER_D) != knobs[PARAMETER_D]
+			|| getParameterValue(PARAMETER_E) != knobs[PARAMETER_E];
 	}
 
 	inline void updateKnobs() {
@@ -145,6 +147,15 @@ private:
 		} else {
 			knobs[PARAMETER_D] = getParameterValue(PARAMETER_D);
 		}
+
+		diff = knobs[PARAMETER_E] - getParameterValue(PARAMETER_E);
+		if (diff >= PSYF_KNOB_STEP) {
+			knobs[PARAMETER_E] -= PSYF_KNOB_STEP;
+		} else if (diff <= -PSYF_KNOB_STEP) {
+			knobs[PARAMETER_E] += PSYF_KNOB_STEP;
+		} else {
+			knobs[PARAMETER_E] = getParameterValue(PARAMETER_E);
+		}
 	}
 
 	void updateFactors() {
@@ -153,6 +164,10 @@ private:
 		// compute filter factors
 		float resonance = PSYF_RES_MIN + PSYF_RES_MULT * knobs[PARAMETER_A];
 		float cutoff = knobs[PARAMETER_B];
+		// use expression pedal if B & C =0
+		if (knobs[PARAMETER_B] == 0.0f && knobs[PARAMETER_C] == 0.0f) {
+			cutoff = knobs[PARAMETER_E];
+		}
 		cutoff = (cutoff * 4250.0f) + 250.0f;
 		double sampleRate = getSampleRate();
 
