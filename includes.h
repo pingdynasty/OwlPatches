@@ -15,8 +15,6 @@
 #include "FourBandsEqPatch.hpp"
 #include "EnvelopeFilterPatch.hpp"
 #include "JotReverbPatch.hpp"
-#include "Qompression.hpp"
-#include "PsycheFilter.hpp"
 #include "Contest/BiasedDelayPatch.hpp" 
 #include "Contest/blo_bleep.hpp"
 #include "Contest/BiasPatch.hpp"
@@ -27,6 +25,9 @@
 #include "mdaPorts/MdaBandistoPatch.cpp"
 #include "mdaPorts/MdaStereoPatch.cpp"
 #include "mdaPorts/MdaTransientPatch.cpp"
+#include "Qompression.hpp"
+#include "PsycheFilter.hpp"
+#include "Tremolo.hpp"
 
 //#include "Autotalent/AutotalentPatch.hpp"
 
