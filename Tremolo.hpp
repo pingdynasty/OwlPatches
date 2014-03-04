@@ -1,5 +1,6 @@
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 // 2014-01-18 - blondinou - first version
+// 2014-02-15 - blondinou - soft knobs
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 
 #ifndef __TremoloPatch_hpp__
@@ -7,8 +8,8 @@
 
 #include "StompBox.h"
 
-#define TWOPI 6.2831853071f
-#define HALFPI	1.5707963268f
+#define TREM_TWOPI 6.2831853071f
+#define TREM_HALFPI	1.5707963268f
 
 #define TREM_SPEED_MIN	0.5f
 #define TREM_SPEED_RATE	8.0f
@@ -18,6 +19,7 @@
 #define TREM_CUTOFF_RATE	0.18f
 #define TREM_OSC_SOFTNESS	0.01f
 #define TREM_WET_COMPENSATE	1.5f
+#define TREM_KNOB_STEP	0.02f
 
 class TremoloPatch : public Patch {
 public:
@@ -34,20 +36,22 @@ public:
 	}
 
 	void processAudio(AudioBuffer &buffer) {
-		if (parametersChanged()) {
-			// update filter factors if knobs were moved
-			updateFactors();
-		}
-
 		float level = 0.0f;
 		// apply effect
 		int size = buffer.getSize();
-		for (int ch = 0; ch < buffer.getChannels(); ++ch) {
-			float* buf = buffer.getSamples(ch);
-			for (int i = 0; i < size; i++) {
-				level = getTremoloLevel();
+		for (int i = 0; i < size; i++) {
+			if (parametersChanged()) {
+				// update filter factors if knobs were moved
+				updateFactors();
+			}
+			// compute tremolo level
+			level = getTremoloLevel();
+
+			for (int ch = 0; ch < buffer.getChannels(); ++ch) {
+				float* buf = buffer.getSamples(ch);
 				buf[i] = buf[i] * (1 - depth * level);
 
+				// compute bandpass filter
 				if (filter > 0.0f) {
 					cutoff = TREM_CUTOFF_MIN + level * TREM_CUTOFF_RATE;
 					feedback = resonance + resonance / (1.0f - cutoff);
@@ -92,14 +96,48 @@ private:
 			|| getParameterValue(PARAMETER_D) != knobs[PARAMETER_D];
 	}
 
-	inline void updateFactors() {
-		// update 
-		knobs[PARAMETER_A] = getParameterValue(PARAMETER_A);
-		knobs[PARAMETER_B] = getParameterValue(PARAMETER_B);
-		knobs[PARAMETER_C] = getParameterValue(PARAMETER_C);
-		knobs[PARAMETER_D] = getParameterValue(PARAMETER_D);
+	inline void updateKnobs() {
+		// update knobs
+		float diff = knobs[PARAMETER_A] - getParameterValue(PARAMETER_A);
+		if (diff >= TREM_KNOB_STEP) {
+			knobs[PARAMETER_A] -= TREM_KNOB_STEP;
+		} else if (diff <= -TREM_KNOB_STEP) {
+			knobs[PARAMETER_A] += TREM_KNOB_STEP;
+		} else {
+			knobs[PARAMETER_A] = getParameterValue(PARAMETER_A);
+		}
 
-		// update factors
+		diff = knobs[PARAMETER_B] - getParameterValue(PARAMETER_B);
+		if (diff >= TREM_KNOB_STEP) {
+			knobs[PARAMETER_B] -= TREM_KNOB_STEP;
+		} else if (diff <= -TREM_KNOB_STEP) {
+			knobs[PARAMETER_B] += TREM_KNOB_STEP;
+		} else {
+			knobs[PARAMETER_B] = getParameterValue(PARAMETER_B);
+		}
+
+		diff = knobs[PARAMETER_C] - getParameterValue(PARAMETER_C);
+		if (diff >= TREM_KNOB_STEP) {
+			knobs[PARAMETER_C] -= TREM_KNOB_STEP;
+		} else if (diff <= -TREM_KNOB_STEP) {
+			knobs[PARAMETER_C] += TREM_KNOB_STEP;
+		} else {
+			knobs[PARAMETER_C] = getParameterValue(PARAMETER_C);
+		}
+
+		diff = knobs[PARAMETER_D] - getParameterValue(PARAMETER_D);
+		if (diff >= TREM_KNOB_STEP) {
+			knobs[PARAMETER_D] -= TREM_KNOB_STEP;
+		} else if (diff <= -TREM_KNOB_STEP) {
+			knobs[PARAMETER_D] += TREM_KNOB_STEP;
+		} else {
+			knobs[PARAMETER_D] = getParameterValue(PARAMETER_D);
+		}
+	}
+
+	inline void updateFactors() {
+		updateKnobs();
+
 		speed = TREM_SPEED_MIN + TREM_SPEED_RATE * knobs[PARAMETER_A];
 		depth = TREM_DEPTH_MIN + knobs[PARAMETER_B] * (TREM_DEPTH_MAX - TREM_DEPTH_MIN);
 		wave = knobs[PARAMETER_C];
@@ -140,7 +178,7 @@ private:
 			a = 1.0f - fabs(-1.0f + (2.0f * phase));
 		}
 		if (sine > 0.0f) {
-			b = 0.5f + sinf(phase * TWOPI - HALFPI) / 2.0f;
+			b = 0.5f + sinf(phase * TREM_TWOPI - TREM_HALFPI) / 2.0f;
 		}
 		if (square > 0.0f) {
 			if (phase < 0.5f - TREM_OSC_SOFTNESS) {
