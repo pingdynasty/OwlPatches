@@ -22,7 +22,7 @@ public:
     registerParameter(PARAMETER_A, "RATE");
       registerParameter(PARAMETER_B, "DEPTH");
         registerParameter(PARAMETER_C, "MIX");
-      registerParameter(Parameter_D, "VOICES");
+      registerParameter(PARAMETER_D, "VOICES");
       
     
     AudioBuffer* buffer = createMemoryBuffer(1, REQUEST_BUFFER_SIZE);
@@ -40,14 +40,14 @@ public:
     
       int numVoices = 1;
       float twoVoices = 1.0/3;
-      float threeVoices = 2(1.0/3);
+      float threeVoices = 2 * (1.0/3);
       int32_t voiceWidth = 0;
-      float rate, depth, mix;
+      float rate, depth, mix, voicesParam;
       double sampleRate = getSampleRate();
       rate = getParameterValue(PARAMETER_A);
       depth = getParameterValue(PARAMETER_B) * maxDelay; // get the depth relative to the maximum delay
       mix   = getParameterValue(PARAMETER_C);
-      voicesParam = getParameterValue(Parameter_D);
+      voicesParam = getParameterValue(PARAMETER_D);
 
       float sineWave;
       float* x = buffer.getSamples(0);
@@ -56,16 +56,16 @@ public:
       {
           numVoices = 1;
       }
-      if(voicesParam => twoVoices && voicesParam <threeVoices)
+      if(voicesParam >= twoVoices && voicesParam < threeVoices)
       {
           numVoices = 2;
-          voiceWidth = 10(threeVoices - voicesParam);
+          voiceWidth = 10 * (threeVoices - voicesParam);
         
       }
-      if(voicesParam =>threeVoices && voicesParam =< 1)
+      if(voicesParam >=threeVoices && voicesParam <= 1)
       {
           numVoices = 3;
-          voiceWidth = 10(1.0 - voicesParam);
+          voiceWidth = 10 * (1.0 - voicesParam);
           
       }
       
@@ -80,6 +80,8 @@ public:
     //===============================//
       int32_t newReadIndex1 =  0;
       int32_t newReadIndex2 =  0;
+      int32_t newReadIndex3 =  0;
+      
       switch (numVoices)
       {
           case 1:
@@ -125,7 +127,7 @@ public:
           }
 
       }
-      int32_t newReadIndex1 = sineWave;
+      newReadIndex1 = sineWave;
       
       for (int n = 0; n < size; n++)
       {

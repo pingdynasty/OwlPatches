@@ -1,5 +1,7 @@
 #include "GainPatch.hpp"
-#include "SimpleDelayPatch.hpp"
+/* #include "TemplatePatch.hpp" */
+ #include "SimpleDelayPatch.hpp" 
+#include "SimpleDriveDelayPatch.hpp"
 #include "ParametricEqPatch.hpp"
 #include "OverdrivePatch.hpp"
 #include "PhaserPatch.hpp"
@@ -13,7 +15,6 @@
 #include "RingModulatorPatch.hpp"
 #include "SynthPatch.hpp"
 #include "FourBandsEqPatch.hpp"
-#include "EnvelopeFilterPatch.hpp"
 #include "JotReverbPatch.hpp"
 #include "Qompression.hpp"
 #include "PsycheFilter.hpp"
