@@ -44,7 +44,7 @@ public:
       int32_t voiceWidth = 0;
       float rate, depth, mix, voicesParam;
       double sampleRate = getSampleRate();
-      rate = getParameterValue(PARAMETER_A);
+      rate = getParameterValue(PARAMETER_A) * 3 ;
       depth = getParameterValue(PARAMETER_B) * maxDelay; // get the depth relative to the maximum delay
       mix   = getParameterValue(PARAMETER_C);
       voicesParam = getParameterValue(PARAMETER_D);
@@ -52,7 +52,8 @@ public:
       float sineWave;
       float* x = buffer.getSamples(0);
       int size = buffer.getSize();
-      if (voicesParam < twoVoices)
+      
+           if (voicesParam < twoVoices)
       {
           numVoices = 1;
       }
@@ -138,10 +139,10 @@ public:
           }
           
           
-          float voice1 = (delayBuffer.read(maxDelay/2 + oldReadIndex1)*(size-1-n) + delayBuffer.read(maxDelay/2 + newReadIndex1)*n)  * mix/size + (1.0 - mix) * x[n];
-          float voice2 = (delayBuffer.read(maxDelay/2 + oldReadIndex2)*(size-1-n) + delayBuffer.read(maxDelay/2 + newReadIndex2)*n)  * mix/size + (1.0 - mix) * x[n];
-          float voice3 = (delayBuffer.read(maxDelay/2 + oldReadIndex3)*(size-1-n) + delayBuffer.read(maxDelay/2 + newReadIndex3)*n)  * mix/size + (1.0 - mix) * x[n];
-          x[n] = voice1+voice2+voice3 ;
+          float voice1 = (delayBuffer.read(maxDelay/2 + oldReadIndex1)*(size-1-n) + delayBuffer.read(maxDelay/2 + newReadIndex1)*n)/size;
+          float voice2 = (delayBuffer.read(maxDelay/2 + oldReadIndex2)*(size-1-n) + delayBuffer.read(maxDelay/2 + newReadIndex2)*n)/size;
+          float voice3 = (delayBuffer.read(maxDelay/2 + oldReadIndex3)*(size-1-n) + delayBuffer.read(maxDelay/2 + newReadIndex3)*n)/size;
+          x[n] = (voice1+voice2+voice3) * (1 - mix);
           
 
           if( abs(x[n]) > 1.0f)
@@ -154,7 +155,7 @@ public:
        oldReadIndex1 = newReadIndex1;
        oldReadIndex2 = newReadIndex2;
        oldReadIndex3 = newReadIndex3;
-      // put your code here!
+    
   }
 };
 
