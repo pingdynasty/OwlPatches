@@ -27,8 +27,6 @@ REGISTER_PATCH(GainPatch, "Gain", 2, 2);
   REGISTER_PATCH(JotReverbPatch,"JotReverbPatch", 2, 2);
 //   REGISTER_PATCH(HighPassFilterPatch, "a High Pass Filter", 0, 0);
   REGISTER_PATCH(BiasedDelayPatch, "Contest/BiasedDelayPatch", 2, 2);
-
-
   REGISTER_PATCH(little_blo_bleep, "Contest/blo bleep", 2, 2);
   REGISTER_PATCH(BiasPatch, "Contest/Bias", 2, 2);
   REGISTER_PATCH(BitH8rPatch, "Contest/BitH8r", 2, 2);
@@ -40,23 +38,8 @@ REGISTER_PATCH(GainPatch, "Gain", 2, 2);
   REGISTER_PATCH(MdaTransientPatch, "mdaPorts/MdaTransient", 2, 2);
   REGISTER_PATCH(QompressionPatch, "Qompression", 2, 2);
   REGISTER_PATCH(PsycheFilterPatch, "Psyche Filter", 2, 2);
-
-
-REGISTER_PATCH(JotReverbPatch,"JotReverbPatch", 2, 2);
-REGISTER_PATCH(BiasedDelayPatch, "Contest/BiasedDelayPatch", 2, 2);
-REGISTER_PATCH(little_blo_bleep, "Contest/blo bleep", 2, 2);
-REGISTER_PATCH(BiasPatch, "Contest/Bias", 2, 2);
-REGISTER_PATCH(BitH8rPatch, "Contest/BitH8r", 2, 2);
-REGISTER_PATCH(ConnyPatch, "Contest/ConnyPatch", 2, 2);
-REGISTER_PATCH(DroneBoxPatch, "Contest/DroneBox", 1, 1);
-REGISTER_PATCH(DualTremoloPatch, "Contest/DualTremolo", 2, 2);
-REGISTER_PATCH(MdaBandistoPatch, "mdaPorts/MdaBandisto", 2, 2);
-REGISTER_PATCH(MdaStereoPatch, "mdaPorts/MdaStereo", 2, 2);
-REGISTER_PATCH(MdaTransientPatch, "mdaPorts/MdaTransient", 2, 2);
-REGISTER_PATCH(QompressionPatch, "Qompression", 2, 2);
-REGISTER_PATCH(PsycheFilterPatch, "Psyche Filter", 2, 2);
-REGISTER_PATCH(ChorusPatch, "Chorus", 1, 1);
-REGISTER_PATCH(TremoloPatch, "Tremolo", 2, 2);
+  REGISTER_PATCH(ChorusPatch, "Chorus", 1, 1);
+  REGISTER_PATCH(TremoloPatch, "Tremolo", 2, 2);
 
 
 /*
