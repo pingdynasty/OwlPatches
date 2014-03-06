@@ -46,7 +46,7 @@ public:
     float gainRR = getParameterValue(PARAMETER_D);
     int size = buffer.getSize();
     float* left = buffer.getSamples(0);
-    float* right = buffer.getSamples(1);
+    float* right = buffer.getChannels() > 1 ? buffer.getSamples(1) : left;
     float l, r;
     for(int i=0; i<size; ++i){
       l = gainLL*left[i] + gainLR*right[i];
