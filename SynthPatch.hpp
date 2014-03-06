@@ -321,9 +321,6 @@ float filtEnvCoeff;
     float filter = getParameterValue(PARAMETER_B);
     float oneMinusOct = 1-oct;
     
-    float volMult = (1+filter)*2;
-    float filtExp = filter*5;
-
     for(int i=0; i<size; ++i) {
       float in = x[i];		
       
