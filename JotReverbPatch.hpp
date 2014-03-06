@@ -690,34 +690,15 @@ public:
     void processAudio(AudioBuffer &buffer){
         setParams();
         int numSamples = buffer.getSize(); // works for numSamples being a multiple of CHUNK_SIZE
-        int nbChannels = buffer.getChannels();
-        
-        // Case Mono
-        if (nbChannels==1){
-            float* buf = buffer.getSamples(0);
-            int i=0;
-            while (i<numSamples+1-CHUNK_SIZE){
-                JotReverb(&theReverbBlock, buf+i,buf+i);
-                for (int k=0;k<CHUNK_SIZE;k++){
-                    buf[i+k]=theReverbBlock.left_output[k];
-                }
-                i += CHUNK_SIZE;
-            }
-        }
-        // Case Stereo
-        else if (nbChannels==2){
-            float* bufL = buffer.getSamples(0);
-            float* bufR = buffer.getSamples(1);
-            int i=0;
-            while (i<numSamples+1-CHUNK_SIZE){
-                JotReverb(&theReverbBlock, bufL+i,bufR+i);
-                for (int k=0;k<CHUNK_SIZE;k++){
-                    bufL[i+k]=theReverbBlock.left_output[k];
-                    bufR[i+k]=theReverbBlock.right_output[k];
-                }
-                i += CHUNK_SIZE;
-            }
-        }
+	float* buf = buffer.getSamples(0);
+	int i=0;
+	while (i<numSamples+1-CHUNK_SIZE){
+	  JotReverb(&theReverbBlock, buf+i,buf+i);
+	  for (int k=0;k<CHUNK_SIZE;k++){
+	    buf[i+k]=theReverbBlock.left_output[k];
+	  }
+	  i += CHUNK_SIZE;
+	}
     }
     
     void setParams(){
