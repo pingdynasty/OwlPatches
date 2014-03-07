@@ -16,8 +16,6 @@
 #include "SynthPatch.hpp"
 #include "FourBandsEqPatch.hpp"
 #include "JotReverbPatch.hpp"
-#include "Qompression.hpp"
-#include "PsycheFilter.hpp"
 #include "Contest/BiasedDelayPatch.hpp" 
 #include "Contest/blo_bleep.hpp"
 #include "Contest/BiasPatch.hpp"
@@ -31,6 +29,7 @@
 #include "Qompression.hpp"
 #include "PsycheFilter.hpp"
 #include "ChorusPatch.hpp"
+#include "Tremolo.hpp"
 
 
 //#include "Autotalent/AutotalentPatch.hpp"

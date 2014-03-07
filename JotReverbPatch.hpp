@@ -86,7 +86,7 @@ OWL PATCH:
 ******************************************************************************************************************************************/
 
 #define PRIME_NUMBER_TABLE_SIZE	7600
-#define CHUNK_SIZE				32                          // must be power of 2
+#define CHUNK_SIZE				64                          // must be power of 2
 #define CHUNK_SIZE_RATIO        ((float) 64.f/CHUNK_SIZE)   // ratio between original (64) and actual chunk size
 #define BIG_DELAY_BUFFER_SIZE	65536                       // must be power of 2
 
@@ -497,18 +497,18 @@ void Filter(filterBlock* this_filter, float* input)
 }
 
 
-#define BEGIN_ROW(source_signal)										\
-input_ptr = source_signal;						\
-for(register int i=0; i<CHUNK_SIZE; i++)		\
-{												\
+#define BEGIN_ROW(source_signal)						\
+input_ptr = source_signal;						        \
+for(register int i=0; i<CHUNK_SIZE; i++)		                        \
+{										\
 register float	acc = *input_ptr++;
 
 #define	PLUS_ONE(in_ptr)	acc += *in_ptr++;
 #define	MINUS_ONE(in_ptr)	acc -= *in_ptr++;
 
-#define	END_ROW(node)													\
-node[i] = acc;								\
-}												\
+#define	END_ROW(node)								\
+node[i] = acc;								        \
+}										\
 x0 -= CHUNK_SIZE;								\
 x1 -= CHUNK_SIZE;								\
 x2 -= CHUNK_SIZE;								\
@@ -638,21 +638,21 @@ void JotReverb(reverbBlock* this_reverb, float* left_input, float* right_input)
 	}
 	this_reverb->left_reverb_state = reverb_output_state;
 	
-	
-	input = right_input;
-	output = &(this_reverb->right_output[0]);
-	reverb_output_state = this_reverb->right_reverb_state;
-	for (register int i=CHUNK_SIZE; i>0; i--)
-	{
-		register float reverb_output = *(x1++) + *(x3++) + *(x5++) + *(x7++);
-		register float output_acc = this_reverb->dry_coef * (*input++);
-		output_acc += this_reverb->wet_coef0 * reverb_output;
-		output_acc += this_reverb->wet_coef1 * reverb_output_state;
-		*output++ = output_acc;
-		reverb_output_state = reverb_output;
-	}
-	this_reverb->right_reverb_state = reverb_output_state;
-	
+	if(left_input != right_input){
+	  input = right_input;
+	  output = &(this_reverb->right_output[0]);
+	  reverb_output_state = this_reverb->right_reverb_state;
+	  for (register int i=CHUNK_SIZE; i>0; i--)
+	    {
+	      register float reverb_output = *(x1++) + *(x3++) + *(x5++) + *(x7++);
+	      register float output_acc = this_reverb->dry_coef * (*input++);
+	      output_acc += this_reverb->wet_coef0 * reverb_output;
+	      output_acc += this_reverb->wet_coef1 * reverb_output_state;
+	      *output++ = output_acc;
+	      reverb_output_state = reverb_output;
+	    }
+	  this_reverb->right_reverb_state = reverb_output_state;
+	}	
 	
 	Delay(&(this_reverb->delay0), this_reverb->node0);
 	Delay(&(this_reverb->delay1), this_reverb->node1);
@@ -691,7 +691,6 @@ public:
         setParams();
         int numSamples = buffer.getSize(); // works for numSamples being a multiple of CHUNK_SIZE
         int nbChannels = buffer.getChannels();
-        
         // Case Mono
         if (nbChannels==1){
             float* buf = buffer.getSamples(0);

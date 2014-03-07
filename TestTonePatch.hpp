@@ -33,9 +33,9 @@
 
 class TestTonePatch : public Patch {
 private:
-  float leftpos, rightpos;
+  float pos;
 public:
-  TestTonePatch() : leftpos(0.0f), rightpos(0.0f) {
+  TestTonePatch() : pos(0.0f) {
     registerParameter(PARAMETER_A, "Frequency");
     registerParameter(PARAMETER_B, "Amplitude");
     registerParameter(PARAMETER_C, "");
@@ -43,19 +43,14 @@ public:
   }
   void processAudio(AudioBuffer &buffer) {
     float frequency = getParameterValue(PARAMETER_A) * 10000;
-    float amplitude = getParameterValue(PARAMETER_B) * 2;
-    float* left = buffer.getSamples(0);
-    float* right = buffer.getSamples(1);
+    float amplitude = getParameterValue(PARAMETER_B);
+    float* samples = buffer.getSamples(0);
     float linc = frequency/getSampleRate();
-    float rinc = 1000/getSampleRate();
     int size = buffer.getSize();
     for(int n = 0; n<size; n++){
-      left[n] = sinf(2*M_PI*leftpos) * amplitude;
-      right[n] = sinf(2*M_PI*rightpos) * 0.5;
-      if((leftpos += linc) > 1.0f)
-	leftpos -= 1.0f;
-      if((rightpos += rinc) > 1.0f)
-	rightpos -= 1.0f;
+      left[n] = sinf(2*M_PI*pos) * amplitude;
+      if((pos += linc) > 1.0f)
+	pos -= 1.0f;
     }
   }
 };
