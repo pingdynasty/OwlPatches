@@ -123,7 +123,7 @@ public:
           }
           default:
           {
-              int32_t newReadIndex1 = sineWave;
+             newReadIndex1 = sineWave;
               break;
           }
 
@@ -133,10 +133,8 @@ public:
       for (int n = 0; n < size; n++)
       {
                     delayBuffer.write(x[n]);
-          if( abs(x[n]) > 1.0f)
-          {
-              float inputValue = x[n]; //clipping check
-          }
+          
+   
           
           
           float voice1 = (delayBuffer.read(maxDelay/2 + oldReadIndex1)*(size-1-n) + delayBuffer.read(maxDelay/2 + newReadIndex1)*n)/size;
@@ -145,10 +143,7 @@ public:
           x[n] = (voice1+voice2+voice3) * (1 - mix);
           
 
-          if( abs(x[n]) > 1.0f)
-          {
-              float outputValue = x[n];//clipping check
-          }
+         
           
       }
       
