@@ -80,7 +80,8 @@ public:
         x[n] = (nonLinear(x[n] * drive)) * 0.25;
       
         
-        x[n] = (x[n] * 0.75) *  wetDry;
+        x[n] = x[n]  *  (1 - wetDry);
+
       
     }
     delay=newDelay;
