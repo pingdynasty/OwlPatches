@@ -519,7 +519,6 @@ x6 -= CHUNK_SIZE;								\
 x7 -= CHUNK_SIZE;
 
 
-__attribute__ ((section (".coderam")))
 void JotReverb(reverbBlock* this_reverb, float* left_input, float* right_input)
 {
 	Delay(&(this_reverb->left_predelay), left_input);
