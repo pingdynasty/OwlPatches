@@ -1,7 +1,5 @@
 #include "GainPatch.hpp"
-/* #include "TemplatePatch.hpp" */
- #include "SimpleDelayPatch.hpp" 
-#include "SimpleDriveDelayPatch.hpp"
+#include "SimpleDelayPatch.hpp"
 #include "ParametricEqPatch.hpp"
 #include "OverdrivePatch.hpp"
 #include "PhaserPatch.hpp"
@@ -15,7 +13,6 @@
 #include "RingModulatorPatch.hpp"
 #include "SynthPatch.hpp"
 #include "FourBandsEqPatch.hpp"
-#include "JotReverbPatch.hpp"
 #include "Contest/BiasedDelayPatch.hpp" 
 #include "Contest/blo_bleep.hpp"
 #include "Contest/BiasPatch.hpp"
@@ -31,9 +28,10 @@
 #include "ChorusPatch.hpp"
 #include "Tremolo.hpp"
 
-
-//#include "Autotalent/AutotalentPatch.hpp"
-
+// #include "JotReverbPatch.hpp" // bug fix to be done re. new firmware
+// #include "SimpleDriveDelayPatch.hpp"
+// #include "Autotalent/AutotalentPatch.hpp"
+// #include "TemplatePatch.hpp"
 // #include "EnvelopeFilterPatch.hpp" /* too cpu intensive (sqrt...) */
 // #include "TemplatePatch.hpp"
 // #include "Contest/JumpDelay.hpp" /* uses calloc and free */
