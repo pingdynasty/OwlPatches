@@ -7,6 +7,12 @@
 #ifndef SQRT2
 #define SQRT2 1.414213562373095
 #endif
+#ifndef MAX
+#define MAX(A,B) (A>B?A:B)
+#endif
+#ifndef MIN
+#define MIN(A,B) (A>B?B:A)
+#endif
 namespace Synth {
 
 
@@ -284,9 +290,6 @@ float trackVol(float in) {
   return env;
 }
 float filtEnvCoeff;
-#define MAX(A,B) (A>B?A:B)
-
-#define MIN(A,B) (A>B?B:A)
 
   float filt(float in) {
     if(in>filtEnv) {
@@ -318,9 +321,6 @@ float filtEnvCoeff;
     float filter = getParameterValue(PARAMETER_B);
     float oneMinusOct = 1-oct;
     
-    float volMult = (1+filter)*2;
-    float filtExp = filter*5;
-
     for(int i=0; i<size; ++i) {
       float in = x[i];		
       

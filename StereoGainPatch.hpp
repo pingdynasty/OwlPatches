@@ -41,15 +41,25 @@ public:
   }
 
   void processAudio(AudioBuffer &buffer){
-    assert_param(buffer.getChannels() > 1);
-    float gainL = getParameterValue(PARAMETER_A)*2;
-    float gainR = getParameterValue(PARAMETER_B)*2;
-    int size = buffer.getSize();
-    float* left = buffer.getSamples(0);
-    float* right = buffer.getSamples(1);
-    for(int i=0; i<size; ++i){
+    if(buffer.getChannels() > 1){
+      // stereo gain
+      float gainL = getParameterValue(PARAMETER_A)*2;
+      float gainR = getParameterValue(PARAMETER_B)*2;
+      int size = buffer.getSize();
+      float* left = buffer.getSamples(0);
+      float* right = buffer.getSamples(1);
+      for(int i=0; i<size; ++i){
 	left[i] = gainL*left[i];
 	right[i] = gainR*right[i];
+      }      
+    }else{
+      // mono gain
+      float gain = getParameterValue(PARAMETER_A)*2;
+      int size = buffer.getSize();
+      float* samples = buffer.getSamples(0);
+      for(int i=0; i<size; ++i){
+	samples[i] = gain*samples[i];
+      }      
     }
   }
 };

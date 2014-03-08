@@ -31,6 +31,10 @@
 
 #include "StompBox.h"
 
+#ifdef _MSC_VER
+#define lround roundFloatToInt
+#endif
+
 class WaveshaperPatch : public Patch {
 public:
   WaveshaperPatch(){

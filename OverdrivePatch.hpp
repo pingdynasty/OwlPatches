@@ -40,10 +40,10 @@ public:
     registerParameter(PARAMETER_E, "DrivePedal");
   }
   void processAudio(AudioBuffer &buffer){
-      
-    float drive = getParameterValue(PARAMETER_E)*getParameterValue(PARAMETER_A);     // get input drive value
-    float offset = getParameterValue(PARAMETER_B); 	  // get offset value
-    float gain = getParameterValue(PARAMETER_D);      // get output gain value
+    float expr = 1 - getParameterValue(PARAMETER_E);
+    float drive = expr*getParameterValue(PARAMETER_A);     // get input drive value
+    float offset = getParameterValue(PARAMETER_B); 	   // get offset value
+    float gain = getParameterValue(PARAMETER_D);           // get output gain value
     offset /= 10;
     drive += 0.03;
     drive *= 40;
