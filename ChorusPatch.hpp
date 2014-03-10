@@ -21,7 +21,7 @@ public:
      
     registerParameter(PARAMETER_A, "RATE");
       registerParameter(PARAMETER_B, "DEPTH");
-        registerParameter(PARAMETER_C, "MIX");
+        registerParameter(PARAMETER_C, "Wet/Dry ");
       registerParameter(PARAMETER_D, "VOICES");
       
     
@@ -140,7 +140,7 @@ public:
           float voice1 = (delayBuffer.read(maxDelay/2 + oldReadIndex1)*(size-1-n) + delayBuffer.read(maxDelay/2 + newReadIndex1)*n)/size;
           float voice2 = (delayBuffer.read(maxDelay/2 + oldReadIndex2)*(size-1-n) + delayBuffer.read(maxDelay/2 + newReadIndex2)*n)/size;
           float voice3 = (delayBuffer.read(maxDelay/2 + oldReadIndex3)*(size-1-n) + delayBuffer.read(maxDelay/2 + newReadIndex3)*n)/size;
-          x[n] = (voice1+voice2+voice3) * (1 - mix);
+          x[n] = (voice1+voice2+voice3) * (1 - mix) + x[n] * mix;
           
 
          
