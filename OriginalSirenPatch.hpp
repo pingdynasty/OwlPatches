@@ -556,6 +556,10 @@ public:
         // process samples
         float* buf = buffer.getSamples(0);
         this->_Siren.processReplacing(buf, bufferSize);
+        registerParameter(PARAMETER_A, "f0");
+        registerParameter(PARAMETER_B, "fm");
+        registerParameter(PARAMETER_C, "mode");
+        registerParameter(PARAMETER_D, "TR60");
         
     }
     
@@ -566,6 +570,7 @@ private:
     // param_A=[0;1] <-> f0=[0;500]
     float getF0()
     {
+        
         float f0 = 500 * getParameterValue(PARAMETER_A);
         return f0;
     }
