@@ -36,13 +36,15 @@ REGISTER_PATCH(MdaTransientPatch, "mdaPorts/MdaTransient", 2, 2);
 REGISTER_PATCH(QompressionPatch, "Qompression", 2, 2);
 REGISTER_PATCH(PsycheFilterPatch, "Psyche Filter", 2, 2);
 REGISTER_PATCH(OriginalSirenPatch, "Origin Siren", 2, 2);
+REGISTER_PATCH(ChorusPatch, "Chorus", 1, 1);
+
 
 
 /*
 TO BE WORKED ON
 */
 // REGISTER_PATCH(JotReverbPatch,"JotReverbPatch", 2, 2);
-// REGISTER_PATCH(SimpleDriveDelayPatch, "Drive Delay", 1, 1);
+ REGISTER_PATCH(SimpleDriveDelayPatch, "Drive Delay", 1, 1);
 // REGISTER_PATCH(AutotalentPatch, "AutoTalent", 2, 2);
 // REGISTER_PATCH(EnvelopeFilterPatch, "Envelope Filter", 1, 1);
 // REGISTER_PATCH(TemplatePatch, "Template", 0, 0);
