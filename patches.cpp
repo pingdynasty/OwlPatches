@@ -35,7 +35,9 @@ REGISTER_PATCH(MdaStereoPatch, "mdaPorts/MdaStereo", 2, 2);
 REGISTER_PATCH(MdaTransientPatch, "mdaPorts/MdaTransient", 2, 2);
 REGISTER_PATCH(QompressionPatch, "Qompression", 2, 2);
 REGISTER_PATCH(PsycheFilterPatch, "Psyche Filter", 2, 2);
+REGISTER_PATCH(OriginalSirenPatch, "Original Siren", 1, 1);
 REGISTER_PATCH(ChorusPatch, "Chorus", 1, 1);
+
 
 
 /*
