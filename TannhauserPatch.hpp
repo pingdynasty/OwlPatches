@@ -14,11 +14,11 @@ public:
 		registerParameter(PARAMETER_C, "Channel-C");
 		registerParameter(PARAMETER_D, "Channel-D");
 
-		context = ctx_tann_new(2, 2, getBlockSize(), getSampleRate());
+		context = th_tann_new(2, 2, getBlockSize(), getSampleRate());
 	}
 	
 	~TannhauserPatch() {
-		ctx_tann_free(context);
+		th_tann_free(context);
 	}
 	
 	void processAudio(AudioBuffer &buffer) {
@@ -27,30 +27,19 @@ public:
 		float paramC = getParameterValue(PARAMETER_C);
 		float paramD = getParameterValue(PARAMETER_D);
 		
-		PdMessage *msgA = PD_MESSAGE_ON_STACK(1);
-		PdMessage *msgB = PD_MESSAGE_ON_STACK(1);
-		PdMessage *msgC = PD_MESSAGE_ON_STACK(1);
-		PdMessage *msgD = PD_MESSAGE_ON_STACK(1);
-		
-		msg_initWithFloat(msgA, 0.0, paramA);
-		msg_initWithFloat(msgB, 0.0, paramB);
-		msg_initWithFloat(msgC, 0.0, paramC);
-		msg_initWithFloat(msgD, 0.0, paramD);
-
-		TannBase *base = ctx_tann_getBase(context);
-		ctx_scheduleMessageForReceiver(base, "Channel-A", msgA);
-		ctx_scheduleMessageForReceiver(base, "Channel-B", msgB);
-		ctx_scheduleMessageForReceiver(base, "Channel-C", msgC);
-		ctx_scheduleMessageForReceiver(base, "Channel-D", msgD);
+		th_vscheduleMessageForReceiver(context, "Channel-A", 0.0, "f", paramA);
+        th_vscheduleMessageForReceiver(context, "Channel-B", 0.0, "f", paramB);
+        th_vscheduleMessageForReceiver(context, "Channel-C", 0.0, "f", paramC);
+        th_vscheduleMessageForReceiver(context, "Channel-D", 0.0, "f", paramD);
+        /*
+         The 0.0 parameter is the timestamp at which to execute the message, but in this case it simply means to execute it immediately. "f" says that the message contains one element and its type is float. paramA is then the value. 
+         */
 		
         int nbSples=getBlockSize()*buffer.getChannels();
         float inputCopy[nbSples];
         memcpy(inputCopy,buffer.getSamples(0),nbSples*sizeof(float));
         
-		ctx_tann_process(context,
-						 inputCopy,
-						 buffer.getSamples(0),
-						 getBlockSize());
+		th_tann_process(context, inputCopy, buffer.getSamples(0));
 	}
 	
 private:
