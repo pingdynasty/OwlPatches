@@ -30,7 +30,7 @@
 
 #include "StompBox.h"
 #include "CircularBuffer.hpp"
-f
+
 #define REQUEST_BUFFER_SIZE 32768
 
 class SimpleDriveDelayPatch : public Patch {
@@ -70,8 +70,7 @@ public:
     float y = 0;
       
     int size = buffer.getSize();
-    for (int n = 0; n < size; n++)
-    {
+    for (int n = 0; n < size; n++)     {
         y = (delayBuffer.read(delay)*(size-1-n) + delayBuffer.read(newDelay)*n)/size + x[n];
    
         y = nonLinear(y * 1.5);

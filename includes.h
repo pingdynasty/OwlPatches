@@ -28,6 +28,7 @@
 #include "ChorusPatch.hpp"
 #include "Tremolo.hpp"
 #include "OriginalSirenPatch.hpp"
+#include "StutterPatch.hpp"
 
 // #include "JotReverbPatch.hpp" // bug fix to be done re. new firmware
  #include "SimpleDriveDelayPatch.hpp"

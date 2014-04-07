@@ -21,7 +21,7 @@ public:
      
     registerParameter(PARAMETER_A, "RATE");
       registerParameter(PARAMETER_B, "DEPTH");
-        registerParameter(PARAMETER_C, "Wet/Dry ");
+        registerParameter(PARAMETER_C, "WET/DRY ");
       registerParameter(PARAMETER_D, "VOICES");
       
     
