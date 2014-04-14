@@ -314,7 +314,7 @@ void reverbSetParam(reverbBlock* this_reverb, float fSampleRate, float fPercentW
 	
 	this_reverb->dry_coef	= 1.0 - wetCoef;
 	
-	wetCoef	*= SQRT8 * (1.0 - exp(-13.8155105579643*fRoomSizeSamples/fReverbTimeSamples));			// additional attenuation for small room and long reverb time  <--  exp(-13.8155105579643) = 10^(-60dB/10dB)
+	wetCoef	*= 1.2 * SQRT8 * (1 - exp(-13.8155105579643*fRoomSizeSamples/fReverbTimeSamples));			// additional attenuation for small room and long reverb time  <--  exp(-13.8155105579643) = 10^(-60dB/10dB)
     //  toss in whatever fudge factor you need here to make the reverb louder
 	this_reverb->wet_coef0	= wetCoef;
 	this_reverb->wet_coef1	= -fCutoffCoef*wetCoef;
@@ -446,8 +446,6 @@ void JotReverb(reverbBlock* this_reverb, float* left_input, float* right_input)
 	register float*	x1 = &(this_reverb->LPF1.output[0]);
 	register float*	x2 = &(this_reverb->LPF2.output[0]);
 	register float*	x3 = &(this_reverb->LPF3.output[0]);
-	register float*	x4 = &(this_reverb->LPF4.output[0]);
-	register float*	x5 = &(this_reverb->LPF5.output[0]);
 	
 	register float*	input_ptr = 0;							// needed for macro expansions below
 	
@@ -571,7 +569,7 @@ public:
     }
     
     void setParams(){
-        if abs(getParameterValue(PARAMETER_A)-oldParamA)>0.05
+        if (abs(getParameterValue(PARAMETER_A)-oldParamA)>0.05)
             oldParamA = getParameterValue(PARAMETER_A);
         roomSizeSeconds = 0.008 + 0.15*oldParamA; // betw. 3 meters and 50 meters / 340m/s
         reverbTimeSeconds = 0.4+getParameterValue(PARAMETER_B)*getParameterValue(PARAMETER_B)*9.5; // betw. 0.4 and 10s
