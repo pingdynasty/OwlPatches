@@ -90,16 +90,16 @@ OWL PATCH:
 #define CHUNK_SIZE_RATIO        ((float) 64.f/CHUNK_SIZE)   // ratio between original (64) and actual chunk size
 #define BIG_DELAY_BUFFER_SIZE	65536                       // must be power of 2
 
-#define MAX_REVERB_TIME			480000                   // 10 seconds at 48000 Hz
+#define MAX_REVERB_TIME			480000                // 10 seconds at 48000 Hz
 #define MIN_REVERB_TIME			480
 #define MAX_ROOM_SIZE			7552
 #define MIN_ROOM_SIZE			(4*CHUNK_SIZE)
 #define MAX_CUTOFF				0.4975
 #define MIN_CUTOFF				0.1134
 
-#define SQRT8					2.449489742783178 // sqrt(6)                // 2.82842712474619	// sqrt(8)
-#define ONE_OVER_SQRT8			0.408248290463863 // 1/sqrt(6)              // 0.353553390593274	//  1/sqrt(8)
-#define ALPHA					0.943722057435498  // pow(3/2, -1/(8-1))    // 0.943722057435498	//  pow(3/2, -1/(8-1))
+#define SQRT8					2 // sqrt(6)                // 2.82842712474619	// sqrt(8)
+#define ONE_OVER_SQRT8			0.5 // 1/sqrt(6)              // 0.353553390593274	//  1/sqrt(8)
+#define ALPHA					0.873580464736299 // pow(3/2, -1/(6-1))    // 0.943722057435498	//  pow(3/2, -1/(8-1))
 //       of the 8 delay lines, the longest is 3/2 times longer than the shortest.
 //       the longest delay is coupled to the room size.
 //       the delay lines then decrease exponentially in length.
@@ -227,31 +227,19 @@ void reverbInitialize(reverbBlock* this_reverb)
 	this_reverb->delay1.buffer_base		= this_reverb->bigDelayBuffer;
 	this_reverb->delay1.index_mask		= BIG_DELAY_BUFFER_SIZE-1;
 	this_reverb->delay1.input_index		= current_assigned_index;
-	this_reverb->delay1.delay_samples	= 1457;
+	this_reverb->delay1.delay_samples	= 1375;
 	
 	current_assigned_index	+= ceil(106*CHUNK_SIZE*CHUNK_SIZE_RATIO);
 	this_reverb->delay2.buffer_base		= this_reverb->bigDelayBuffer;
 	this_reverb->delay2.index_mask		= BIG_DELAY_BUFFER_SIZE-1;
 	this_reverb->delay2.input_index		= current_assigned_index;
-	this_reverb->delay2.delay_samples	= 1375;
+	this_reverb->delay2.delay_samples	= 1224;
 	
 	current_assigned_index	+= ceil(100*CHUNK_SIZE*CHUNK_SIZE_RATIO);
 	this_reverb->delay3.buffer_base		= this_reverb->bigDelayBuffer;
 	this_reverb->delay3.index_mask		= BIG_DELAY_BUFFER_SIZE-1;
 	this_reverb->delay3.input_index		= current_assigned_index;
-	this_reverb->delay3.delay_samples	= 1297;
-	
-	current_assigned_index	+= ceil(94*CHUNK_SIZE*CHUNK_SIZE_RATIO);
-	this_reverb->delay4.buffer_base		= this_reverb->bigDelayBuffer;
-	this_reverb->delay4.index_mask		= BIG_DELAY_BUFFER_SIZE-1;
-	this_reverb->delay4.input_index		= current_assigned_index;
-	this_reverb->delay4.delay_samples	= 1224;
-	
-	current_assigned_index	+= ceil(89*CHUNK_SIZE*CHUNK_SIZE_RATIO);
-	this_reverb->delay5.buffer_base		= this_reverb->bigDelayBuffer;
-	this_reverb->delay5.index_mask		= BIG_DELAY_BUFFER_SIZE-1;
-	this_reverb->delay5.input_index		= current_assigned_index;
-	this_reverb->delay5.delay_samples	= 1155;
+	this_reverb->delay3.delay_samples	= 1029;
 	
 	for(int i=0; i<BIG_DELAY_BUFFER_SIZE; i++)
 	{
@@ -281,18 +269,6 @@ void reverbInitialize(reverbBlock* this_reverb)
 	this_reverb->LPF3.y1 = 0.0;
 	for (int i=0; i<CHUNK_SIZE; i++)
 		this_reverb->LPF3.output[i] = 0.0;
-	
-	this_reverb->LPF4.a1 = -1.0;
-	this_reverb->LPF4.b0 = -ONE_OVER_SQRT8;
-	this_reverb->LPF4.y1 = 0.0;
-	for (int i=0; i<CHUNK_SIZE; i++)
-		this_reverb->LPF4.output[i] = 0.0;
-	
-	this_reverb->LPF5.a1 = -1.0;
-	this_reverb->LPF5.b0 = -ONE_OVER_SQRT8;
-	this_reverb->LPF5.y1 = 0.0;
-	for (int i=0; i<CHUNK_SIZE; i++)
-		this_reverb->LPF5.output[i] = 0.0;
 	
 	this_reverb->left_reverb_state = 0.0;
 	this_reverb->right_reverb_state = 0.0;
@@ -350,8 +326,8 @@ void reverbSetParam(reverbBlock* this_reverb, float fSampleRate, float fPercentW
 	float	f_prime_value;
 	int		prime_value;
 	
-	this_reverb->left_predelay.delay_samples = (int)fPreDelaySamples;
-	this_reverb->right_predelay.delay_samples = (int)fPreDelaySamples;
+	this_reverb->left_predelay.delay_samples = (int)fPreDelaySamples*0.9;
+	this_reverb->right_predelay.delay_samples = (int)fPreDelaySamples*1.1;
 	
 	prime_value				= FindNearestPrime(this_reverb->primeNumberTable, (int)fDelaySamples);
 	this_reverb->delay0.delay_samples	= prime_value - CHUNK_SIZE;									// we subtract 1 CHUNK of delay, because this signal feeds back, causing an extra CHUNK delay
@@ -380,20 +356,7 @@ void reverbSetParam(reverbBlock* this_reverb, float fSampleRate, float fPercentW
 	this_reverb->LPF3.a1	= f_prime_value*fCutoffCoef - 1.0;
 	this_reverb->LPF3.b0	= ONE_OVER_SQRT8*exp(beta*f_prime_value)*(this_reverb->LPF3.a1);
 	fDelaySamples *= ALPHA;
-	
-	prime_value				= FindNearestPrime(this_reverb->primeNumberTable, (int)fDelaySamples);
-	this_reverb->delay4.delay_samples	= prime_value - CHUNK_SIZE;
-	f_prime_value			= (float)prime_value;
-	this_reverb->LPF4.a1	= f_prime_value*fCutoffCoef - 1.0;
-	this_reverb->LPF4.b0	= ONE_OVER_SQRT8*exp(beta*f_prime_value)*(this_reverb->LPF4.a1);
-	fDelaySamples *= ALPHA;
-	
-	prime_value				= FindNearestPrime(this_reverb->primeNumberTable, (int)fDelaySamples);
-	this_reverb->delay5.delay_samples	= prime_value - CHUNK_SIZE;
-	f_prime_value			= (float)prime_value;
-	this_reverb->LPF5.a1	= f_prime_value*fCutoffCoef - 1.0;
-	this_reverb->LPF5.b0	= ONE_OVER_SQRT8*exp(beta*f_prime_value)*(this_reverb->LPF5.a1);
-	fDelaySamples *= ALPHA;
+
 }
 
 
@@ -471,9 +434,7 @@ node[i] = acc;								        \
 x0 -= CHUNK_SIZE;								\
 x1 -= CHUNK_SIZE;								\
 x2 -= CHUNK_SIZE;								\
-x3 -= CHUNK_SIZE;								\
-x4 -= CHUNK_SIZE;								\
-x5 -= CHUNK_SIZE;
+x3 -= CHUNK_SIZE;
 
 
 void JotReverb(reverbBlock* this_reverb, float* left_input, float* right_input)
@@ -493,56 +454,30 @@ void JotReverb(reverbBlock* this_reverb, float* left_input, float* right_input)
 	BEGIN_ROW(&(this_reverb->left_predelay.output[0]))
 	PLUS_ONE(x0)
 	PLUS_ONE(x1)
-	PLUS_ONE(x2)
+	MINUS_ONE(x2)
 	MINUS_ONE(x3)
-	MINUS_ONE(x4)
-	MINUS_ONE(x5)
-	END_ROW(this_reverb->node0)
+    END_ROW(this_reverb->node0)
 	
 	BEGIN_ROW(&(this_reverb->right_predelay.output[0]))
 	PLUS_ONE(x0)
 	MINUS_ONE(x1)
-	MINUS_ONE(x2)
-	PLUS_ONE(x3)
-	PLUS_ONE(x4)
-	MINUS_ONE(x5)
+	PLUS_ONE(x2)
+	MINUS_ONE(x3)
 	END_ROW(this_reverb->node1)
 	
 	BEGIN_ROW(&(this_reverb->right_predelay.output[0]))
 	PLUS_ONE(x0)
 	MINUS_ONE(x1)
 	MINUS_ONE(x2)
-	MINUS_ONE(x3)
-	PLUS_ONE(x4)
-	PLUS_ONE(x5)
+	PLUS_ONE(x3)
 	END_ROW(this_reverb->node2)
 	
 	BEGIN_ROW(&(this_reverb->left_predelay.output[0]))
 	PLUS_ONE(x0)
 	PLUS_ONE(x1)
-	MINUS_ONE(x2)
-	MINUS_ONE(x3)
-	MINUS_ONE(x4)
-	PLUS_ONE(x5)
+	PLUS_ONE(x2)
+	PLUS_ONE(x3)
 	END_ROW(this_reverb->node3)
-	
-	BEGIN_ROW(&(this_reverb->right_predelay.output[0]))
-	PLUS_ONE(x0)
-	MINUS_ONE(x1)
-	PLUS_ONE(x2)
-	PLUS_ONE(x3)
-	MINUS_ONE(x4)
-	MINUS_ONE(x5)
-	END_ROW(this_reverb->node4)
-	
-	BEGIN_ROW(&(this_reverb->right_predelay.output[0]))
-	PLUS_ONE(x0)
-	PLUS_ONE(x1)
-	PLUS_ONE(x2)
-	PLUS_ONE(x3)
-	PLUS_ONE(x4)
-	PLUS_ONE(x5)
-	END_ROW(this_reverb->node5)
     
 	
 	register float*	input = left_input;
@@ -550,7 +485,7 @@ void JotReverb(reverbBlock* this_reverb, float* left_input, float* right_input)
 	register float	reverb_output_state = this_reverb->left_reverb_state;
 	for (register int i=CHUNK_SIZE; i>0; i--)
 	{
-		register float reverb_output = *(x0++) + *(x2++) + *(x4++);
+		register float reverb_output = *(x0++) + *(x2++);
 		register float output_acc = this_reverb->dry_coef * (*input++);
 		output_acc += this_reverb->wet_coef0 * reverb_output;
 		output_acc += this_reverb->wet_coef1 * reverb_output_state;
@@ -565,7 +500,7 @@ void JotReverb(reverbBlock* this_reverb, float* left_input, float* right_input)
 	  reverb_output_state = this_reverb->right_reverb_state;
 	  for (register int i=CHUNK_SIZE; i>0; i--)
 	    {
-	      register float reverb_output = *(x1++) + *(x3++) + *(x5++);
+	      register float reverb_output = *(x1++) + *(x3++);
 	      register float output_acc = this_reverb->dry_coef * (*input++);
 	      output_acc += this_reverb->wet_coef0 * reverb_output;
 	      output_acc += this_reverb->wet_coef1 * reverb_output_state;
@@ -579,15 +514,13 @@ void JotReverb(reverbBlock* this_reverb, float* left_input, float* right_input)
 	Delay(&(this_reverb->delay1), this_reverb->node1);
 	Delay(&(this_reverb->delay2), this_reverb->node2);
 	Delay(&(this_reverb->delay3), this_reverb->node3);
-	Delay(&(this_reverb->delay4), this_reverb->node4);
-	Delay(&(this_reverb->delay5), this_reverb->node5);
+
 	
 	Filter(&(this_reverb->LPF0), &(this_reverb->delay0.output[0]));
 	Filter(&(this_reverb->LPF1), &(this_reverb->delay1.output[0]));
 	Filter(&(this_reverb->LPF2), &(this_reverb->delay2.output[0]));
 	Filter(&(this_reverb->LPF3), &(this_reverb->delay3.output[0]));
-	Filter(&(this_reverb->LPF4), &(this_reverb->delay4.output[0]));
-	Filter(&(this_reverb->LPF5), &(this_reverb->delay5.output[0]));
+
 }
 
 
@@ -596,33 +529,13 @@ class JotReverbPatch : public Patch {
 public:
     JotReverbPatch(){
         registerParameter(PARAMETER_A, "roomSize"); //  Reverb Time and Size of room
-        registerParameter(PARAMETER_B, "preDelay"); //  preDelay between direct sound and reverb
+        registerParameter(PARAMETER_B, "RT"); //  preDelay between direct sound and reverb
         registerParameter(PARAMETER_C, "cutoff"); //    Tone control of the reverberant part
         registerParameter(PARAMETER_D, "dryWet"); //    dry/wet mixing
         theReverbBlock.bigDelayBuffer = createMemoryBuffer(1, BIG_DELAY_BUFFER_SIZE)->getSamples(0);
         reverbInitialize(&theReverbBlock);
         setParams();
     }
-    
-    
-  /*
-    void processAudio(AudioBuffer &buffer){
-        setParams();
-        int numSamples = buffer.getSize(); // works for numSamples being a multiple of CHUNK_SIZE
-        // Case Mono
-        float* buf = buffer.getSamples(0);
-        int i=0;
-        while (i<numSamples+1-CHUNK_SIZE)
-        {
-            JotReverb(&theReverbBlock, buf+i,buf+i);
-            for (int k=0;k<CHUNK_SIZE;k++)
-                {
-                    buf[i+k]=theReverbBlock.left_output[k];
-                }
-            i += CHUNK_SIZE;
-        }
-    }
-   */
     
     void processAudio(AudioBuffer &buffer){
         setParams();
@@ -657,11 +570,11 @@ public:
     }
     
     void setParams(){
-        roomSizeSeconds = 0.15 + 0.45*getParameterValue(PARAMETER_A)*getParameterValue(PARAMETER_A); // betw. 0.15 and 0.6s
-        reverbTimeSeconds = 1+getParameterValue(PARAMETER_A)*getParameterValue(PARAMETER_A)*9; // betw. 1 and 10s
-        predelaySeconds = getParameterValue(PARAMETER_B)*0.1; // betw. 0 and 0.1s
-        cutoffFrequency = 1000+getParameterValue(PARAMETER_C)*15000; // betw. 1000 and 16000 Hz
-        dryWet = getParameterValue(PARAMETER_D)*100;    // betw. 0 and 100%
+        roomSizeSeconds = 0.008 + 0.15*getParameterValue(PARAMETER_A); // betw. 3 meters and 50 meters / 340m/s
+        reverbTimeSeconds = 0.4+getParameterValue(PARAMETER_B)*getParameterValue(PARAMETER_B)*9.5; // betw. 0.4 and 10s
+        predelaySeconds = 0.010 + 0.02*getParameterValue(PARAMETER_A); // betw. 10 and 30ms
+        cutoffFrequency = 500+getParameterValue(PARAMETER_C)*15000; // betw. 500 and 16000 Hz
+        dryWet = getParameterValue(PARAMETER_D)*99;    // betw. 0 and 100%
         reverbSetParam(&theReverbBlock, getSampleRate(), dryWet, reverbTimeSeconds, roomSizeSeconds, cutoffFrequency, predelaySeconds);
     }
     
