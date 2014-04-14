@@ -529,6 +529,7 @@ class JotReverbPatch : public Patch {
 public:
     JotReverbPatch(){
         registerParameter(PARAMETER_A, "roomSize"); //  Reverb Time and Size of room
+        oldParamA = 0.1;
         registerParameter(PARAMETER_B, "RT"); //  preDelay between direct sound and reverb
         registerParameter(PARAMETER_C, "cutoff"); //    Tone control of the reverberant part
         registerParameter(PARAMETER_D, "dryWet"); //    dry/wet mixing
@@ -570,7 +571,9 @@ public:
     }
     
     void setParams(){
-        roomSizeSeconds = 0.008 + 0.15*getParameterValue(PARAMETER_A); // betw. 3 meters and 50 meters / 340m/s
+        if abs(getParameterValue(PARAMETER_A)-oldParamA)>0.05
+            oldParamA = getParameterValue(PARAMETER_A);
+        roomSizeSeconds = 0.008 + 0.15*oldParamA; // betw. 3 meters and 50 meters / 340m/s
         reverbTimeSeconds = 0.4+getParameterValue(PARAMETER_B)*getParameterValue(PARAMETER_B)*9.5; // betw. 0.4 and 10s
         predelaySeconds = 0.010 + 0.02*getParameterValue(PARAMETER_A); // betw. 10 and 30ms
         cutoffFrequency = 500+getParameterValue(PARAMETER_C)*15000; // betw. 500 and 16000 Hz
@@ -585,6 +588,7 @@ private:
     float reverbTimeSeconds;
     float dryWet;
     float predelaySeconds;
+    float oldParamA;
 };
 
 #endif // __JotReverbPatch_hpp__
