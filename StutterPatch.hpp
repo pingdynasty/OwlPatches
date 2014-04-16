@@ -34,22 +34,27 @@
 class StutterPatch : public Patch {
 private:
     CircularBuffer stutterBuffer;
-    bool  patchBegin;
+    bool  thresholdBreached;
+    int bufferFillIndex = 0;
+    int bufferReadIndex = 0;
+
 public:
   StutterPatch(){
-      patchBegin =  true;
+      thresholdBreached =  true;
        registerParameter(PARAMETER_A, "Blend");
     registerParameter(PARAMETER_B, "Speed");
     registerParameter(PARAMETER_C, "Length");
     registerParameter(PARAMETER_D, "Fade");
+      registerParameter(PARAMETER_E, "threshold");
     AudioBuffer* buffer = createMemoryBuffer(1, REQUEST_BUFFER_SIZE);
     stutterBuffer.initialise(buffer->getSamples(0), buffer->getSize());
       
-
   }
+    
+    
   void processAudio(AudioBuffer &buffer){ // put your code here!
       float Blend, Speed, Length, Fade;
-      int stutterIndex = 0;
+     
       bool stutterReady = false;
       bool clipFlag = false;
       Blend = getParameterValue(PARAMETER_A);
@@ -57,27 +62,33 @@ public:
       Length = getParameterValue(PARAMETER_C);
       Fade = getParameterValue(PARAMETER_D);
       
-      float maxGrain = 0.100 * stutterBuffer.getSize(); // 100mS
+      int maxGrain = getBlockSize() * (0.100/(getBlockSize() * (1/getSampleRate())));// 100mS
       
       float* x = buffer.getSamples(0);
       float y = 0;
       int size = buffer.getSize();
-      
-      if(patchBegin == true)
+              if(thresholdBreached == true)
       {
-          stutterReady = fillBuffer(x, maxGrain, size);
-          patchBegin = false;
-    
+        bufferFillIndex += fillBuffer(x, maxGrain, size);
+          if(bufferFillIndex == maxGrain)
+          {
+           
+              stutterReady = true;
+              bufferReadIndex = 0;
+              bufferFillIndex = 0;
+          }
       }
+      
+     
       for (int n = 0; n < size; n++)
       {
           
          if(stutterReady)
          {
              
-         y  = (stutterBuffer.read(stutterIndex) * 0.5) ;
+         y  = (stutterBuffer.read(bufferReadIndex) * 0.7) ;
          
-          x[n] = (y *  (1 - Blend)) +  (x[n] * Blend);
+             x[n] = (y *  (1 - Blend)) +  (x[n] * Blend);
          }
          
           if( abs(x[n])>1)
@@ -87,31 +98,30 @@ public:
           }
           
           
-          stutterIndex++;
+          bufferReadIndex++;
           
-          if(stutterIndex >= maxGrain)
+          if(bufferReadIndex >= (maxGrain * Length))
           {
-              stutterIndex = 0;
+              bufferReadIndex = 0;
           }
+
       }
       
-         
-  }
+};
     
-    
-    bool fillBuffer(float* x, float maxGrain, int size)
+int fillBuffer(float* x, int maxGrain, int size)
     {
+        int i = 0;
        
-        for (int n = 0; n < maxGrain; n++)
+            
+        for( int n = 0; n < size; n++)
         {
-            
-            
             stutterBuffer.write(x[n]);
+            i++;
+        }
             
         
-        }
-        return TRUE;
+        
+        return i ;
     }
-};
-
 #endif // __TemplatePatch_hpp__
