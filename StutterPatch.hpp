@@ -53,15 +53,15 @@ public:
     
     
   void processAudio(AudioBuffer &buffer){ // put your code here!
-      float Blend, Speed, Length, Fade, Trheshold;
+      float Blend, Speed, Length, Fade, Threshold;
      
       bool stutterReady = false;
-      bool clipFlag = false;
+    //  bool clipFlag = false;
       Blend = getParameterValue(PARAMETER_A);
       Speed = getParameterValue(PARAMETER_B);
       Length = getParameterValue(PARAMETER_C);
       Fade = getParameterValue(PARAMETER_D);
-      Trheshold = 1;
+      Threshold = 1;
       
       int maxGrain = getBlockSize() * (0.100/(getBlockSize() * (1/getSampleRate())));// 100mS
       
