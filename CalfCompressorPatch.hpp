@@ -39,28 +39,21 @@ namespace dsp {
   private:
     float linSlope, detected, kneeSqrt, kneeStart, linKneeStart, kneeStop;
     float compressedKneeStop, adjKneeStart, thres;
-    float attack, release, threshold, ratio, knee, makeup, detection, stereo_link, bypass, mute, meter_out, meter_comp;
+    float attack, release, threshold, ratio, knee, makeup, detection, stereo_link, meter_out, meter_comp;
     uint32_t srate;
-    bool is_active;
     inline float output_level(float slope) const;
     inline float output_gain(float linSlope, bool rms) const;
   public:
     gain_reduction_audio_module();
-    void set_params(float att, float rel, float thr, float rat, float kn, 
-		    float mak, float det, float stl, float byp, float mu);
+    void set_params(float att, float rel, float thr, float rat, 
+		    float kn,  float mak, float det, float stl);
     void update_curve();
     void process(float &left, float &right, const float *det_left = NULL, const float *det_right = NULL);
     void activate();
-    void deactivate();
-    int id;
     void set_sample_rate(uint32_t sr);
-    float get_output_level();
-    float get_comp_level();
   };
 
-  gain_reduction_audio_module::gain_reduction_audio_module()
-  {
-    is_active       = false;
+  gain_reduction_audio_module::gain_reduction_audio_module(){
     srate           = 0;
     linSlope        = 0.f;
     attack          = -1;
@@ -71,28 +64,15 @@ namespace dsp {
     ratio           = -1;
     knee            = -1;
     makeup          = -1;
-    bypass          = -1;
-    mute            = -1;
   }
 
-  void gain_reduction_audio_module::activate()
-  {
-    is_active = true;
+  void gain_reduction_audio_module::activate(){
     float l, r;
     l = r = 0.f;
-    float byp = bypass;
-    bypass = 0.0;
     process(l, r, 0, 0);
-    bypass = byp;
   }
 
-  void gain_reduction_audio_module::deactivate()
-  {
-    is_active = false;
-  }
-
-  void gain_reduction_audio_module::update_curve()
-  {
+  void gain_reduction_audio_module::update_curve(){
     float linThreshold = threshold;
     float linKneeSqrt = sqrt(knee);
     linKneeStart = linThreshold / linKneeSqrt;
@@ -104,37 +84,30 @@ namespace dsp {
     compressedKneeStop = (kneeStop - thres) / ratio + thres;
   }
 
-  void gain_reduction_audio_module::process(float &left, float &right, const float *det_left, const float *det_right)
-  {
+  void gain_reduction_audio_module::process(float &left, float &right, const float *det_left, const float *det_right){
     if(!det_left) {
       det_left = &left;
     }
     if(!det_right) {
       det_right = &right;
     }
-    if(bypass < 0.5f) {
-      // this routine is mainly copied from thor's compressor module
-      // greatest sounding compressor I've heard!
-      bool rms = (detection == 0);
-      bool average = (stereo_link == 0);
-      float attack_coeff = min(1.f, 1.f / (attack * srate / 4000.f));
-      float release_coeff = min(1.f, 1.f / (release * srate / 4000.f));
-
-      float absample = average ? (fabs(*det_left) + fabs(*det_right)) * 0.5f : max(fabs(*det_left), fabs(*det_right));
-      if(rms) absample *= absample;
-
-      dsp::sanitize(linSlope);
-
-      linSlope += (absample - linSlope) * (absample > linSlope ? attack_coeff : release_coeff);
-      float gain = 1.f;
-      if(linSlope > 0.f) {
-	gain = output_gain(linSlope, rms);
-      }
-
-      left *= gain * makeup;
-      right *= gain * makeup;
-      detected = rms ? sqrt(linSlope) : linSlope;
+    // this routine is mainly copied from thor's compressor module
+    // greatest sounding compressor I've heard!
+    bool rms = (detection == 0);
+    bool average = (stereo_link == 0);
+    float attack_coeff = min(1.f, 1.f / (attack * srate / 4000.f));
+    float release_coeff = min(1.f, 1.f / (release * srate / 4000.f));
+    float absample = average ? (fabs(*det_left) + fabs(*det_right)) * 0.5f : max(fabs(*det_left), fabs(*det_right));
+    if(rms) absample *= absample;
+    dsp::sanitize(linSlope);
+    linSlope += (absample - linSlope) * (absample > linSlope ? attack_coeff : release_coeff);
+    float gain = 1.f;
+    if(linSlope > 0.f) {
+      gain = output_gain(linSlope, rms);
     }
+    left *= gain * makeup;
+    right *= gain * makeup;
+    detected = rms ? sqrt(linSlope) : linSlope;
   }
 
   float gain_reduction_audio_module::output_level(float slope) const {
@@ -145,8 +118,8 @@ namespace dsp {
     //this calculation is also thor's work
     if(linSlope > (rms ? adjKneeStart : linKneeStart)) {
       float slope = log(linSlope);
-      if(rms) slope *= 0.5f;
-
+      if(rms) 
+	slope *= 0.5f;
       float gain = 0.f;
       float delta = 0.f;
       if(IS_FAKE_INFINITY(ratio)) {
@@ -156,21 +129,19 @@ namespace dsp {
 	gain = (slope - thres) / ratio + thres;
 	delta = 1.f / ratio;
       }
-
       if(knee > 1.f && slope < kneeStop) {
 	gain = hermite_interpolation(slope, kneeStart, kneeStop, kneeStart, compressedKneeStop, 1.f, delta);
       }
-
       return exp(gain - slope);
     }
-
     return 1.f;
   }
 
   void gain_reduction_audio_module::set_sample_rate(uint32_t sr) {
     srate = sr;
   }
-  void gain_reduction_audio_module::set_params(float att, float rel, float thr, float rat, float kn, float mak, float det, float stl, float byp, float mu)
+
+  void gain_reduction_audio_module::set_params(float att, float rel, float thr, float rat, float kn, float mak, float det, float stl)
   {
     // set all params
     attack          = att;
@@ -181,8 +152,6 @@ namespace dsp {
     makeup          = mak;
     detection       = det;
     stereo_link     = stl;
-    bypass          = byp;
-    mute            = mu;
   }
 
 };
@@ -191,23 +160,32 @@ namespace dsp {
 class CalfCompressorPatch : public Patch {
 private:
   dsp::gain_reduction_audio_module compressor;
-  float params[10];
+  float params[8];
 public:
   CalfCompressorPatch(){
-    params[0] = 0.1f; // attack
-    params[1] = 100.0f; // release
-    params[2] = 10.0f; // threshold
-    params[3] = 2.0f; // ratio
-    params[7] = 40000.0f; // knee
-    params[4] = 1.0f; // makeup
-    params[6] = 0.0f; // detection
-    params[5] = 1.0f; // stereo_link
-    params[8] = 0.0f; // bypass
-    params[9] = 0.0f; // mu
+    /**
+       parameter     default         min          max   step
+       attack        20,             0.01,        2000, 0
+       release       250,            0.01,        2000, 0
+       threshold     0.125,          0.000976563, 1,    0
+       ratio         2,              1,           20,   21
+       makeup        2,              1,           64,   0
+       knee          2.828427125,    1,           8,    0
+       detection     0,              0,           1,    0 (RMS or Peak)
+       stereo link   0,              0,           1,    0 (Average or Maximum)
+    */
+    params[0] = 20.f; // attack
+    params[1] = 250.f; // release
+    params[2] = 0.125f; // threshold
+    params[3] = 2.f; // ratio
+    params[4] = 2.828427125f; // knee
+    params[5] = 2.f; // makeup
+    params[6] = 0.f; // detection
+    params[7] = 0.f; // stereo_link
     compressor.set_sample_rate(getSampleRate());
     compressor.activate();
-    compressor.set_params(params[0], params[1], params[2], params[3], params[4], 
-			  params[5], params[6], params[7], params[8], params[9]);
+    compressor.set_params(params[0], params[1], params[2], params[3], 
+			  params[4], params[5], params[6], params[7]);
     registerParameter(PARAMETER_A, "Attack");
     registerParameter(PARAMETER_B, "Release");
     registerParameter(PARAMETER_C, "Threshold");
@@ -215,14 +193,13 @@ public:
   }
 
   void processAudio(AudioBuffer &buffer){
-    // params[0] = getParameterValue(PARAMETER_A);
-    // params[1] = getParameterValue(PARAMETER_B);
-    // params[2] = getParameterValue(PARAMETER_C);
-    // params[3] = getParameterValue(PARAMETER_D);
-
-    // compressor.set_params(params[0], params[1], params[2], params[3], params[4], 
-    // 			  params[5], params[6], params[7], params[8], params[9]);
-
+    params[0] = getParameterValue(PARAMETER_A) * (2000-0.01) + 0.01; // attack
+    params[1] = getParameterValue(PARAMETER_B) * (2000-0.01) + 0.01; // release
+    params[2] = getParameterValue(PARAMETER_C) * (1-0.000976563) + 0.000976563; // threshold
+    params[3] = getParameterValue(PARAMETER_D) * (20-1) + 1; // ratio
+    
+    compressor.set_params(params[0], params[1], params[2], params[3], 
+			  params[4], params[5], params[6], params[7]);
     compressor.update_curve();
 
     int size = buffer.getSize();
