@@ -28,7 +28,7 @@
 
 #define FAKE_INFINITY (65536.0 * 65536.0)
 #define IS_FAKE_INFINITY(value) (fabs(value-FAKE_INFINITY) < 1.0)
-#include "primitives.h"
+#include "calfprimitives.h"
 
 namespace dsp {
 
@@ -40,8 +40,6 @@ namespace dsp {
     float linSlope, detected, kneeSqrt, kneeStart, linKneeStart, kneeStop;
     float compressedKneeStop, adjKneeStart, thres;
     float attack, release, threshold, ratio, knee, makeup, detection, stereo_link, bypass, mute, meter_out, meter_comp;
-    float old_threshold, old_ratio, old_knee, old_makeup, old_bypass, old_mute, old_detection, old_stereo_link;
-    mutable bool redraw_graph;
     uint32_t srate;
     bool is_active;
     inline float output_level(float slope) const;
@@ -64,13 +62,6 @@ namespace dsp {
   {
     is_active       = false;
     srate           = 0;
-    old_threshold   = 0.f;
-    old_ratio       = 0.f;
-    old_knee        = 0.f;
-    old_makeup      = 0.f;
-    old_detection   = 0.f;
-    old_bypass      = 0.f;
-    old_mute        = 0.f;
     linSlope        = 0.f;
     attack          = -1;
     release         = -1;
@@ -82,7 +73,6 @@ namespace dsp {
     makeup          = -1;
     bypass          = -1;
     mute            = -1;
-    redraw_graph    = true;
   }
 
   void gain_reduction_audio_module::activate()
@@ -143,8 +133,6 @@ namespace dsp {
 
       left *= gain * makeup;
       right *= gain * makeup;
-      // meter_out = std::max(fabs(left), fabs(right));;
-      // meter_comp = gain;
       detected = rms ? sqrt(linSlope) : linSlope;
     }
   }
@@ -195,21 +183,6 @@ namespace dsp {
     stereo_link     = stl;
     bypass          = byp;
     mute            = mu;
-    // if(mute > 0.f) {
-    //     meter_out  = 0.f;
-    //     meter_comp = 1.f;
-    // }
-    
-    if (fabs(threshold-old_threshold) + fabs(ratio - old_ratio) + fabs(knee - old_knee) + fabs(makeup - old_makeup) + fabs(detection - old_detection) + fabs(bypass - old_bypass) + fabs(mute - old_mute) > 0.000001f) {
-      old_threshold = threshold;
-      old_ratio     = ratio;
-      old_knee      = knee;
-      old_makeup    = makeup;
-      old_detection = detection;
-      old_bypass    = bypass;
-      old_mute      = mute;
-      redraw_graph  = true;
-    }
   }
 
 };
@@ -242,14 +215,13 @@ public:
   }
 
   void processAudio(AudioBuffer &buffer){
+    // params[0] = getParameterValue(PARAMETER_A);
+    // params[1] = getParameterValue(PARAMETER_B);
+    // params[2] = getParameterValue(PARAMETER_C);
+    // params[3] = getParameterValue(PARAMETER_D);
 
-    params[0] = getParameterValue(PARAMETER_A);
-    params[1] = getParameterValue(PARAMETER_B);
-    params[2] = getParameterValue(PARAMETER_C);
-    params[3] = getParameterValue(PARAMETER_D);
-
-    compressor.set_params(params[0], params[1], params[2], params[3], params[4], 
-			  params[5], params[6], params[7], params[8], params[9]);
+    // compressor.set_params(params[0], params[1], params[2], params[3], params[4], 
+    // 			  params[5], params[6], params[7], params[8], params[9]);
 
     compressor.update_curve();
 
@@ -262,11 +234,6 @@ public:
       float outR = 0.f;
       float inL = lins[i];
       float inR = rins[i];
-      float Lin = lins[i];
-      float Rin = rins[i];
-      // in level
-      // inR *= *params[param_level_in];
-      // inL *= *params[param_level_in];
       float leftAC = inL;
       float rightAC = inR;
       compressor.process(leftAC, rightAC);
