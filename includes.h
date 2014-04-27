@@ -27,6 +27,7 @@
 #include "PsycheFilter.hpp"
 #include "ChorusPatch.hpp"
 #include "Tremolo.hpp"
+#include "RyanPatch.hpp"
 
 // #include "JotReverbPatch.hpp" // bug fix to be done re. new firmware
 // #include "SimpleDriveDelayPatch.hpp"
