@@ -32,6 +32,7 @@
 #include "StompBox.h"
 
 #define reverb_buf_length 10240
+#define pi 3.14159265359f
 //const int reverb_buf_length = 10240;
 
 class ReverseReverbPatch : public Patch 
@@ -46,9 +47,9 @@ public:
   ReverseReverbPatch()
   {
     registerParameter(PARAMETER_A, "Reverb Length");
-    registerParameter(PARAMETER_B, "Wet/Dry");
-    registerParameter(PARAMETER_C, "Level");
-    registerParameter(PARAMETER_D, "My Knob D");
+    registerParameter(PARAMETER_B, "Wet/Dry Mix");
+    registerParameter(PARAMETER_C, "Output Level");
+    registerParameter(PARAMETER_D, "");
 	reverb_index = 0;
 	reverse_flag = 0;
 	reverse_cnt = 0;
@@ -59,14 +60,17 @@ public:
   {
 	int size = buffer.getSize();
 
-	//float reverb_scale = getParameterValue(PARAMETER_A);				//get reverb parameter from knob
-	//int reverb_time = round(reverb_scale*reverb_buf_length);			//apply scaling factor to the window size to obtain reverb_time (in samples)	
-	int reverb_time = reverb_buf_length;
-	//if(reverse_cnt>reverb_time) reverse_cnt = 0;
+	float reverb_scale = getParameterValue(PARAMETER_A);				//get reverb length from knob
+	if(reverb_scale<0.25) reverb_scale=0.25;
+	if(reverb_scale>0.95) reverb_scale=0.95;
+	int reverb_time = round(reverb_scale*reverb_buf_length);			//apply scaling factor to the window size to obtain reverb_time (in samples)
+	if(reverse_cnt>reverb_time)	reverse_cnt = 0;
+
 	
-	float wet = getParameterValue(PARAMETER_B);			//get wet/dry parameter from knob
-	float level = getParameterValue(PARAMETER_C);		//output level parameter from knob
-	level *= 2;
+	//float wet = getParameterValue(PARAMETER_B);			//get wet/dry mix from knob		
+	
+	float level = getParameterValue(PARAMETER_C);		//get output level from knob
+	level /= 200;
 
 	
     for(int ch=0; ch<buffer.getChannels(); ch++)
@@ -77,9 +81,11 @@ public:
 		{
 			reverse_current[i+reverb_index*size] = buf[i];	//load number of samples into the reverse buffer equal to
 															//size of audio buffer
+															
 			if (reverse_flag == 1)
 			{
-				buf[i] = level*(buf[i]/2+wet*reverse_storage[reverb_time-1-reverse_cnt]/2);
+				//buf[i] = level*((1-wet)*500*buf[i]+wet*reverse_storage[reverb_time-1-reverse_cnt]/2);
+				buf[i] = level*(reverse_storage[reverb_time-1-reverse_cnt]/2);
 				reverse_cnt++;
 				if(reverse_cnt==reverb_time)
 				{
@@ -90,7 +96,7 @@ public:
 			
 			else
 			{	
-				buf[i] = level*buf[i];
+				buf[i] = level*buf[i]*500;
 			}
 		}
 		
@@ -102,7 +108,7 @@ public:
 			reverse_flag = 1;			//set flag to trigger reverse
 			for(int j=0; j<reverb_time; j++)
 			{
-				reverse_storage[j]=reverse_current[j];
+				reverse_storage[j]=reverse_current[j]*abs(j-reverb_time)*j/(reverb_time/2);  //0.5*(1+cos(2*pi*j/(reverb_time-1)));
 			}
 		}
 	}
