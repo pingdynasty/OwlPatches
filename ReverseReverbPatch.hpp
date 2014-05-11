@@ -31,18 +31,17 @@
 
 #include "StompBox.h"
 
-#define reverb_buf_length 10240
+#define reverb_buf_length 20480
 #define pi 3.14159265359f
-//const int reverb_buf_length = 10240;
 
 class ReverseReverbPatch : public Patch 
 {
 private:
 
-	int reverb_index, reverse_cnt;
+	int reverb_index, reverse_cnt, reverb_time;
 	char reverse_flag;
-	float reverse_storage[reverb_buf_length], reverse_current[reverb_buf_length];
-	
+//	float reverse_storage[reverb_buf_length], reverse_current[reverb_buf_length];
+	float reverb_buffer[reverb_buf_length];
 public:
   ReverseReverbPatch()
   {
@@ -53,6 +52,10 @@ public:
 	reverb_index = 0;
 	reverse_flag = 0;
 	reverse_cnt = 0;
+	for(int i=0; i<reverb_buf_length; i++)	//initialize reverb buffer
+	{
+		reverb_buffer[i]=0;
+	}
   }
   
   
@@ -60,56 +63,51 @@ public:
   {
 	int size = buffer.getSize();
 
-	float reverb_scale = getParameterValue(PARAMETER_A);				//get reverb length from knob
-	if(reverb_scale<0.25) reverb_scale=0.25;
-	if(reverb_scale>0.95) reverb_scale=0.95;
-	int reverb_time = round(reverb_scale*reverb_buf_length);			//apply scaling factor to the window size to obtain reverb_time (in samples)
+	float reverb_scale = getParameterValue(PARAMETER_A);			//get reverb length from knob
+	if(reverb_scale<0.1) reverb_scale=0.1;							//apply lower limit to reverb length
+	reverb_time = round(reverb_scale*reverb_buf_length/2);			//apply scaling factor to the window size to obtain reverb_time (in samples)
+	int mod = reverb_time%size;		//ensure that reverb_time is an even multiple of audio buffer size_type
+	reverb_time -= mod;
 	if(reverse_cnt>reverb_time)	reverse_cnt = 0;
 
 	
-	//float wet = getParameterValue(PARAMETER_B);			//get wet/dry mix from knob		
+	float wet = getParameterValue(PARAMETER_B);			//get wet/dry mix from knob		
 	
 	float level = getParameterValue(PARAMETER_C);		//get output level from knob
-	level /= 200;
+	level*=2;
 
 	
-    for(int ch=0; ch<buffer.getChannels(); ch++)
+    //for(int ch=0; ch<buffer.getChannels(); ch++)
 	{
-		float* buf = buffer.getSamples(ch);
+		float* buf = buffer.getSamples(0);
 		
 		for(int i=0; i<size; i++)
 		{
-			reverse_current[i+reverb_index*size] = buf[i];	//load number of samples into the reverse buffer equal to
-															//size of audio buffer
-															
+			reverb_buffer[reverb_buf_length-1-i-reverb_index*size] = reverb_buffer[i+reverb_index*size];	//load reverse into end of buffer
+			reverb_buffer[i+reverb_index*size] = buf[i];	//load number of samples into the reverse buffer equal to size of audio buffer
+
 			if (reverse_flag == 1)
 			{
-				//buf[i] = level*((1-wet)*500*buf[i]+wet*reverse_storage[reverb_time-1-reverse_cnt]/2);
-				buf[i] = level*(reverse_storage[reverb_time-1-reverse_cnt]/2);
+				buf[i] = level*((1-wet)*buf[i]+wet*reverb_buffer[reverb_buf_length-1-reverse_cnt]*abs(reverse_cnt-reverb_time)*reverse_cnt/reverb_time/200);
 				reverse_cnt++;
 				if(reverse_cnt==reverb_time)
 				{
 					reverse_cnt=0;
 					reverse_flag=0;
+//					reverb_index=0;
 				}
 			}
 			
-			else
-			{	
-				buf[i] = level*buf[i]*500;
-			}
+			else buf[i] = level*buf[i];
+			
 		}
 		
 		reverb_index++;		//increment the window index
 		
-		if(reverb_index >= round(reverb_time/size))	//if the reverse buffer is full
+		if(reverse_flag==0)
 		{
 			reverb_index=0;				//reset the window index to 0
 			reverse_flag = 1;			//set flag to trigger reverse
-			for(int j=0; j<reverb_time; j++)
-			{
-				reverse_storage[j]=reverse_current[j]*abs(j-reverb_time)*j/(reverb_time/2);  //0.5*(1+cos(2*pi*j/(reverb_time-1)));
-			}
 		}
 	}
   }
