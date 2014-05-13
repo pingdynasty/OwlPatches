@@ -20,7 +20,7 @@
  */
 
 
-/* created by the OWL team 2013 */
+/* created by Ryan Sarver */
 
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -30,18 +30,18 @@
 #define __RyanPatch_hpp__
 
 #include "StompBox.h"
-
-  int window_index = 0;
-  const int window_size = 2048;
-  float window[window_size];
-  float E_now = 0, E_then;
-  char E_flag = 0;
-  const int decay_length = 48000;
-  int decay_cnt = 0;
-  //const float thresh = 0.001;
+#define window_size 2048
+#define decay_length 48000
 
 class RyanPatch : public Patch 
 {
+private:
+	int window_index;
+	float window[window_size];
+	float E_now, E_then;
+	char E_flag;
+	unsigned int decay_cnt;
+	
 public:
   RyanPatch()
   {
@@ -49,6 +49,26 @@ public:
     registerParameter(PARAMETER_B, "Gain");
     registerParameter(PARAMETER_C, "My Knob C");
     registerParameter(PARAMETER_D, "My Knob D");
+	
+	window_index = 0;
+	E_now = 1;
+	E_flag = 0;
+	decay_cnt = 0;
+	
+  }
+  
+  float energy(float *x, int win)
+  {
+	float sum=0;
+  
+	for(int i=0; i<win; i++)
+	{
+		sum += x[i] * x[i];		//running sum of squares for the window
+	}
+	
+	sum/=win;				//average of squares over the window (average energy)
+	
+	return	sum;			//return average value of energy for the window
   }
   
   
@@ -56,16 +76,14 @@ public:
   {
 	int size = buffer.getSize();
 
-	float thresh = getParameterValue(PARAMETER_A);     // 
-	float gain = getParameterValue(PARAMETER_B);
-	thresh /= 100;
-	gain *= 100;
+	//float thresh = getParameterValue(PARAMETER_A);     // 
+	//float gain = getParameterValue(PARAMETER_B);
  
 
 	
-    for(int ch=0; ch<buffer.getChannels(); ch++)
+    //for(int ch=0; ch<buffer.getChannels(); ch++)
 	{
-		float* buf = buffer.getSamples(ch);
+		float* buf = buffer.getSamples(0);
 		
 		for(int i=0; i<size; i++)
 		{
@@ -73,7 +91,7 @@ public:
 													//size of audio buffer
 			if (E_flag == 1)
 			{
-				buf[i] = buf[i]*gain/(decay_cnt+1);
+				buf[i] = buf[i]*decay_length/(decay_cnt+decay_length);
 				decay_cnt++;
 				if(decay_cnt==decay_length)
 				{
@@ -85,33 +103,18 @@ public:
 		
 		window_index++;		//increment the window index
 		
-		if(window_index==window_size/size)	//if the window is full
+		if(window_index>=window_size/size && E_flag==0)	//if the window is full
 		{
 			E_then = E_now;							//load previous window's energy into E_then
 			E_now = energy(window,window_size);		//call function to calculate current energy
 			window_index=0;							//reset the window index to 0
 			
-			if(E_now > (E_then + thresh))
+			if(E_now > (E_then))
 			{
 				E_flag = 1;		//set flag to trigger exponential decay if Energy increase detected
-				decay_cnt = 0;	//reset decay counter to restart decay
 			}
 		}
 	}
-  }
-  
-  float energy(float x[], int win)
-  {
-	float sum=0;
-  
-	for(int i=0; i<win; i++)
-	{
-		sum+=x[i]*x[i];		//running sum of squares for the window
-	}
-	
-	sum/=win;				//average of squares over the window (average energy)
-	
-	return	sum;			//return average value of energy for the window
   }
   
 };
