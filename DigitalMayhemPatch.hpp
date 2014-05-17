@@ -33,14 +33,15 @@
 
 class DigitalMayhemPatch : public Patch {
 private:
-	float samp;	
+	float samp;
 
 public:
   DigitalMayhemPatch(){
-    registerParameter(PARAMETER_A, "My Knob A");
-    registerParameter(PARAMETER_B, "My Knob B");
-    registerParameter(PARAMETER_C, "My Knob C");
+    registerParameter(PARAMETER_A, "Sampling Freq");
+    registerParameter(PARAMETER_B, "Mayhem");
+    registerParameter(PARAMETER_C, "Mayhem Freq");
     registerParameter(PARAMETER_D, "My Knob D");
+	
 	
   }
   void processAudio(AudioBuffer &buffer)
@@ -49,15 +50,24 @@ public:
     int size = buffer.getSize();
 	
 	float samp_float = getParameterValue(PARAMETER_A);
-	int samp_freq = ceil(samp_float*128+0.1);
+	int samp_freq = ceil(samp_float*63+0.1);
+	
+	float mayhem = getParameterValue(PARAMETER_B);
+	
+	float mayhem_freq = getParameterValue(PARAMETER_C);
+	
+	
     //for(int ch=0; ch<buffer.getChannels(); ++ch){
       float* buf = buffer.getSamples(0);
       for(int i=0; i<size; ++i)
 		{
 			if(i%samp_freq==0)
+			{
 				samp = buf[i];
+				buf[i] = buf[i]*(1+mayhem*cos(2*3.14*mayhem_freq*i/size));
+			}
 			else
-				buf[i] = samp;
+				buf[i] = samp*(1+mayhem*cos(2*3.14*mayhem_freq*i/size));
 		}
 	}
 };
