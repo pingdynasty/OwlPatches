@@ -42,13 +42,12 @@ private:
 
 public:
   SimpleDriveDelayPatch() : delay(0)
-  {
+    {
     registerParameter(PARAMETER_A, "Delay");
     registerParameter(PARAMETER_B, "Feedback");
     registerParameter(PARAMETER_C, "Drive");
-    registerParameter(PARAMETER_D, "Dry/Wet");
+    registerParameter(PARAMETER_D, "Wet/Dry ");
     AudioBuffer* buffer = createMemoryBuffer(1, REQUEST_BUFFER_SIZE);
-      
     delayBuffer.initialise(buffer->getSamples(0), buffer->getSize());
       }
   void processAudio(AudioBuffer &buffer)
@@ -68,19 +67,21 @@ public:
     newDelay = delayTime * (delayBuffer.getSize()-1);
       
     float* x = buffer.getSamples(0);
-
+    float y = 0;
+      
     int size = buffer.getSize();
-    for (int n = 0; n < size; n++)
-    {
-        x[n] = (delayBuffer.read(delay)*(size-1-n) + delayBuffer.read(newDelay)*n)/size + x[n];
+    for (int n = 0; n < size; n++)     {
+        y = (delayBuffer.read(delay)*(size-1-n) + delayBuffer.read(newDelay)*n)/size + x[n];
    
-        x[n]= nonLinear(x[n] * 1.5);
+        y = nonLinear(y * 1.5);
         
-        delayBuffer.write(feedback * x[n]);
-        x[n] = (nonLinear(x[n] * drive)) * 0.25;
+        delayBuffer.write(feedback * y);
+        
+        y = (nonLinear(y * drive)) * 0.25;
       
         
-        x[n] = (x[n] * 0.75) *  wetDry;
+        x[n] = (y *  (1 - wetDry)) +  (x[n] * wetDry);
+
       
     }
     delay=newDelay;
