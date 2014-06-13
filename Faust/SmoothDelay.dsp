@@ -15,13 +15,13 @@ declare license "STK-4.3";
 
 import("music.lib");
 
-process = par(i, 2, voice)
+process = voice
 	with 
 	{ 
 		voice 	= (+ : sdelay(N, interp, dtime)) ~ *(fback);
-		N 		= int(2^19); 
+		N	= int(2^17); 
 		interp 	= hslider("interpolation[unit:ms][style:knob][OWL:PARAMETER_A]",10,1,100,0.1)*SR/1000.0; 
-		dtime	= hslider("delay[unit:ms][style:knob][OWL:PARAMETER_B]", 0, 0, 5000, 0.1)*SR/1000.0;
+		dtime	= hslider("delay[unit:ms][style:knob][OWL:PARAMETER_B]", 0, 0, 500, 0.1)*SR/1000.0;
 		fback 	= hslider("feedback[style:knob][OWL:PARAMETER_C]",0,0,100,0.1)/100.0; 
 	};
 

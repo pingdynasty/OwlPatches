@@ -24,7 +24,7 @@ BPS = 360;	// general tempo (beat per sec)
 // 		3-loops string instrument
 //-----------------------------------------------------------------------
 
-process = _,_,(harpe(C,11,48) :> *(l),*(l)) :> _,_
+process = _,(harpe(C,3,48) :> *(l)) :> _
 	with {
 		l = hslider("master[OWL:PARAMETER_A]",0, 0, 1, 0.01);
 		C = hslider("timbre[OWL:PARAMETER_C]",0, 0, 1, 0.01);

@@ -345,12 +345,15 @@ class SmoothDelay : public dsp {
 	float 	fRec4[2];
 	FAUSTFLOAT 	fslider2;
 	int 	IOTA;
-	float 	fVec0[524288];
+	float 	fVec0[131072];
 	float 	fRec0[2];
-	float 	fVec1[524288];
-	float 	fRec5[2];
   public:
 	static void metadata(Meta* m) 	{ 
+		m->declare("name", "SmoothDelay");
+		m->declare("author", "Yann Orlarey");
+		m->declare("copyright", "Grame");
+		m->declare("version", "1.0");
+		m->declare("license", "STK-4.3");
 		m->declare("music.lib/name", "Music Library");
 		m->declare("music.lib/author", "GRAME");
 		m->declare("music.lib/copyright", "GRAME");
@@ -361,15 +364,10 @@ class SmoothDelay : public dsp {
 		m->declare("math.lib/copyright", "GRAME");
 		m->declare("math.lib/version", "1.0");
 		m->declare("math.lib/license", "LGPL with exception");
-		m->declare("name", "SmoothDelay");
-		m->declare("author", "Yann Orlarey");
-		m->declare("copyright", "Grame");
-		m->declare("version", "1.0");
-		m->declare("license", "STK-4.3");
 	}
 
-	virtual int getNumInputs() 	{ return 2; }
-	virtual int getNumOutputs() 	{ return 2; }
+	virtual int getNumInputs() 	{ return 1; }
+	virtual int getNumOutputs() 	{ return 1; }
 	static void classInit(int samplingFreq) {
 	}
 	virtual void instanceInit(int samplingFreq) {
@@ -385,10 +383,8 @@ class SmoothDelay : public dsp {
 		for (int i=0; i<2; i++) fRec4[i] = 0;
 		fslider2 = 0.0f;
 		IOTA = 0;
-		for (int i=0; i<524288; i++) fVec0[i] = 0;
+		for (int i=0; i<131072; i++) fVec0[i] = 0;
 		for (int i=0; i<2; i++) fRec0[i] = 0;
-		for (int i=0; i<524288; i++) fVec1[i] = 0;
-		for (int i=0; i<2; i++) fRec5[i] = 0;
 	}
 	virtual void init(int samplingFreq) {
 		classInit(samplingFreq);
@@ -399,7 +395,7 @@ class SmoothDelay : public dsp {
 		interface->declare(&fslider0, "OWL", "PARAMETER_B");
 		interface->declare(&fslider0, "style", "knob");
 		interface->declare(&fslider0, "unit", "ms");
-		interface->addHorizontalSlider("delay", &fslider0, 0.0f, 0.0f, 5e+03f, 0.1f);
+		interface->addHorizontalSlider("delay", &fslider0, 0.0f, 0.0f, 5e+02f, 0.1f);
 		interface->declare(&fslider2, "OWL", "PARAMETER_C");
 		interface->declare(&fslider2, "style", "knob");
 		interface->addHorizontalSlider("feedback", &fslider2, 0.0f, 0.0f, 1e+02f, 0.1f);
@@ -415,30 +411,19 @@ class SmoothDelay : public dsp {
 		float 	fSlow2 = (0 - fSlow1);
 		float 	fSlow3 = (0.01f * float(fslider2));
 		FAUSTFLOAT* input0 = input[0];
-		FAUSTFLOAT* input1 = input[1];
 		FAUSTFLOAT* output0 = output[0];
-		FAUSTFLOAT* output1 = output[1];
 		for (int i=0; i<count; i++) {
 			float fTemp0 = (float)input0[i];
-			float fTemp1 = (float)input1[i];
-			float fTemp2 = ((int((fRec1[1] != 0.0f)))?((int(((fRec2[1] > 0.0f) & (fRec2[1] < 1.0f))))?fRec1[1]:0):((int(((fRec2[1] == 0.0f) & (fSlow0 != fRec3[1]))))?fSlow1:((int(((fRec2[1] == 1.0f) & (fSlow0 != fRec4[1]))))?fSlow2:0)));
-			fRec1[0] = fTemp2;
-			fRec2[0] = max(0.0f, min(1.0f, (fRec2[1] + fTemp2)));
+			float fTemp1 = ((int((fRec1[1] != 0.0f)))?((int(((fRec2[1] > 0.0f) & (fRec2[1] < 1.0f))))?fRec1[1]:0):((int(((fRec2[1] == 0.0f) & (fSlow0 != fRec3[1]))))?fSlow1:((int(((fRec2[1] == 1.0f) & (fSlow0 != fRec4[1]))))?fSlow2:0)));
+			fRec1[0] = fTemp1;
+			fRec2[0] = max(0.0f, min(1.0f, (fRec2[1] + fTemp1)));
 			fRec3[0] = ((int(((fRec2[1] >= 1.0f) & (fRec4[1] != fSlow0))))?fSlow0:fRec3[1]);
 			fRec4[0] = ((int(((fRec2[1] <= 0.0f) & (fRec3[1] != fSlow0))))?fSlow0:fRec4[1]);
-			float fTemp3 = (1.0f - fRec2[0]);
-			float fTemp4 = (fTemp0 + (fSlow3 * fRec0[1]));
-			fVec0[IOTA&524287] = fTemp4;
-			int iTemp5 = int((int(fRec3[0]) & 524287));
-			int iTemp6 = int((int(fRec4[0]) & 524287));
-			fRec0[0] = ((fTemp3 * fVec0[(IOTA-iTemp5)&524287]) + (fRec2[0] * fVec0[(IOTA-iTemp6)&524287]));
+			float fTemp2 = (fTemp0 + (fSlow3 * fRec0[1]));
+			fVec0[IOTA&131071] = fTemp2;
+			fRec0[0] = (((1.0f - fRec2[0]) * fVec0[(IOTA-int((int(fRec3[0]) & 131071)))&131071]) + (fRec2[0] * fVec0[(IOTA-int((int(fRec4[0]) & 131071)))&131071]));
 			output0[i] = (FAUSTFLOAT)fRec0[0];
-			float fTemp7 = (fTemp1 + (fSlow3 * fRec5[1]));
-			fVec1[IOTA&524287] = fTemp7;
-			fRec5[0] = ((fTemp3 * fVec1[(IOTA-iTemp5)&524287]) + (fRec2[0] * fVec1[(IOTA-iTemp6)&524287]));
-			output1[i] = (FAUSTFLOAT)fRec5[0];
 			// post processing
-			fRec5[1] = fRec5[0];
 			fRec0[1] = fRec0[0];
 			IOTA = IOTA+1;
 			fRec4[1] = fRec4[0];
