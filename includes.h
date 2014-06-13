@@ -27,9 +27,13 @@
 #include "PsycheFilter.hpp"
 #include "ChorusPatch.hpp"
 #include "Tremolo.hpp"
-#include "RyanPatch.hpp"
 #include "ReverseReverbPatch.hpp"
 #include "SimpleDistortionPatch.hpp"
+
+#include "Faust/FaustVerbPatch.hpp"
+#include "Faust/FstHarpeAutoPatch.hpp"
+#include "Faust/EchoPatch.hpp"
+#include "Faust/SmoothDelayPatch.hpp"
 
 // #include "JotReverbPatch.hpp" // bug fix to be done re. new firmware
 // #include "SimpleDriveDelayPatch.hpp"

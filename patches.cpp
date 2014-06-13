@@ -1,10 +1,10 @@
-/* Help:
- REGISTER_PATCH(yourHppFileName,
-                "NameThatWillBeDisplayed",
-                numberInputChannels,
-                numberOutputChannels);
- 
- The first two registered patch are the default green and red patches in compiled the firmware.
+/**
+
+   Syntax:
+   REGISTER_PATCH(yourHppFileName, "NameThatWillBeDisplayed",
+                  numberInputChannels, numberOutputChannels); 
+
+   The first two registered patches are the default green and red patches in compiled the firmware.
  
 */
 
@@ -26,18 +26,22 @@ REGISTER_PATCH(SynthPatch, "Synthesizer", 1, 1);
 REGISTER_PATCH(FourBandsEqPatch, "FourBandsEqPatch", 1, 1);
 REGISTER_PATCH(BiasedDelayPatch, "Contest/BiasedDelayPatch", 2, 2);
 REGISTER_PATCH(little_blo_bleep, "Contest/blo bleep", 2, 2);
-REGISTER_PATCH(BiasPatch, "Contest/Bias", 2, 2);
-REGISTER_PATCH(BitH8rPatch, "Contest/BitH8r", 2, 2);
-REGISTER_PATCH(ConnyPatch, "Contest/ConnyPatch", 2, 2);
+// REGISTER_PATCH(BiasPatch, "Contest/Bias", 2, 2);
+// REGISTER_PATCH(BitH8rPatch, "Contest/BitH8r", 2, 2);
+// REGISTER_PATCH(ConnyPatch, "Contest/ConnyPatch", 2, 2);
 REGISTER_PATCH(DualTremoloPatch, "Contest/DualTremolo", 2, 2);
 REGISTER_PATCH(MdaBandistoPatch, "mdaPorts/MdaBandisto", 2, 2);
 REGISTER_PATCH(MdaStereoPatch, "mdaPorts/MdaStereo", 2, 2);
 REGISTER_PATCH(MdaTransientPatch, "mdaPorts/MdaTransient", 2, 2);
 REGISTER_PATCH(QompressionPatch, "Qompression", 2, 2);
 REGISTER_PATCH(PsycheFilterPatch, "Psyche Filter", 2, 2);
-REGISTER_PATCH(RyanPatch, "RyanPatch", 2, 2);
 REGISTER_PATCH(ReverseReverbPatch, "ReverseReverbPatch", 1, 1);
 REGISTER_PATCH(SimpleDistortionPatch, "SimpleDistortionPatch", 1, 1);
+
+REGISTER_PATCH(FaustVerbPatch, "Faust/FreeVerb", 1, 1);
+REGISTER_PATCH(FstHarpeAutoPatch, "Faust/AutoHarp", 1, 1);
+REGISTER_PATCH(SmoothDelayPatch, "Faust/SmoothDelay", 2, 2);
+REGISTER_PATCH(EchoPatch, "Faust/Echo", 2, 2);
 
 /*
 TO BE WORKED ON
