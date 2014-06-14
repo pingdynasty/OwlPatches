@@ -38,12 +38,11 @@
 typedef struct {
   int numSamps; // N
   float noise[NUM_SAMPLES];  // white noise x(n)
-  float pluck[NUM_BUFFER]; // output y(n), up to 4 seconds
+  float pluck[NUM_BUFFER]; // output y(n)
   float amp;
   float duration;
   int phase;
   float g; // filter gain/string tension/decay factor
-  float b; // blend factor for drum mode, b = 1 then same as string, b = 0 harp-like, b - 0.5 snare
   bool noteOn;
   uint8_t noiseType;
 } KarplusData;
@@ -57,28 +56,19 @@ public:
     registerParameter(PARAMETER_B, "Amp");
     registerParameter(PARAMETER_C, "Tension");
     registerParameter(PARAMETER_D, "Duration");
-    registerParameter(PARAMETER_E, "Blend");
     initializeKarplus();
   }
 
   void processAudio(AudioBuffer &buffer){
-    data.numSamps = getParameterValue(PARAMETER_A) * NUM_SAMPLES;
-    // getSampleRate()/(getParameterValue(PARAMETER_A)*(1000-30)+30);
-    // data.numSamps = SAMPLE_RATE/freqSlider->getValue();  // freq = SAMPLE_RATE / # samples in delay line
+    data.numSamps = getParameterValue(PARAMETER_A) * (NUM_SAMPLES-8)+8;
     data.amp = getParameterValue(PARAMETER_B);
-    // data.amp = ampSlider->getValue();
     data.g = getParameterValue(PARAMETER_C)*(0.5-0.48)+0.48;
-    // data.g = tensionSlider->getValue();
     data.duration = getParameterValue(PARAMETER_D) * NUM_BUFFER;
-    // data.duration = durationSlider->getValue();
-    data.b = getParameterValue(PARAMETER_E);
-    // data.b = bSlider->getValue();
 
     if(isButtonPressed(PUSHBUTTON))
       data.noteOn = true;
 
     int size = buffer.getSize();
-    // for(int ch=0; ch<buffer.getChannels(); ++ch){
     float* left = buffer.getSamples(0);
     float* right = buffer.getChannels() > 1 ? buffer.getSamples(1) : left;
     for(int i=0; i<size; ++i){
@@ -87,27 +77,17 @@ public:
       if(data.noteOn){
 	if(data.phase > (data.numSamps +  1)){
 	  // if we have filled up our delay line, y(n) = g * (y(n-N) + y( n-(N+1) ))
-
-	  float r = rand()/RAND_MAX;
-	  if(data.b <= r){
-	    // kick-like
-	    data.pluck[data.phase] = -1 * data.g * ( data.pluck[data.phase-data.numSamps]
-						     + data.pluck[data.phase - (data.numSamps + 1)] );
-	  }else{
-	    // harp-like
-	    data.pluck[data.phase] = data.g * ( data.pluck[data.phase-data.numSamps]
-						+ data.pluck[data.phase - (data.numSamps + 1)] );
-	  }
+	  data.pluck[data.phase] = data.g * ( data.pluck[data.phase-data.numSamps]
+					      + data.pluck[data.phase - (data.numSamps + 1)] );
 	}else{
 	  // computing the first N samples, y(n) = x(n)
-	  // if(data.noiseType == NOISETYPE_GAUSSIAN)
-	  data.pluck[data.phase] = data.noise[data.phase]; // use gaussian white noise
-	  // if(data.noiseType == NOISETYPE_RANDOM)
-	  //   data.pluck[data.phase] = rand()%100000/100000.;  // use random noise
+	  if(data.noiseType == NOISETYPE_GAUSSIAN)
+	    data.pluck[data.phase] = data.noise[data.phase]; // use gaussian white noise
+	  if(data.noiseType == NOISETYPE_RANDOM)
+	    data.pluck[data.phase] = rand()%100000/100000.;  // use random noise
 	}
-	left[i] = data.amp* data.pluck[data.phase];  //left channel
+	left[i] = data.amp * data.pluck[data.phase];  // left channel
 	right[i] = data.amp * data.pluck[data.phase];  // right channel
-
 	if(data.phase >= data.duration){
 	  // if we have reached the end of our duration
 	  data.phase = 0;
