@@ -13,7 +13,7 @@
 #include "RingModulatorPatch.hpp"
 #include "SynthPatch.hpp"
 #include "FourBandsEqPatch.hpp"
-#include "Contest/BiasedDelayPatch.hpp" 
+#include "Contest/BiasedDelayPatch.hpp"
 #include "Contest/blo_bleep.hpp"
 #include "Contest/BiasPatch.hpp"
 #include "Contest/BitH8rPatch.hpp"
@@ -34,6 +34,9 @@
 #include "Faust/FstHarpeAutoPatch.hpp"
 #include "Faust/EchoPatch.hpp"
 #include "Faust/SmoothDelayPatch.hpp"
+#include "Faust/StereoEchoPatch.hpp"
+#include "Faust/CrybabyPatch.hpp"
+#include "Faust/AutoWahPatch.hpp"
 
 // #include "JotReverbPatch.hpp" // bug fix to be done re. new firmware
 // #include "SimpleDriveDelayPatch.hpp"

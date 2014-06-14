@@ -1,11 +1,8 @@
 //-----------------------------------------------------
-// name: "Kisana"
-// author: "Yann Orlarey"
 //
 // Code generated with Faust 0.9.67 (http://faust.grame.fr)
 //-----------------------------------------------------
 /* link with  */
-#include <math.h>
 /************************************************************************
 
 	IMPORTANT NOTE : this file contains two clearly delimited sections :
@@ -42,8 +39,8 @@
  ************************************************************************
  ************************************************************************/
 
-#ifndef __FstHarpeAutoPatch_h__
-#define __FstHarpeAutoPatch_h__
+#ifndef __StereoEchoPatch_h__
+#define __StereoEchoPatch_h__
 
 #include "StompBox.h"
 #include "owlcontrol.h"
@@ -326,171 +323,60 @@ class OwlUI : public UI
 typedef long double quad;
 
 #ifndef FAUSTCLASS 
-#define FAUSTCLASS FstHarpeAuto
+#define FAUSTCLASS StereoEcho
 #endif
 
-class FstHarpeAuto : public dsp {
+class StereoEcho : public dsp {
   private:
-	class SIG0 {
-	  private:
-		int 	fSamplingFreq;
-	  public:
-		int getNumInputs() 	{ return 0; }
-		int getNumOutputs() 	{ return 1; }
-		void init(int samplingFreq) {
-			fSamplingFreq = samplingFreq;
-		}
-		void fill (int count, float output[]) {
-			for (int i=0; i<count; i++) {
-				output[i] = 0.0f;
-			}
-		}
-	};
-
-
 	FAUSTFLOAT 	fslider0;
 	FAUSTFLOAT 	fslider1;
-	int 	iRec1[2];
-	float 	ftbl0[16];
-	int 	iConst0;
-	int 	iRec3[2];
-	int 	iVec0[2];
-	FAUSTFLOAT 	fslider2;
-	int 	iVec1[2];
-	int 	iRec4[2];
-	int 	iRec5[2];
-	int 	iVec2[2];
-	float 	fRec2[2];
 	int 	IOTA;
-	float 	fVec3[512];
-	float 	fRec0[3];
-	int 	iVec4[2];
-	float 	fRec7[2];
-	float 	fVec5[512];
-	float 	fRec6[3];
-	int 	iVec6[2];
-	float 	fRec9[2];
-	float 	fVec7[512];
-	float 	fRec8[3];
+	float 	fRec0[65536];
+	float 	fRec1[65536];
   public:
 	static void metadata(Meta* m) 	{ 
-		m->declare("music.lib/name", "Music Library");
-		m->declare("music.lib/author", "GRAME");
-		m->declare("music.lib/copyright", "GRAME");
-		m->declare("music.lib/version", "1.0");
-		m->declare("music.lib/license", "LGPL with exception");
-		m->declare("math.lib/name", "Math Library");
-		m->declare("math.lib/author", "GRAME");
-		m->declare("math.lib/copyright", "GRAME");
-		m->declare("math.lib/version", "1.0");
-		m->declare("math.lib/license", "LGPL with exception");
-		m->declare("name", "Kisana");
-		m->declare("author", "Yann Orlarey");
 	}
 
-	virtual int getNumInputs() 	{ return 1; }
-	virtual int getNumOutputs() 	{ return 1; }
+	virtual int getNumInputs() 	{ return 2; }
+	virtual int getNumOutputs() 	{ return 2; }
 	static void classInit(int samplingFreq) {
 	}
 	virtual void instanceInit(int samplingFreq) {
 		fSamplingFreq = samplingFreq;
 		fslider0 = 0.0f;
 		fslider1 = 0.0f;
-		for (int i=0; i<2; i++) iRec1[i] = 0;
-		SIG0 sig0;
-		sig0.init(samplingFreq);
-		sig0.fill(16,ftbl0);
-		iConst0 = int((0.16666666666666666f * min(192000, max(1, fSamplingFreq))));
-		for (int i=0; i<2; i++) iRec3[i] = 0;
-		for (int i=0; i<2; i++) iVec0[i] = 0;
-		fslider2 = 0.0f;
-		for (int i=0; i<2; i++) iVec1[i] = 0;
-		for (int i=0; i<2; i++) iRec4[i] = 0;
-		for (int i=0; i<2; i++) iRec5[i] = 0;
-		for (int i=0; i<2; i++) iVec2[i] = 0;
-		for (int i=0; i<2; i++) fRec2[i] = 0;
 		IOTA = 0;
-		for (int i=0; i<512; i++) fVec3[i] = 0;
-		for (int i=0; i<3; i++) fRec0[i] = 0;
-		for (int i=0; i<2; i++) iVec4[i] = 0;
-		for (int i=0; i<2; i++) fRec7[i] = 0;
-		for (int i=0; i<512; i++) fVec5[i] = 0;
-		for (int i=0; i<3; i++) fRec6[i] = 0;
-		for (int i=0; i<2; i++) iVec6[i] = 0;
-		for (int i=0; i<2; i++) fRec9[i] = 0;
-		for (int i=0; i<512; i++) fVec7[i] = 0;
-		for (int i=0; i<3; i++) fRec8[i] = 0;
+		for (int i=0; i<65536; i++) fRec0[i] = 0;
+		for (int i=0; i<65536; i++) fRec1[i] = 0;
 	}
 	virtual void init(int samplingFreq) {
 		classInit(samplingFreq);
 		instanceInit(samplingFreq);
 	}
 	virtual void buildUserInterface(UI* interface) {
-		interface->openVerticalBox("FstHarpeAuto");
-		interface->openVerticalBox("loop48");
-		interface->declare(&fslider2, "1", "");
-		interface->declare(&fslider2, "OWL", "PARAMETER_B");
-		interface->addHorizontalSlider("note", &fslider2, 0.0f, 0.0f, 3.0f, 1.0f);
-		interface->closeBox();
-		interface->declare(&fslider0, "OWL", "PARAMETER_A");
-		interface->addHorizontalSlider("master", &fslider0, 0.0f, 0.0f, 1.0f, 0.01f);
-		interface->declare(&fslider1, "OWL", "PARAMETER_C");
-		interface->addHorizontalSlider("timbre", &fslider1, 0.0f, 0.0f, 1.0f, 0.01f);
+		interface->openVerticalBox("stereoecho");
+		interface->declare(&fslider0, "OWL", "PARAMETER_B");
+		interface->addHorizontalSlider("feedback", &fslider0, 0.0f, 0.0f, 1.0f, 0.01f);
+		interface->declare(&fslider1, "OWL", "PARAMETER_A");
+		interface->addHorizontalSlider("millisecond", &fslider1, 0.0f, 0.0f, 1e+03f, 0.1f);
 		interface->closeBox();
 	}
 	virtual void compute (int count, FAUSTFLOAT** input, FAUSTFLOAT** output) {
-		float 	fSlow0 = (1.32111921963914f * float(fslider0));
-		float 	fSlow1 = float(fslider1);
-		float 	fSlow2 = (1 + fSlow1);
-		float 	fSlow3 = (1 - fSlow1);
-		int 	iSlow4 = int(float(fslider2));
-		int 	iSlow5 = (iSlow4 <= 0.0f);
+		float 	fSlow0 = float(fslider0);
+		int 	iSlow1 = int((1 + int((48 * float(fslider1)))));
 		FAUSTFLOAT* input0 = input[0];
+		FAUSTFLOAT* input1 = input[1];
 		FAUSTFLOAT* output0 = output[0];
+		FAUSTFLOAT* output1 = output[1];
 		for (int i=0; i<count; i++) {
 			float fTemp0 = (float)input0[i];
-			iRec1[0] = (12345 + (1103515245 * iRec1[1]));
-			iRec3[0] = ((1 + iRec3[1]) % iConst0);
-			int iTemp1 = int((iRec3[0] == 0));
-			iVec0[0] = iTemp1;
-			iVec1[0] = iSlow4;
-			iRec4[0] = ((int(iVec0[1]))?0:(iRec4[1] + abs((iSlow4 - iVec1[1]))));
-			iRec5[0] = ((iVec0[0] + iRec5[1]) % 15);
-			ftbl0[((int((iVec0[0] & ((iRec4[0] > 0) | iSlow5))))?iRec5[0]:15)] = iSlow4;
-			float fTemp2 = ftbl0[iRec5[0]];
-			int iTemp3 = (fabsf((fTemp2 - 3)) < 0.5f);
-			iVec2[0] = iTemp3;
-			fRec2[0] = ((fRec2[1] + ((iVec2[0] - iVec2[1]) > 0.0f)) - (0.00373727388790102f * (fRec2[1] > 0.0f)));
-			fVec3[IOTA&511] = ((0.4947882913184981f * ((fSlow2 * fRec0[1]) + (fSlow3 * fRec0[2]))) + (4.656612875245797e-10f * (iRec1[0] * (fRec2[0] > 0.0f))));
-			fRec0[0] = fVec3[(IOTA-266)&511];
-			int iTemp4 = (fabsf((fTemp2 - 1)) < 0.5f);
-			iVec4[0] = iTemp4;
-			fRec7[0] = ((fRec7[1] + ((iVec4[0] - iVec4[1]) > 0.0f)) - (0.00296627625057368f * (fRec7[1] > 0.0f)));
-			fVec5[IOTA&511] = ((0.4934425764844625f * ((fSlow2 * fRec6[1]) + (fSlow3 * fRec6[2]))) + (4.656612875245797e-10f * (iRec1[0] * (fRec7[0] > 0.0f))));
-			fRec6[0] = fVec5[(IOTA-336)&511];
-			int iTemp5 = (fabsf((fTemp2 - 2)) < 0.5f);
-			iVec6[0] = iTemp5;
-			fRec9[0] = ((fRec9[1] + ((iVec6[0] - iVec6[1]) > 0.0f)) - (0.0033295325160703805f * (fRec9[1] > 0.0f)));
-			fVec7[IOTA&511] = ((0.4941537998866976f * ((fSlow2 * fRec8[1]) + (fSlow3 * fRec8[2]))) + (4.656612875245797e-10f * (iRec1[0] * (fRec9[0] > 0.0f))));
-			fRec8[0] = fVec7[(IOTA-299)&511];
-			output0[i] = (FAUSTFLOAT)(fTemp0 + (fSlow0 * (fRec0[0] + (fRec6[0] + (1.07046626931927f * fRec8[0])))));
+			float fTemp1 = (float)input1[i];
+			fRec0[IOTA&65535] = (fTemp0 + (fSlow0 * fRec0[(IOTA-iSlow1)&65535]));
+			output0[i] = (FAUSTFLOAT)fRec0[(IOTA-0)&65535];
+			fRec1[IOTA&65535] = (fTemp1 + (fSlow0 * fRec1[(IOTA-iSlow1)&65535]));
+			output1[i] = (FAUSTFLOAT)fRec1[(IOTA-0)&65535];
 			// post processing
-			fRec8[2] = fRec8[1]; fRec8[1] = fRec8[0];
-			fRec9[1] = fRec9[0];
-			iVec6[1] = iVec6[0];
-			fRec6[2] = fRec6[1]; fRec6[1] = fRec6[0];
-			fRec7[1] = fRec7[0];
-			iVec4[1] = iVec4[0];
-			fRec0[2] = fRec0[1]; fRec0[1] = fRec0[0];
 			IOTA = IOTA+1;
-			fRec2[1] = fRec2[0];
-			iVec2[1] = iVec2[0];
-			iRec5[1] = iRec5[0];
-			iRec4[1] = iRec4[0];
-			iVec1[1] = iVec1[0];
-			iVec0[1] = iVec0[0];
-			iRec3[1] = iRec3[0];
-			iRec1[1] = iRec1[0];
 		}
 	}
 };
@@ -505,18 +391,18 @@ class FstHarpeAuto : public dsp {
 
 /**************************************************************************************
 
-	FstHarpeAutoPatch : an OWL patch that calls Faust generated DSP code
+	StereoEchoPatch : an OWL patch that calls Faust generated DSP code
 	
 ***************************************************************************************/
 
-class FstHarpeAutoPatch : public Patch
+class StereoEchoPatch : public Patch
 {
-    FstHarpeAuto   fDSP;
+    StereoEcho   fDSP;
     OwlUI	fUI;
     
 public:
 
-    FstHarpeAutoPatch() : fUI(patches.getCurrentPatchProcessor())
+    StereoEchoPatch() : fUI(patches.getCurrentPatchProcessor())
     {
         fDSP.init(int(getSampleRate()));		// Init Faust code with the OWL sampling rate
         fDSP.buildUserInterface(&fUI);			// Maps owl parameters and faust widgets 
@@ -551,7 +437,7 @@ public:
 
 };
 
-#endif // __FstHarpeAutoPatch_h__
+#endif // __StereoEchoPatch_h__
 
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////
