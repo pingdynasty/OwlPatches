@@ -362,7 +362,7 @@ class FstHarpeAuto : public dsp {
 	int 	iVec2[2];
 	float 	fRec2[2];
 	int 	IOTA;
-	float 	fVec3[512];
+	float 	fVec3[256];
 	float 	fRec0[3];
 	int 	iVec4[2];
 	float 	fRec7[2];
@@ -372,6 +372,10 @@ class FstHarpeAuto : public dsp {
 	float 	fRec9[2];
 	float 	fVec7[512];
 	float 	fRec8[3];
+	int 	iVec8[2];
+	float 	fRec11[2];
+	float 	fVec9[512];
+	float 	fRec10[3];
   public:
 	static void metadata(Meta* m) 	{ 
 		m->declare("music.lib/name", "Music Library");
@@ -410,7 +414,7 @@ class FstHarpeAuto : public dsp {
 		for (int i=0; i<2; i++) iVec2[i] = 0;
 		for (int i=0; i<2; i++) fRec2[i] = 0;
 		IOTA = 0;
-		for (int i=0; i<512; i++) fVec3[i] = 0;
+		for (int i=0; i<256; i++) fVec3[i] = 0;
 		for (int i=0; i<3; i++) fRec0[i] = 0;
 		for (int i=0; i<2; i++) iVec4[i] = 0;
 		for (int i=0; i<2; i++) fRec7[i] = 0;
@@ -420,6 +424,10 @@ class FstHarpeAuto : public dsp {
 		for (int i=0; i<2; i++) fRec9[i] = 0;
 		for (int i=0; i<512; i++) fVec7[i] = 0;
 		for (int i=0; i<3; i++) fRec8[i] = 0;
+		for (int i=0; i<2; i++) iVec8[i] = 0;
+		for (int i=0; i<2; i++) fRec11[i] = 0;
+		for (int i=0; i<512; i++) fVec9[i] = 0;
+		for (int i=0; i<3; i++) fRec10[i] = 0;
 	}
 	virtual void init(int samplingFreq) {
 		classInit(samplingFreq);
@@ -430,7 +438,7 @@ class FstHarpeAuto : public dsp {
 		interface->openVerticalBox("loop48");
 		interface->declare(&fslider2, "1", "");
 		interface->declare(&fslider2, "OWL", "PARAMETER_B");
-		interface->addHorizontalSlider("note", &fslider2, 0.0f, 0.0f, 3.0f, 1.0f);
+		interface->addHorizontalSlider("note", &fslider2, 0.0f, 0.0f, 4.0f, 1.0f);
 		interface->closeBox();
 		interface->declare(&fslider0, "OWL", "PARAMETER_A");
 		interface->addHorizontalSlider("master", &fslider0, 0.0f, 0.0f, 1.0f, 0.01f);
@@ -439,9 +447,9 @@ class FstHarpeAuto : public dsp {
 		interface->closeBox();
 	}
 	virtual void compute (int count, FAUSTFLOAT** input, FAUSTFLOAT** output) {
-		float 	fSlow0 = (1.32111921963914f * float(fslider0));
+		float 	fSlow0 = (1.2889677372867592f * float(fslider0));
 		float 	fSlow1 = float(fslider1);
-		float 	fSlow2 = (1 + fSlow1);
+		float 	fSlow2 = (fSlow1 + 1);
 		float 	fSlow3 = (1 - fSlow1);
 		int 	iSlow4 = int(float(fslider2));
 		int 	iSlow5 = (iSlow4 <= 0.0f);
@@ -458,11 +466,11 @@ class FstHarpeAuto : public dsp {
 			iRec5[0] = ((iVec0[0] + iRec5[1]) % 15);
 			ftbl0[((int((iVec0[0] & ((iRec4[0] > 0) | iSlow5))))?iRec5[0]:15)] = iSlow4;
 			float fTemp2 = ftbl0[iRec5[0]];
-			int iTemp3 = (fabsf((fTemp2 - 3)) < 0.5f);
+			int iTemp3 = (fabsf((fTemp2 - 4)) < 0.5f);
 			iVec2[0] = iTemp3;
-			fRec2[0] = ((fRec2[1] + ((iVec2[0] - iVec2[1]) > 0.0f)) - (0.00373727388790102f * (fRec2[1] > 0.0f)));
-			fVec3[IOTA&511] = ((0.4947882913184981f * ((fSlow2 * fRec0[1]) + (fSlow3 * fRec0[2]))) + (4.656612875245797e-10f * (iRec1[0] * (fRec2[0] > 0.0f))));
-			fRec0[0] = fVec3[(IOTA-266)&511];
+			fRec2[0] = ((fRec2[1] + ((iVec2[0] - iVec2[1]) > 0.0f)) - (0.004444392698205774f * (fRec2[1] > 0.0f)));
+			fVec3[IOTA&255] = ((0.49561384415280396f * ((fSlow2 * fRec0[1]) + (fSlow3 * fRec0[2]))) + (4.656612875245797e-10f * (iRec1[0] * (fRec2[0] > 0.0f))));
+			fRec0[0] = fVec3[(IOTA-224)&255];
 			int iTemp4 = (fabsf((fTemp2 - 1)) < 0.5f);
 			iVec4[0] = iTemp4;
 			fRec7[0] = ((fRec7[1] + ((iVec4[0] - iVec4[1]) > 0.0f)) - (0.00296627625057368f * (fRec7[1] > 0.0f)));
@@ -473,8 +481,16 @@ class FstHarpeAuto : public dsp {
 			fRec9[0] = ((fRec9[1] + ((iVec6[0] - iVec6[1]) > 0.0f)) - (0.0033295325160703805f * (fRec9[1] > 0.0f)));
 			fVec7[IOTA&511] = ((0.4941537998866976f * ((fSlow2 * fRec8[1]) + (fSlow3 * fRec8[2]))) + (4.656612875245797e-10f * (iRec1[0] * (fRec9[0] > 0.0f))));
 			fRec8[0] = fVec7[(IOTA-299)&511];
-			output0[i] = (FAUSTFLOAT)(fTemp0 + (fSlow0 * (fRec0[0] + (fRec6[0] + (1.07046626931927f * fRec8[0])))));
+			int iTemp6 = (fabsf((fTemp2 - 3)) < 0.5f);
+			iVec8[0] = iTemp6;
+			fRec11[0] = ((fRec11[1] + ((iVec8[0] - iVec8[1]) > 0.0f)) - (0.00373727388790102f * (fRec11[1] > 0.0f)));
+			fVec9[IOTA&511] = ((0.4947882913184981f * ((fSlow2 * fRec10[1]) + (fSlow3 * fRec10[2]))) + (4.656612875245797e-10f * (iRec1[0] * (fRec11[0] > 0.0f))));
+			fRec10[0] = fVec9[(IOTA-266)&511];
+			output0[i] = (FAUSTFLOAT)(fTemp0 + (fSlow0 * (fRec0[0] + ((fRec6[0] + (1.0884227821644648f * fRec8[0])) + (1.0884227821644648f * fRec10[0])))));
 			// post processing
+			fRec10[2] = fRec10[1]; fRec10[1] = fRec10[0];
+			fRec11[1] = fRec11[0];
+			iVec8[1] = iVec8[0];
 			fRec8[2] = fRec8[1]; fRec8[1] = fRec8[0];
 			fRec9[1] = fRec9[0];
 			iVec6[1] = iVec6[0];

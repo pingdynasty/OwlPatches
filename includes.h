@@ -37,6 +37,7 @@
 #include "Faust/StereoEchoPatch.hpp"
 #include "Faust/CrybabyPatch.hpp"
 #include "Faust/AutoWahPatch.hpp"
+#include "Faust/StereoWahPatch.hpp"
 
 // #include "JotReverbPatch.hpp" // bug fix to be done re. new firmware
 // #include "SimpleDriveDelayPatch.hpp"

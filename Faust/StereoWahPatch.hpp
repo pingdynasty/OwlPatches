@@ -49,8 +49,8 @@ template <> 	 inline int faustpower<1>(int x)            { return x; }
  ************************************************************************
  ************************************************************************/
 
-#ifndef __CrybabyPatch_h__
-#define __CrybabyPatch_h__
+#ifndef __StereoWahPatch_h__
+#define __StereoWahPatch_h__
 
 #include "StompBox.h"
 #include "owlcontrol.h"
@@ -333,19 +333,21 @@ class OwlUI : public UI
 typedef long double quad;
 
 #ifndef FAUSTCLASS 
-#define FAUSTCLASS Crybaby
+#define FAUSTCLASS StereoWah
 #endif
 
-class Crybaby : public dsp {
+class StereoWah : public dsp {
   private:
+	FAUSTFLOAT 	fslider0;
 	int 	iConst0;
 	float 	fConst1;
-	FAUSTFLOAT 	fslider0;
+	FAUSTFLOAT 	fslider1;
 	float 	fConst2;
 	float 	fRec1[2];
 	float 	fRec2[2];
 	float 	fRec3[2];
 	float 	fRec0[3];
+	float 	fRec4[3];
   public:
 	static void metadata(Meta* m) 	{ 
 		m->declare("effect.lib/name", "Faust Audio Effect Library");
@@ -376,49 +378,60 @@ class Crybaby : public dsp {
 		m->declare("math.lib/license", "LGPL with exception");
 	}
 
-	virtual int getNumInputs() 	{ return 1; }
-	virtual int getNumOutputs() 	{ return 1; }
+	virtual int getNumInputs() 	{ return 2; }
+	virtual int getNumOutputs() 	{ return 2; }
 	static void classInit(int samplingFreq) {
 	}
 	virtual void instanceInit(int samplingFreq) {
 		fSamplingFreq = samplingFreq;
+		fslider0 = 0.5f;
 		iConst0 = min(192000, max(1, fSamplingFreq));
 		fConst1 = (1413.7166941154069f / float(iConst0));
-		fslider0 = 0.6f;
+		fslider1 = 0.8f;
 		fConst2 = (2827.4333882308138f / float(iConst0));
 		for (int i=0; i<2; i++) fRec1[i] = 0;
 		for (int i=0; i<2; i++) fRec2[i] = 0;
 		for (int i=0; i<2; i++) fRec3[i] = 0;
 		for (int i=0; i<3; i++) fRec0[i] = 0;
+		for (int i=0; i<3; i++) fRec4[i] = 0;
 	}
 	virtual void init(int samplingFreq) {
 		classInit(samplingFreq);
 		instanceInit(samplingFreq);
 	}
 	virtual void buildUserInterface(UI* interface) {
-		interface->openVerticalBox("Crybaby");
-		interface->declare(&fslider0, "1", "");
-		interface->declare(&fslider0, "OWL", "PARAMETER_A");
-		interface->addHorizontalSlider("AhAh", &fslider0, 0.6f, 0.0f, 1.0f, 0.01f);
+		interface->openVerticalBox("StereoWah");
+		interface->declare(&fslider1, "OWL", "PARAMETER_A");
+		interface->addHorizontalSlider("Wah", &fslider1, 0.8f, 0.0f, 1.0f, 0.01f);
+		interface->declare(&fslider0, "OWL", "PARAMETER_B");
+		interface->addHorizontalSlider("dry wet", &fslider0, 0.5f, 0.0f, 1.0f, 0.01f);
 		interface->closeBox();
 	}
 	virtual void compute (int count, FAUSTFLOAT** input, FAUSTFLOAT** output) {
 		float 	fSlow0 = float(fslider0);
-		float 	fSlow1 = powf(2.0f,(2.3f * fSlow0));
-		float 	fSlow2 = (1 - (fConst1 * (fSlow1 / powf(2.0f,(1.0f + (2.0f * (1.0f - fSlow0)))))));
-		float 	fSlow3 = (0.0010000000000000009f * (0 - (2.0f * (fSlow2 * cosf((fConst2 * fSlow1))))));
-		float 	fSlow4 = (0.0010000000000000009f * faustpower<2>(fSlow2));
-		float 	fSlow5 = (0.0001000000000000001f * powf(4.0f,fSlow0));
+		float 	fSlow1 = (1 - fSlow0);
+		float 	fSlow2 = float(fslider1);
+		float 	fSlow3 = powf(2.0f,(2.3f * fSlow2));
+		float 	fSlow4 = (1 - (fConst1 * (fSlow3 / powf(2.0f,(1.0f + (2.0f * (1.0f - fSlow2)))))));
+		float 	fSlow5 = (0.0010000000000000009f * (0 - (2.0f * (fSlow4 * cosf((fConst2 * fSlow3))))));
+		float 	fSlow6 = (0.0010000000000000009f * faustpower<2>(fSlow4));
+		float 	fSlow7 = (0.0001000000000000001f * powf(4.0f,fSlow2));
 		FAUSTFLOAT* input0 = input[0];
+		FAUSTFLOAT* input1 = input[1];
 		FAUSTFLOAT* output0 = output[0];
+		FAUSTFLOAT* output1 = output[1];
 		for (int i=0; i<count; i++) {
 			float fTemp0 = (float)input0[i];
-			fRec1[0] = (fSlow3 + (0.999f * fRec1[1]));
-			fRec2[0] = (fSlow4 + (0.999f * fRec2[1]));
-			fRec3[0] = ((0.999f * fRec3[1]) + fSlow5);
+			float fTemp1 = (float)input1[i];
+			fRec1[0] = (fSlow5 + (0.999f * fRec1[1]));
+			fRec2[0] = (fSlow6 + (0.999f * fRec2[1]));
+			fRec3[0] = ((0.999f * fRec3[1]) + fSlow7);
 			fRec0[0] = (0 - (((fRec1[0] * fRec0[1]) + (fRec2[0] * fRec0[2])) - (fTemp0 * fRec3[0])));
-			output0[i] = (FAUSTFLOAT)(fRec0[0] - fRec0[1]);
+			output0[i] = (FAUSTFLOAT)((fSlow1 * fTemp0) + (fSlow0 * (fRec0[0] - fRec0[1])));
+			fRec4[0] = (0 - (((fRec1[0] * fRec4[1]) + (fRec2[0] * fRec4[2])) - (fTemp1 * fRec3[0])));
+			output1[i] = (FAUSTFLOAT)((fSlow1 * fTemp1) + (fSlow0 * (fRec4[0] - fRec4[1])));
 			// post processing
+			fRec4[2] = fRec4[1]; fRec4[1] = fRec4[0];
 			fRec0[2] = fRec0[1]; fRec0[1] = fRec0[0];
 			fRec3[1] = fRec3[0];
 			fRec2[1] = fRec2[0];
@@ -437,18 +450,18 @@ class Crybaby : public dsp {
 
 /**************************************************************************************
 
-	CrybabyPatch : an OWL patch that calls Faust generated DSP code
+	StereoWahPatch : an OWL patch that calls Faust generated DSP code
 	
 ***************************************************************************************/
 
-class CrybabyPatch : public Patch
+class StereoWahPatch : public Patch
 {
-    Crybaby   fDSP;
+    StereoWah   fDSP;
     OwlUI	fUI;
     
 public:
 
-    CrybabyPatch() : fUI(patches.getCurrentPatchProcessor())
+    StereoWahPatch() : fUI(patches.getCurrentPatchProcessor())
     {
         fDSP.init(int(getSampleRate()));		// Init Faust code with the OWL sampling rate
         fDSP.buildUserInterface(&fUI);			// Maps owl parameters and faust widgets 
@@ -483,7 +496,7 @@ public:
 
 };
 
-#endif // __CrybabyPatch_h__
+#endif // __StereoWahPatch_h__
 
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////
