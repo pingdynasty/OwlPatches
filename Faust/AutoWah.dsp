@@ -28,10 +28,10 @@ stereodrywet (monofx) = _,_ <: *(1-dw), *(1-dw), monofx*dw, monofx*dw :> _,_
 	};
 	
 // add dry wet control
-monodrywet (monofx) = _,_ :> _ <: *(1-dw), monofx*dw :> _ <: _,_
+monodrywet (monofx) = _ <: *(1-dw), monofx*dw :> _
 	with {
 		dw = hslider("dry wet[OWL:PARAMETER_D]",0.5,0,1,0.01);
 	};
 	
 // process = stereodrywet(wahwah);
-process = monodrywet(wahwah); // 3953 arm cycles with lfo = phasor(0.25);
+process = monodrywet(wahwah); // 3960 ARM cycles
