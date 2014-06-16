@@ -31,6 +31,8 @@
 #include "ReverseReverbPatch.hpp"
 #include "SimpleDistortionPatch.hpp"
 
+#include "MoogPatch.hpp"
+
 // #include "JotReverbPatch.hpp" // bug fix to be done re. new firmware
 // #include "SimpleDriveDelayPatch.hpp"
 // #include "Autotalent/AutotalentPatch.hpp"
