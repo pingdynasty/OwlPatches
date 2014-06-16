@@ -180,7 +180,7 @@ void MoogLadder::process(int numSamples, float *buffer, float w0, float res, flo
         
         // Multiplexer
         output = A*a + B*b + C*c + D*d + E*e ;
-        buffer[i] = output / powf(drive, 0.4f) ;
+        buffer[i] = output / powf(drive,0.3f);
         // state variables update
         in1=a;
         out1=b;
@@ -202,13 +202,12 @@ void MoogLadder::process(int numSamples, float *buffer, float w0, float res, flo
 class MoogPatch : public Patch {
 public:
   MoogPatch() {
-    registerParameter(PARAMETER_A, "Frequency", "Frequency");
+    registerParameter(PARAMETER_A, "Cutoff", "Cutoff");
     registerParameter(PARAMETER_B, "Resonance", "Resonance");
     registerParameter(PARAMETER_C, "Drive", "Drive");
-    registerParameter(PARAMETER_D, "");
     ladder.setType(LPF);
     ladder.setMutiplexer();
-    ladder.setCoeffs(0.1f);
+    ladder.setCoeffs(0.f);
   }    
 
   void processAudio(AudioBuffer &buffer){
@@ -222,10 +221,9 @@ private:
 
   float getFrequency() {
       float f = getParameterValue(PARAMETER_A);
-    // param_A = 0    <-> f=50;
-    // param_A = 1    <-> f=10050;
-//      return powf(10,3*f+1)+40;
-      return (f*8000)+50;
+    // param_A = 0    <-> f=40 Hz;
+    // param_A = 1    <-> f=20040 Hz;
+      return 2*powf(10,3*f+1)+40;
   }
         
   float getQ(){
@@ -236,7 +234,7 @@ private:
   }
     
   float getDrive(){
-    return 1+80*getParameterValue(PARAMETER_C);
+    return 1+80*getParameterValue(PARAMETER_C)*getParameterValue(PARAMETER_C);
   }
 };
 
