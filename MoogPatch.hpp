@@ -137,6 +137,7 @@ void MoogLadder::setCoeffs(float w0){
 
 float MoogLadder::processLadder(float input, float x1, float y1){
     float output = a1*y1 + b0*input + b1*x1;
+    return output;
 }
 
 float MoogLadder::nonLinear(float x){
@@ -207,18 +208,13 @@ public:
     registerParameter(PARAMETER_D, "");
     ladder.setType(LPF);
     ladder.setMutiplexer();
+    ladder.setCoeffs(0.1f);
   }    
 
   void processAudio(AudioBuffer &buffer){
-    // update filter coefficients
     float wn = 2*M_PI*getFrequency()/getSampleRate();
-    float Q = getQ();
-    float d = getDrive();
-    ladder.setCoeffs(wn);
-      
-    // process
     float* buf = buffer.getSamples(0);
-    ladder.process(buffer.getSize(), buf, wn, Q, d);
+    ladder.process(buffer.getSize(), buf, wn, getQ(), getDrive());
   }
     
 private:
