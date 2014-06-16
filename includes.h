@@ -30,7 +30,9 @@
 #include "RyanPatch.hpp"
 #include "ReverseReverbPatch.hpp"
 #include "SimpleDistortionPatch.hpp"
-
+#include "RyanPatch.hpp"
+#include "ReverseReverbPatch.hpp"
+#include "SimpleDistortionPatch.hpp"
 #include "MoogPatch.hpp"
 
 // #include "JotReverbPatch.hpp" // bug fix to be done re. new firmware
