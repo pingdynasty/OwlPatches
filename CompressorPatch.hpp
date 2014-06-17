@@ -34,7 +34,7 @@ class CompressorPatch : public Patch {
 public:
     int samplerate = (float)getSampleRate();
     float yL_prev[2];
-    float *compressorGain;
+//    float *compressorGain;
     
     CompressorPatch()
     {
@@ -51,6 +51,8 @@ public:
         float ratio = 1 + b * b;
         float attack = 0.1 + (getParameterValue(PARAMETER_C)*100);
         float release = 0.1 + (getParameterValue(PARAMETER_D)*100);
+        float alphaAttack = expf(-1/(0.001 * samplerate * attack));
+        float alphaRelease= expf(-1/(0.001 * samplerate * release));
         
         for(int channel = 0; channel < buffer.getChannels(); channel++)
         {
@@ -58,7 +60,7 @@ public:
             float* singleChannel = buffer.getSamples(channel);
             for(int i=0; i<size; i++)
             {
-                compressorGain = compressor(singleChannel[i], channel, threshold, ratio, attack, release);
+                compressorGain = compressor(singleChannel[i], channel, threshold, ratio, alphaAttack, alphaRelease);
                 singleChannel[i] *= compressorGain;
             }
         }
@@ -68,8 +70,6 @@ public:
     {
 //        if(release < attack)
 //            release = attack;
-        float alphaAttack = expf(-1/(0.001 * samplerate * attack));
-        float alphaRelease= expf(-1/(0.001 * samplerate * release));
         float x_g, x_l, y_g, y_l, c;
         float kneeWidth = 5;
         float makeupGain = (1/ratio-1) * threshold / 2; // Auto Gain Calculation
@@ -92,9 +92,9 @@ public:
         
         //Ballistics- smoothing of the gain
         if (x_l > yL_prev[channel])
-            y_l = alphaAttack * yL_prev[channel] + (1 - alphaAttack ) * x_l;
+            y_l = attack * yL_prev[channel] + (1 - attack ) * x_l;
         else
-            y_l = alphaRelease * yL_prev[channel] + (1 - alphaRelease) * x_l;
+            y_l = release * yL_prev[channel] + (1 - release) * x_l;
         c = powf(10,(makeupGain - y_l)/20);
         yL_prev[channel] = y_l;
         return c;
