@@ -27,7 +27,7 @@
 #include "PsycheFilter.hpp"
 #include "ChorusPatch.hpp"
 #include "Tremolo.hpp"
-#include "RyanPatch.hpp"
+#include "DigitalMayhemPatch.hpp"
 #include "ReverseReverbPatch.hpp"
 #include "SimpleDistortionPatch.hpp"
 
