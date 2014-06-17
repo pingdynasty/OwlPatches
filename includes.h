@@ -28,6 +28,9 @@
 #include "ChorusPatch.hpp"
 #include "Tremolo.hpp"
 
+#include "PlateReverbPatch.hpp"
+#include "CompressorPatch.hpp"
+
 // #include "JotReverbPatch.hpp" // bug fix to be done re. new firmware
 // #include "SimpleDriveDelayPatch.hpp"
 // #include "Autotalent/AutotalentPatch.hpp"

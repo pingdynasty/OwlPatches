@@ -12,6 +12,7 @@ REGISTER_PATCH(DroneBoxPatch, "Contest/DroneBox", 1, 1);
 REGISTER_PATCH(FreeVerbPatch, "FreeVerb", 1, 1);
 REGISTER_PATCH(SimpleDelayPatch, "Simple Delay", 1, 1);
 REGISTER_PATCH(GainPatch, "Gain", 2, 2);
+REGISTER_PATCH(CompressorPatch, "Compressor", 2, 2);
 REGISTER_PATCH(ParametricEqPatch, "Parametric EQ", 1, 1);
 REGISTER_PATCH(OverdrivePatch, "Overdrive", 2, 2);
 REGISTER_PATCH(PhaserPatch, "Phaser", 1, 1);
@@ -35,6 +36,7 @@ REGISTER_PATCH(MdaStereoPatch, "mdaPorts/MdaStereo", 2, 2);
 REGISTER_PATCH(MdaTransientPatch, "mdaPorts/MdaTransient", 2, 2);
 REGISTER_PATCH(QompressionPatch, "Qompression", 2, 2);
 REGISTER_PATCH(PsycheFilterPatch, "Psyche Filter", 2, 2);
+REGISTER_PATCH(PlateReverbPatch, "PlateReverb", 2, 2);
 
 
 /*
