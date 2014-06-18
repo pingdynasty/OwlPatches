@@ -23,22 +23,22 @@ REGISTER_PATCH(StereoMixerPatch, "Stereo Mixer", 2, 2);
 REGISTER_PATCH(VibroFlangePatch, "Vibro-Flange", 1, 1);
 REGISTER_PATCH(RingModulatorPatch, "Ring Modulator", 1, 1);
 REGISTER_PATCH(SynthPatch, "Synthesizer", 1, 1);
-REGISTER_PATCH(FourBandsEqPatch, "FourBandsEqPatch", 1, 1);
-REGISTER_PATCH(BiasedDelayPatch, "Contest/BiasedDelayPatch", 2, 2);
+REGISTER_PATCH(FourBandsEqPatch, "FourBand EQ", 1, 1);
+REGISTER_PATCH(BiasedDelayPatch, "Contest/BiasedDelay", 2, 2);
 REGISTER_PATCH(little_blo_bleep, "Contest/blo bleep", 2, 2);
 REGISTER_PATCH(BiasPatch, "Contest/Bias", 2, 2);
 REGISTER_PATCH(BitH8rPatch, "Contest/BitH8r", 2, 2);
 REGISTER_PATCH(ConnyPatch, "Contest/ConnyPatch", 2, 2);
 REGISTER_PATCH(DualTremoloPatch, "Contest/DualTremolo", 2, 2);
-REGISTER_PATCH(MdaBandistoPatch, "mdaPorts/MdaBandisto", 2, 2);
-REGISTER_PATCH(MdaStereoPatch, "mdaPorts/MdaStereo", 2, 2);
-REGISTER_PATCH(MdaTransientPatch, "mdaPorts/MdaTransient", 2, 2);
+REGISTER_PATCH(MdaBandistoPatch, "MDA/Bandisto", 2, 2);
+REGISTER_PATCH(MdaStereoPatch, "MDA/Stereo", 2, 2);
+REGISTER_PATCH(MdaTransientPatch, "MDA/Transient", 2, 2);
 REGISTER_PATCH(QompressionPatch, "Qompression", 2, 2);
 REGISTER_PATCH(PsycheFilterPatch, "Psyche Filter", 2, 2);
-REGISTER_PATCH(DigitalMayhemPatch, "DigitalMayhemPatch", 1, 1);
-REGISTER_PATCH(ReverseReverbPatch, "ReverseReverbPatch", 1, 1);
-REGISTER_PATCH(SimpleDistortionPatch, "SimpleDistortionPatch", 1, 1);
-REGISTER_PATCH(MoogPatch, "MoogPatch", 1, 1);
+REGISTER_PATCH(DigitalMayhemPatch, "Digital Mayhem", 1, 1);
+REGISTER_PATCH(ReverseReverbPatch, "Reverse Reverb", 1, 1);
+REGISTER_PATCH(SimpleDistortionPatch, "Simple Distortion", 1, 1);
+REGISTER_PATCH(MoogPatch, "Moog Filter", 1, 1);
 
 /*
 TO BE WORKED ON
