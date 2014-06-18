@@ -103,7 +103,7 @@ public:
 	// initalize phase
 	data.phase = 0;
 	data.noteOn = false;
-	data.noiseType = NOISETYPE_GAUSSIAN;
+	data.noiseType = KP_NOISETYPE_GAUSSIAN;
 
 	//generate white gaussian noise:
 	// from http://www.musicdsp.org/showone.php?id=168
