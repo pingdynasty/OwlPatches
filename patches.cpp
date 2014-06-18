@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 /* Help:
  REGISTER_PATCH(yourHppFileName,
                 "NameThatWillBeDisplayed",
@@ -39,6 +40,14 @@ REGISTER_PATCH(ReverseReverbPatch, "Reverse Reverb", 1, 1);
 REGISTER_PATCH(SimpleDistortionPatch, "Simple Distortion", 1, 1);
 REGISTER_PATCH(MoogPatch, "Moog Filter", 1, 1);
 REGISTER_PATCH(KarplusStrongPatch, "KarplusStrong", 1, 1);
+REGISTER_PATCH(FaustVerbPatch, "Faust/FreeVerb", 1, 1);
+REGISTER_PATCH(FstHarpeAutoPatch, "Faust/AutoHarp", 1, 1);
+REGISTER_PATCH(SmoothDelayPatch, "Faust/SmoothDelay", 1, 1);
+REGISTER_PATCH(EchoPatch, "Faust/Echo", 2, 2);
+REGISTER_PATCH(StereoEchoPatch, "Faust/StereoEcho", 1, 1);
+REGISTER_PATCH(AutoWahPatch, "Faust/AutoWah", 2, 2);
+REGISTER_PATCH(CrybabyPatch, "Faust/Crybaby", 2, 2);
+REGISTER_PATCH(StereoWahPatch, "Faust/StereoWah", 2, 2);
 
 /*
 TO BE WORKED ON
