@@ -4,8 +4,7 @@
                 numberInputChannels,
                 numberOutputChannels);
  
- The first two registered patch are the default green and red patches in compiled the firmware.
- 
+ The first two registered patches are the default green and red patches in compiled the firmware.
 */
 
 REGISTER_PATCH(DroneBoxPatch, "Contest/DroneBox", 1, 1);
@@ -23,7 +22,7 @@ REGISTER_PATCH(StereoMixerPatch, "Stereo Mixer", 2, 2);
 REGISTER_PATCH(VibroFlangePatch, "Vibro-Flange", 1, 1);
 REGISTER_PATCH(RingModulatorPatch, "Ring Modulator", 1, 1);
 REGISTER_PATCH(SynthPatch, "Synthesizer", 1, 1);
-REGISTER_PATCH(FourBandsEqPatch, "FourBand EQ", 1, 1);
+REGISTER_PATCH(FourBandsEqPatch, "Four Band EQ", 1, 1);
 REGISTER_PATCH(BiasedDelayPatch, "Contest/BiasedDelay", 2, 2);
 REGISTER_PATCH(little_blo_bleep, "Contest/blo bleep", 2, 2);
 REGISTER_PATCH(BiasPatch, "Contest/Bias", 2, 2);
@@ -39,6 +38,7 @@ REGISTER_PATCH(DigitalMayhemPatch, "Digital Mayhem", 1, 1);
 REGISTER_PATCH(ReverseReverbPatch, "Reverse Reverb", 1, 1);
 REGISTER_PATCH(SimpleDistortionPatch, "Simple Distortion", 1, 1);
 REGISTER_PATCH(MoogPatch, "Moog Filter", 1, 1);
+REGISTER_PATCH(KarplusStrongPatch, "KarplusStrong", 1, 1);
 
 /*
 TO BE WORKED ON
