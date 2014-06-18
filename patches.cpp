@@ -38,6 +38,7 @@ REGISTER_PATCH(PsycheFilterPatch, "Psyche Filter", 2, 2);
 REGISTER_PATCH(DigitalMayhemPatch, "DigitalMayhemPatch", 1, 1);
 REGISTER_PATCH(ReverseReverbPatch, "ReverseReverbPatch", 1, 1);
 REGISTER_PATCH(SimpleDistortionPatch, "SimpleDistortionPatch", 1, 1);
+REGISTER_PATCH(MoogPatch, "MoogPatch", 1, 1);
 
 /*
 TO BE WORKED ON
