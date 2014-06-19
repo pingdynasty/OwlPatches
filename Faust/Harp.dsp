@@ -7,8 +7,8 @@
 declare name  	"Harpe";
 declare author  "Grame";
 
-process = harpe(6);
-// process = harpe(22); 	// an 11 strings harpe : 12567 ARM cycles
+process = harpe(6); // 6 string harp: 2264 ARM cycles
+// process = harpe(22); // 11 string harp : 12567 ARM cycles
 
 
 //-----------------------------------------------
