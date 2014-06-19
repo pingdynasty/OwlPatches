@@ -65,8 +65,10 @@ public:
     data.g = getParameterValue(PARAMETER_C)*(0.5-0.48)+0.48;
     data.duration = getParameterValue(PARAMETER_D) * KP_NUM_BUFFER;
 
-    if(isButtonPressed(PUSHBUTTON))
+    if(isButtonPressed(PUSHBUTTON) && !data.noteOn){
       data.noteOn = true;
+      pressButton(RED_BUTTON);
+    }
 
     int size = buffer.getSize();
     float* left = buffer.getSamples(0);
@@ -90,6 +92,7 @@ public:
 	  // if we have reached the end of our duration
 	  data.phase = 0;
 	  data.noteOn = false;
+	  pressButton(GREEN_BUTTON);
 	}else{
 	  data.phase++;
 	}
