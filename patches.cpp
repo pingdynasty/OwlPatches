@@ -44,13 +44,13 @@ REGISTER_PATCH(HarpPatch, "Faust/Harp", 0, 1);
 REGISTER_PATCH(HarpAutoPatch, "Faust/AutoHarp", 0, 1);
 REGISTER_PATCH(SmoothDelayPatch, "Faust/SmoothDelay", 1, 1);
 REGISTER_PATCH(EchoPatch, "Faust/1 Sec Echo", 1, 1);
-REGISTER_PATCH(AutoWahPatch, "Faust/AutoWah", 1, 1);
+// REGISTER_PATCH(AutoWahPatch, "Faust/AutoWah", 1, 1); // 4003 ARM cycles
 REGISTER_PATCH(CrybabyPatch, "Faust/Crybaby", 1, 1);
 REGISTER_PATCH(StereoWahPatch, "Faust/StereoWah", 2, 2);
 REGISTER_PATCH(StereoEchoPatch, "Faust/StereoEcho", 2, 2);
 REGISTER_PATCH(LowPassFilterPatch, "Faust/Low Pass Filter", 1, 1);
 REGISTER_PATCH(LowShelfPatch, "Faust/Low Shelf Filter", 1, 1);
-REGISTER_PATCH(QompanderPatch, "Faust/Qompander", 1, 1);
+// REGISTER_PATCH(QompanderPatch, "Faust/Qompander", 1, 1); // 8851 ARM cycles
 
 /*
 TO BE WORKED ON
