@@ -344,6 +344,7 @@ class SmoothDelay : public dsp {
 	float 	fRec3[2];
 	float 	fRec4[2];
 	FAUSTFLOAT 	fslider2;
+	FAUSTFLOAT 	fslider3;
 	int 	IOTA;
 	float 	fVec0[131072];
 	float 	fRec0[2];
@@ -382,6 +383,7 @@ class SmoothDelay : public dsp {
 		for (int i=0; i<2; i++) fRec3[i] = 0;
 		for (int i=0; i<2; i++) fRec4[i] = 0;
 		fslider2 = 0.0f;
+		fslider3 = 0.3333f;
 		IOTA = 0;
 		for (int i=0; i<131072; i++) fVec0[i] = 0;
 		for (int i=0; i<2; i++) fRec0[i] = 0;
@@ -396,6 +398,9 @@ class SmoothDelay : public dsp {
 		interface->declare(&fslider0, "style", "knob");
 		interface->declare(&fslider0, "unit", "ms");
 		interface->addHorizontalSlider("delay", &fslider0, 0.0f, 0.0f, 5e+02f, 0.1f);
+		interface->declare(&fslider3, "OWL", "PARAMETER_D");
+		interface->declare(&fslider3, "style", "knob");
+		interface->addHorizontalSlider("dry/wet", &fslider3, 0.3333f, 0.0f, 1.0f, 0.025f);
 		interface->declare(&fslider2, "OWL", "PARAMETER_C");
 		interface->declare(&fslider2, "style", "knob");
 		interface->addHorizontalSlider("feedback", &fslider2, 0.0f, 0.0f, 1e+02f, 0.1f);
@@ -410,6 +415,8 @@ class SmoothDelay : public dsp {
 		float 	fSlow1 = (fConst2 / float(fslider1));
 		float 	fSlow2 = (0 - fSlow1);
 		float 	fSlow3 = (0.01f * float(fslider2));
+		float 	fSlow4 = float(fslider3);
+		float 	fSlow5 = (1 - fSlow4);
 		FAUSTFLOAT* input0 = input[0];
 		FAUSTFLOAT* output0 = output[0];
 		for (int i=0; i<count; i++) {
@@ -419,10 +426,10 @@ class SmoothDelay : public dsp {
 			fRec2[0] = max(0.0f, min(1.0f, (fRec2[1] + fTemp1)));
 			fRec3[0] = ((int(((fRec2[1] >= 1.0f) & (fRec4[1] != fSlow0))))?fSlow0:fRec3[1]);
 			fRec4[0] = ((int(((fRec2[1] <= 0.0f) & (fRec3[1] != fSlow0))))?fSlow0:fRec4[1]);
-			float fTemp2 = (fTemp0 + (fSlow3 * fRec0[1]));
+			float fTemp2 = ((fSlow3 * fRec0[1]) + (fSlow4 * fTemp0));
 			fVec0[IOTA&131071] = fTemp2;
 			fRec0[0] = (((1.0f - fRec2[0]) * fVec0[(IOTA-int((int(fRec3[0]) & 131071)))&131071]) + (fRec2[0] * fVec0[(IOTA-int((int(fRec4[0]) & 131071)))&131071]));
-			output0[i] = (FAUSTFLOAT)fRec0[0];
+			output0[i] = (FAUSTFLOAT)(fRec0[0] + (fSlow5 * fTemp0));
 			// post processing
 			fRec0[1] = fRec0[0];
 			IOTA = IOTA+1;

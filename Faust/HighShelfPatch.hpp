@@ -1,10 +1,9 @@
 //-----------------------------------------------------
 //
-// Code generated with Faust 2.0.a23 (http://faust.grame.fr)
+// Code generated with Faust 0.9.67 (http://faust.grame.fr)
 //-----------------------------------------------------
-
-#ifndef  __qompander_H__
-#define  __qompander_H__
+/* link with  */
+#include <math.h>
 /************************************************************************
 
 	IMPORTANT NOTE : this file contains two clearly delimited sections :
@@ -41,8 +40,8 @@
  ************************************************************************
  ************************************************************************/
 
-#ifndef __qompanderPatch_h__
-#define __qompanderPatch_h__
+#ifndef __HighShelfPatch_h__
+#define __HighShelfPatch_h__
 
 #include "StompBox.h"
 #include "owlcontrol.h"
@@ -117,7 +116,8 @@ class UI;
 //----------------------------------------------------------------
 
 class dsp {
-
+ protected:
+	int fSamplingFreq;
  public:
 	dsp() {}
 	virtual ~dsp() {}
@@ -187,7 +187,7 @@ class UI
 
 	// -- metadata declarations
 
-    virtual void declare(FAUSTFLOAT* zone, const char* key, const char* val) {}
+    virtual void declare(FAUSTFLOAT*, const char*, const char*) {}
 };
 
 #endif
@@ -321,264 +321,104 @@ class OwlUI : public UI
 #define FAUSTFLOAT float
 #endif  
 
-#include <math.h>
-
-float expf(float dummy0);
-float faustpower2_f(float value) {
-	return (value * value);
-	
-}
-float sqrtf(float dummy0);
-float fabsf(float dummy0);
-float sinf(float dummy0);
-float powf(float dummy0, float dummy1);
-float logf(float dummy0);
+typedef long double quad;
 
 #ifndef FAUSTCLASS 
-#define FAUSTCLASS qompander
+#define FAUSTCLASS HighShelf
 #endif
 
-class qompander : public dsp {
-	
+class HighShelf : public dsp {
   private:
-	
-	float fRec7[3];
-	float fRec6[3];
-	float fRec5[3];
-	float fRec4[3];
-	float fRec11[3];
-	float fRec10[3];
-	float fRec9[3];
-	float fRec8[3];
-	float fVec0[2];
-	float fRec0[2];
-	float fRec2[2];
-	float fRec12[2];
-	float fRec3[2];
-	float fRec1[2];
-	float fRec13[2];
-	FAUSTFLOAT fHslider0;
-	int fSamplingFreq;
-	float fConst0;
-	FAUSTFLOAT fHslider1;
-	FAUSTFLOAT fHslider2;
-	FAUSTFLOAT fHslider3;
-	
+	int 	iVec0[2];
+	int 	iConst0;
+	float 	fConst1;
+	float 	fConst2;
+	float 	fConst3;
+	float 	fConst4;
+	float 	fConst5;
+	float 	fConst6;
+	float 	fConst7;
+	float 	fConst8;
+	float 	fRec1[2];
+	float 	fConst9;
+	float 	fConst10;
+	float 	fRec0[3];
+	float 	fConst11;
+	float 	fConst12;
   public:
-	
-	void static metadata(Meta* m) { 
-		m->declare("compilation_options", "-single -scal");
+	static void metadata(Meta* m) 	{ 
+		m->declare("id", "HighShelf");
+		m->declare("maxmsp.lib/name", "MaxMSP compatibility Library");
+		m->declare("maxmsp.lib/author", "GRAME");
+		m->declare("maxmsp.lib/copyright", "GRAME");
+		m->declare("maxmsp.lib/version", "1.1");
+		m->declare("maxmsp.lib/license", "LGPL");
+		m->declare("music.lib/name", "Music Library");
+		m->declare("music.lib/author", "GRAME");
+		m->declare("music.lib/copyright", "GRAME");
+		m->declare("music.lib/version", "1.0");
+		m->declare("music.lib/license", "LGPL with exception");
+		m->declare("math.lib/name", "Math Library");
+		m->declare("math.lib/author", "GRAME");
+		m->declare("math.lib/copyright", "GRAME");
+		m->declare("math.lib/version", "1.0");
+		m->declare("math.lib/license", "LGPL with exception");
+		m->declare("filter.lib/name", "Faust Filter Library");
+		m->declare("filter.lib/author", "Julius O. Smith (jos at ccrma.stanford.edu)");
+		m->declare("filter.lib/copyright", "Julius O. Smith III");
+		m->declare("filter.lib/version", "1.29");
+		m->declare("filter.lib/license", "STK-4.3");
+		m->declare("filter.lib/reference", "https://ccrma.stanford.edu/~jos/filters/");
 	}
 
-	virtual int getNumInputs() {
-		return 1;
-		
-	}
-	virtual int getNumOutputs() {
-		return 1;
-		
-	}
-	virtual int getInputRate(int channel) {
-		int rate;
-		switch (channel) {
-			case 0: {
-				rate = 1;
-				break;
-			}
-			default: {
-				rate = -1;
-				break;
-			}
-			
-		}
-		return rate;
-		
-	}
-	virtual int getOutputRate(int channel) {
-		int rate;
-		switch (channel) {
-			case 0: {
-				rate = 1;
-				break;
-			}
-			default: {
-				rate = -1;
-				break;
-			}
-			
-		}
-		return rate;
-		
-	}
-	
+	virtual int getNumInputs() 	{ return 1; }
+	virtual int getNumOutputs() 	{ return 1; }
 	static void classInit(int samplingFreq) {
-		
 	}
-	
 	virtual void instanceInit(int samplingFreq) {
 		fSamplingFreq = samplingFreq;
-		for (int i = 0; (i < 2); i = (i + 1)) {
-			fVec0[i] = 0.f;
-			
-		}
-		fHslider0 = FAUSTFLOAT(3.);
-		for (int i = 0; (i < 2); i = (i + 1)) {
-			fRec0[i] = 0.f;
-			
-		}
-		fConst0 = (1000.f / float(min(192000, max(1, fSamplingFreq))));
-		fHslider1 = FAUSTFLOAT(1.);
-		for (int i = 0; (i < 2); i = (i + 1)) {
-			fRec2[i] = 0.f;
-			
-		}
-		for (int i = 0; (i < 3); i = (i + 1)) {
-			fRec7[i] = 0.f;
-			
-		}
-		for (int i = 0; (i < 3); i = (i + 1)) {
-			fRec6[i] = 0.f;
-			
-		}
-		for (int i = 0; (i < 3); i = (i + 1)) {
-			fRec5[i] = 0.f;
-			
-		}
-		for (int i = 0; (i < 3); i = (i + 1)) {
-			fRec4[i] = 0.f;
-			
-		}
-		for (int i = 0; (i < 3); i = (i + 1)) {
-			fRec11[i] = 0.f;
-			
-		}
-		for (int i = 0; (i < 3); i = (i + 1)) {
-			fRec10[i] = 0.f;
-			
-		}
-		for (int i = 0; (i < 3); i = (i + 1)) {
-			fRec9[i] = 0.f;
-			
-		}
-		for (int i = 0; (i < 3); i = (i + 1)) {
-			fRec8[i] = 0.f;
-			
-		}
-		fHslider2 = FAUSTFLOAT(20.);
-		for (int i = 0; (i < 2); i = (i + 1)) {
-			fRec12[i] = 0.f;
-			
-		}
-		for (int i = 0; (i < 2); i = (i + 1)) {
-			fRec3[i] = 0.f;
-			
-		}
-		for (int i = 0; (i < 2); i = (i + 1)) {
-			fRec1[i] = 0.f;
-			
-		}
-		fHslider3 = FAUSTFLOAT(-40.);
-		for (int i = 0; (i < 2); i = (i + 1)) {
-			fRec13[i] = 0.f;
-			
-		}
-		
+		for (int i=0; i<2; i++) iVec0[i] = 0;
+		iConst0 = min(192000, max(1, fSamplingFreq));
+		fConst1 = (6.283185307179586f * (max((float)0, ((0.5f * iConst0) - 1e+02f)) / float(iConst0)));
+		fConst2 = cosf(fConst1);
+		fConst3 = (0.683772233983162f * fConst2);
+		fConst4 = (0.005623413251903491f * sinf(fConst1));
+		fConst5 = (fConst3 + fConst4);
+		fConst6 = (1.0f / (1.316227766016838f + fConst5));
+		fConst7 = (1.316227766016838f * fConst2);
+		fConst8 = (0 - (0.6324555320336759f * (fConst7 - 0.683772233983162f)));
+		for (int i=0; i<2; i++) fRec1[i] = 0;
+		fConst9 = (2 * (0 - (0.683772233983162f + fConst7)));
+		fConst10 = ((1.316227766016838f + fConst3) - fConst4);
+		for (int i=0; i<3; i++) fRec0[i] = 0;
+		fConst11 = (0.31622776601683794f * ((1.316227766016838f + fConst4) - fConst3));
+		fConst12 = (0.31622776601683794f * (1.316227766016838f - fConst5));
 	}
-	
 	virtual void init(int samplingFreq) {
 		classInit(samplingFreq);
 		instanceInit(samplingFreq);
 	}
-	
 	virtual void buildUserInterface(UI* interface) {
-		interface->declare(0, "0", "");
-		interface->declare(0, "tooltip", "Reference: http://www.katjaas.nl/compander/compander.html");
-		interface->openVerticalBox("qompander");
-		interface->declare(&fHslider0, "0", "");
-		interface->declare(&fHslider0, "OWL", "PARAMETER_A");
-		interface->declare(&fHslider0, "style", "knob");
-		interface->declare(&fHslider0, "unit", ": 1");
-		interface->addHorizontalSlider("factor", &fHslider0, 3.f, 0.8f, 8.f, 0.01f);
-		interface->declare(&fHslider3, "1", "");
-		interface->declare(&fHslider3, "OWL", "PARAMETER_B");
-		interface->declare(&fHslider3, "style", "knob");
-		interface->declare(&fHslider3, "unit", "dB");
-		interface->addHorizontalSlider("threshold", &fHslider3, -40.f, -96.f, -20.f, 0.01f);
-		interface->declare(&fHslider1, "2", "");
-		interface->declare(&fHslider1, "OWL", "PARAMETER_C");
-		interface->declare(&fHslider1, "style", "knob");
-		interface->declare(&fHslider1, "unit", "ms");
-		interface->addHorizontalSlider("attack", &fHslider1, 1.f, 1.f, 20.f, 0.01f);
-		interface->declare(&fHslider2, "3", "");
-		interface->declare(&fHslider2, "OWL", "PARAMETER_D");
-		interface->declare(&fHslider2, "style", "knob");
-		interface->declare(&fHslider2, "unit", "ms");
-		interface->addHorizontalSlider("release", &fHslider2, 20.f, 20.f, 1000.f, 0.01f);
+		interface->openVerticalBox("HighShelf");
 		interface->closeBox();
-		
 	}
-	
-	virtual void compute(int count, FAUSTFLOAT** inputs, FAUSTFLOAT** outputs) {
-		FAUSTFLOAT* input0 = inputs[0];
-		FAUSTFLOAT* output0 = outputs[0];
-		float fSlow0 = (0.001f * float(fHslider0));
-		float fSlow1 = (0.001f * float(fHslider1));
-		float fSlow2 = (0.001f * float(fHslider2));
-		float fSlow3 = (0.001f * float(fHslider3));
-		for (int i = 0; (i < count); i = (i + 1)) {
-			float fTemp0 = float(input0[i]);
-			fVec0[0] = fTemp0;
-			fRec0[0] = ((0.999f * fRec0[1]) + fSlow0);
-			fRec2[0] = ((0.999f * fRec2[1]) + fSlow1);
-			float fTemp1 = expf((0.f - (fConst0 / fRec2[0])));
-			fRec7[0] = ((0.161758f * fRec7[2]) + fTemp0);
-			fRec6[0] = (((0.161758f * fRec7[0]) + (0.733029f * fRec6[2])) - fRec7[2]);
-			fRec5[0] = (((0.733029f * fRec6[0]) + (0.94535f * fRec5[2])) - fRec6[2]);
-			fRec4[0] = (((0.94535f * fRec5[0]) + (0.990598f * fRec4[2])) - fRec5[2]);
-			float fTemp2 = ((0.990598f * fRec4[0]) - fRec4[2]);
-			fRec11[0] = (fVec0[1] + (0.479401f * fRec11[2]));
-			fRec10[0] = (((0.479401f * fRec11[0]) + (0.876218f * fRec10[2])) - fRec11[2]);
-			fRec9[0] = (((0.876218f * fRec10[0]) + (0.976599f * fRec9[2])) - fRec10[2]);
-			fRec8[0] = (((0.976599f * fRec9[0]) + (0.9975f * fRec8[2])) - fRec9[2]);
-			float fTemp3 = ((0.9975f * fRec8[0]) - fRec8[2]);
-			float fTemp4 = fabsf(min(100.f, max(1e-05f, sqrtf((faustpower2_f(fTemp2) + faustpower2_f(fTemp3))))));
-			fRec12[0] = ((0.999f * fRec12[1]) + fSlow2);
-			float fTemp5 = expf((0.f - (fConst0 / fRec12[0])));
-			fRec3[0] = ((max(fTemp4, fRec3[1]) * fTemp5) + (fTemp4 * (1.f - fTemp5)));
-			fRec1[0] = ((fRec1[1] * fTemp1) + (fRec3[0] * (1.f - fTemp1)));
-			fRec13[0] = ((0.999f * fRec13[1]) + fSlow3);
-			float fTemp6 = powf(10.f, (0.05f * fRec13[0]));
-			output0[i] = FAUSTFLOAT((0.707107f * ((powf(min(1.f, max(1e-07f, sinf((1.5708f * (fRec0[0] * min((1.f / fRec0[0]), fRec1[0])))))), (logf(fTemp6) / logf(sinf((1.5708f * (fRec0[0] * fTemp6)))))) * (fTemp2 + fTemp3)) / fRec1[0])));
-			fVec0[1] = fVec0[0];
-			fRec0[1] = fRec0[0];
-			fRec2[1] = fRec2[0];
-			fRec7[2] = fRec7[1];
-			fRec7[1] = fRec7[0];
-			fRec6[2] = fRec6[1];
-			fRec6[1] = fRec6[0];
-			fRec5[2] = fRec5[1];
-			fRec5[1] = fRec5[0];
-			fRec4[2] = fRec4[1];
-			fRec4[1] = fRec4[0];
-			fRec11[2] = fRec11[1];
-			fRec11[1] = fRec11[0];
-			fRec10[2] = fRec10[1];
-			fRec10[1] = fRec10[0];
-			fRec9[2] = fRec9[1];
-			fRec9[1] = fRec9[0];
-			fRec8[2] = fRec8[1];
-			fRec8[1] = fRec8[0];
-			fRec12[1] = fRec12[0];
-			fRec3[1] = fRec3[0];
+	virtual void compute (int count, FAUSTFLOAT** input, FAUSTFLOAT** output) {
+		FAUSTFLOAT* input0 = input[0];
+		FAUSTFLOAT* output0 = output[0];
+		for (int i=0; i<count; i++) {
+			float fTemp0 = (float)input0[i];
+			iVec0[0] = 1;
+			fRec1[0] = ((1e-20f * (1 - iVec0[1])) - fRec1[1]);
+			fRec0[0] = ((fTemp0 + fRec1[0]) - (fConst6 * ((fConst9 * fRec0[1]) + (fConst10 * fRec0[2]))));
+			output0[i] = (FAUSTFLOAT)(fConst6 * (((fConst8 * fRec0[1]) + (fConst11 * fRec0[0])) + (fConst12 * fRec0[2])));
+			// post processing
+			fRec0[2] = fRec0[1]; fRec0[1] = fRec0[0];
 			fRec1[1] = fRec1[0];
-			fRec13[1] = fRec13[0];
-			
+			iVec0[1] = iVec0[0];
 		}
-		
 	}
-
-	
 };
+
 
 
 /***************************END USER SECTION ***************************/
@@ -589,18 +429,18 @@ class qompander : public dsp {
 
 /**************************************************************************************
 
-	qompanderPatch : an OWL patch that calls Faust generated DSP code
+	HighShelfPatch : an OWL patch that calls Faust generated DSP code
 	
 ***************************************************************************************/
 
-class qompanderPatch : public Patch
+class HighShelfPatch : public Patch
 {
-    qompander   fDSP;
+    HighShelf   fDSP;
     OwlUI	fUI;
     
 public:
 
-    qompanderPatch() : fUI(patches.getCurrentPatchProcessor())
+    HighShelfPatch() : fUI(patches.getCurrentPatchProcessor())
     {
         fDSP.init(int(getSampleRate()));		// Init Faust code with the OWL sampling rate
         fDSP.buildUserInterface(&fUI);			// Maps owl parameters and faust widgets 
@@ -635,9 +475,7 @@ public:
 
 };
 
-#endif // __qompanderPatch_h__
+#endif // __HighShelfPatch_h__
 
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////
-
-#endif

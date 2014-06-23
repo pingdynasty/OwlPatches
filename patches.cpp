@@ -20,6 +20,17 @@ REGISTER_PATCH(AutoWahPatch, "Faust/AutoWah", 2, 2);
 REGISTER_PATCH(CrybabyPatch, "Faust/Crybaby", 2, 2);
 REGISTER_PATCH(StereoWahPatch, "Faust/StereoWah", 2, 2);
 
+REGISTER_PATCH(GuitarixMoogPatch, "GuitarixMoogPatch", 1, 1);
+REGISTER_PATCH(GuitarixOverdrivePatch, "GuitarixOverdrivePatch", 1, 1);
+REGISTER_PATCH(GuitarixPhaserMonoPatch, "GuitarixPhaserMonoPatch", 1, 1);
+REGISTER_PATCH(GuitarixOscTubePatch, "GuitarixOscTubePatch", 1, 1);
+REGISTER_PATCH(GuitarixFlangerGXPatch, "GuitarixFlangerGXPatch", 1, 1);
+REGISTER_PATCH(GuitarixDunwahPatch, "GuitarixDunwahPatch", 1, 1);
+REGISTER_PATCH(GuitarixTonePatch, "GuitarixTonePatch", 1, 1);
+REGISTER_PATCH(GuitarixBMfpPatch, "GuitarixBMfpPatch", 1, 1);
+REGISTER_PATCH(GuitarixDistortion1Patch, "GuitarixDistortion1Patch", 1, 1);
+//REGISTER_PATCH(guitarix_flangerPatch, "guitarix_flangerPatch", 1, 1);
+
 REGISTER_PATCH(SimpleDelayPatch, "Simple Delay", 1, 1);
 REGISTER_PATCH(GainPatch, "Gain", 2, 2);
 REGISTER_PATCH(ParametricEqPatch, "Parametric EQ", 1, 1);
@@ -47,6 +58,7 @@ REGISTER_PATCH(QompressionPatch, "Qompression", 2, 2);
 REGISTER_PATCH(PsycheFilterPatch, "Psyche Filter", 2, 2);
 REGISTER_PATCH(ReverseReverbPatch, "ReverseReverbPatch", 1, 1);
 REGISTER_PATCH(SimpleDistortionPatch, "SimpleDistortionPatch", 1, 1);
+
 
 /*
 TO BE WORKED ON

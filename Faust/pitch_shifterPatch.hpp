@@ -1,10 +1,13 @@
 //-----------------------------------------------------
+// name: "pitch-shifter"
+// version: "1.0"
+// author: "Grame"
+// license: "BSD"
+// copyright: "(c)GRAME 2006"
 //
-// Code generated with Faust 2.0.a23 (http://faust.grame.fr)
+// Code generated with Faust 0.9.67 (http://faust.grame.fr)
 //-----------------------------------------------------
-
-#ifndef  __pitch_shifter_H__
-#define  __pitch_shifter_H__
+/* link with  */
 /************************************************************************
 
 	IMPORTANT NOTE : this file contains two clearly delimited sections :
@@ -117,7 +120,8 @@ class UI;
 //----------------------------------------------------------------
 
 class dsp {
-
+ protected:
+	int fSamplingFreq;
  public:
 	dsp() {}
 	virtual ~dsp() {}
@@ -187,7 +191,7 @@ class UI
 
 	// -- metadata declarations
 
-    virtual void declare(FAUSTFLOAT* zone, const char* key, const char* val) {}
+    virtual void declare(FAUSTFLOAT*, const char*, const char*) {}
 };
 
 #endif
@@ -321,140 +325,93 @@ class OwlUI : public UI
 #define FAUSTFLOAT float
 #endif  
 
-
-float powf(float dummy0, float dummy1);
-float fmodf(float dummy0, float dummy1);
+typedef long double quad;
 
 #ifndef FAUSTCLASS 
 #define FAUSTCLASS pitch_shifter
 #endif
 
 class pitch_shifter : public dsp {
-	
   private:
-	
-	float fVec0[65536];
-	float fRec0[2];
-	int IOTA;
-	FAUSTFLOAT fHslider0;
-	FAUSTFLOAT fHslider1;
-	FAUSTFLOAT fHslider2;
-	int fSamplingFreq;
-	
+	int 	IOTA;
+	float 	fVec0[65536];
+	FAUSTFLOAT 	fslider0;
+	FAUSTFLOAT 	fslider1;
+	float 	fRec0[2];
+	FAUSTFLOAT 	fslider2;
   public:
-	
-	void static metadata(Meta* m) { 
-		m->declare("compilation_options", "-single -scal");
+	static void metadata(Meta* m) 	{ 
+		m->declare("name", "pitch-shifter");
+		m->declare("version", "1.0");
+		m->declare("author", "Grame");
+		m->declare("license", "BSD");
+		m->declare("copyright", "(c)GRAME 2006");
+		m->declare("music.lib/name", "Music Library");
+		m->declare("music.lib/author", "GRAME");
+		m->declare("music.lib/copyright", "GRAME");
+		m->declare("music.lib/version", "1.0");
+		m->declare("music.lib/license", "LGPL with exception");
+		m->declare("math.lib/name", "Math Library");
+		m->declare("math.lib/author", "GRAME");
+		m->declare("math.lib/copyright", "GRAME");
+		m->declare("math.lib/version", "1.0");
+		m->declare("math.lib/license", "LGPL with exception");
 	}
 
-	virtual int getNumInputs() {
-		return 1;
-		
-	}
-	virtual int getNumOutputs() {
-		return 1;
-		
-	}
-	virtual int getInputRate(int channel) {
-		int rate;
-		switch (channel) {
-			case 0: {
-				rate = 1;
-				break;
-			}
-			default: {
-				rate = -1;
-				break;
-			}
-			
-		}
-		return rate;
-		
-	}
-	virtual int getOutputRate(int channel) {
-		int rate;
-		switch (channel) {
-			case 0: {
-				rate = 1;
-				break;
-			}
-			default: {
-				rate = -1;
-				break;
-			}
-			
-		}
-		return rate;
-		
-	}
-	
+	virtual int getNumInputs() 	{ return 1; }
+	virtual int getNumOutputs() 	{ return 1; }
 	static void classInit(int samplingFreq) {
-		
 	}
-	
 	virtual void instanceInit(int samplingFreq) {
 		fSamplingFreq = samplingFreq;
 		IOTA = 0;
-		for (int i = 0; (i < 65536); i = (i + 1)) {
-			fVec0[i] = 0.f;
-			
-		}
-		fHslider0 = FAUSTFLOAT(1000.);
-		fHslider1 = FAUSTFLOAT(0.);
-		for (int i = 0; (i < 2); i = (i + 1)) {
-			fRec0[i] = 0.f;
-			
-		}
-		fHslider2 = FAUSTFLOAT(10.);
-		
+		for (int i=0; i<65536; i++) fVec0[i] = 0;
+		fslider0 = 1e+03f;
+		fslider1 = 0.0f;
+		for (int i=0; i<2; i++) fRec0[i] = 0;
+		fslider2 = 1e+01f;
 	}
-	
 	virtual void init(int samplingFreq) {
 		classInit(samplingFreq);
 		instanceInit(samplingFreq);
 	}
-	
 	virtual void buildUserInterface(UI* interface) {
 		interface->openVerticalBox("Pitch Shifter");
-		interface->declare(&fHslider1, "OWL", "PARAMETER_C");
-		interface->declare(&fHslider1, "style", "knob");
-		interface->addHorizontalSlider("shift (semitones)", &fHslider1, 0.f, -12.f, 12.f, 0.1f);
-		interface->declare(&fHslider0, "OWL", "PARAMETER_A");
-		interface->declare(&fHslider0, "style", "knob");
-		interface->addHorizontalSlider("window (samples)", &fHslider0, 1000.f, 50.f, 10000.f, 1.f);
-		interface->declare(&fHslider2, "OWL", "PARAMETER_B");
-		interface->declare(&fHslider2, "style", "knob");
-		interface->addHorizontalSlider("xfade (samples)", &fHslider2, 10.f, 1.f, 10000.f, 1.f);
+		interface->declare(&fslider1, "OWL", "PARAMETER_C");
+		interface->declare(&fslider1, "style", "knob");
+		interface->addHorizontalSlider("shift (semitones)", &fslider1, 0.0f, -12.0f, 12.0f, 0.1f);
+		interface->declare(&fslider0, "OWL", "PARAMETER_A");
+		interface->declare(&fslider0, "style", "knob");
+		interface->addHorizontalSlider("window (samples)", &fslider0, 1e+03f, 5e+01f, 1e+04f, 1.0f);
+		interface->declare(&fslider2, "OWL", "PARAMETER_B");
+		interface->declare(&fslider2, "style", "knob");
+		interface->addHorizontalSlider("xfade (samples)", &fslider2, 1e+01f, 1.0f, 1e+04f, 1.0f);
 		interface->closeBox();
-		
 	}
-	
-	virtual void compute(int count, FAUSTFLOAT** inputs, FAUSTFLOAT** outputs) {
-		FAUSTFLOAT* input0 = inputs[0];
-		FAUSTFLOAT* output0 = outputs[0];
-		float fSlow0 = float(fHslider0);
-		float fSlow1 = ((1.f + fSlow0) - powf(2.f, (0.0833333f * float(fHslider1))));
-		float fSlow2 = (1.f / float(fHslider2));
-		float fSlow3 = (fSlow0 - 1.f);
-		for (int i = 0; (i < count); i = (i + 1)) {
-			float fTemp0 = float(input0[i]);
-			fVec0[(IOTA & 65535)] = fTemp0;
-			fRec0[0] = fmodf((fRec0[1] + fSlow1), fSlow0);
+	virtual void compute (int count, FAUSTFLOAT** input, FAUSTFLOAT** output) {
+		float 	fSlow0 = float(fslider0);
+		float 	fSlow1 = ((1 + fSlow0) - powf(2,(0.08333333333333333f * float(fslider1))));
+		float 	fSlow2 = (1.0f / float(fslider2));
+		float 	fSlow3 = (fSlow0 - 1);
+		FAUSTFLOAT* input0 = input[0];
+		FAUSTFLOAT* output0 = output[0];
+		for (int i=0; i<count; i++) {
+			float fTemp0 = (float)input0[i];
+			fVec0[IOTA&65535] = fTemp0;
+			fRec0[0] = fmodf((fRec0[1] + fSlow1),fSlow0);
 			int iTemp1 = int(fRec0[0]);
 			int iTemp2 = (1 + iTemp1);
-			float fTemp3 = min((fSlow2 * fRec0[0]), 1.f);
-			float fTemp4 = (fRec0[0] + fSlow0);
+			float fTemp3 = min((fSlow2 * fRec0[0]), (float)1);
+			float fTemp4 = (fSlow0 + fRec0[0]);
 			int iTemp5 = int(fTemp4);
-			output0[i] = FAUSTFLOAT(((((fVec0[((IOTA - int((iTemp1 & 65535))) & 65535)] * (float(iTemp2) - fRec0[0])) + ((fRec0[0] - float(iTemp1)) * fVec0[((IOTA - int((int(iTemp2) & 65535))) & 65535)])) * fTemp3) + (((fVec0[((IOTA - int((iTemp5 & 65535))) & 65535)] * (0.f - ((fRec0[0] + fSlow3) - float(iTemp5)))) + ((fTemp4 - float(iTemp5)) * fVec0[((IOTA - int((int((1 + iTemp5)) & 65535))) & 65535)])) * (1.f - fTemp3))));
-			IOTA = (IOTA + 1);
+			output0[i] = (FAUSTFLOAT)((((fVec0[(IOTA-int((iTemp1 & 65535)))&65535] * (iTemp2 - fRec0[0])) + ((fRec0[0] - iTemp1) * fVec0[(IOTA-int((int(iTemp2) & 65535)))&65535])) * fTemp3) + (((fVec0[(IOTA-int((iTemp5 & 65535)))&65535] * (0 - ((fRec0[0] + fSlow3) - iTemp5))) + ((fTemp4 - iTemp5) * fVec0[(IOTA-int((int((1 + iTemp5)) & 65535)))&65535])) * (1 - fTemp3)));
+			// post processing
 			fRec0[1] = fRec0[0];
-			
+			IOTA = IOTA+1;
 		}
-		
 	}
-
-	
 };
+
 
 
 /***************************END USER SECTION ***************************/
@@ -515,5 +472,3 @@ public:
 
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////
-
-#endif

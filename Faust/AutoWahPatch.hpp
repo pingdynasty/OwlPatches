@@ -361,12 +361,6 @@ class AutoWah : public dsp {
 		m->declare("math.lib/copyright", "GRAME");
 		m->declare("math.lib/version", "1.0");
 		m->declare("math.lib/license", "LGPL with exception");
-		m->declare("filter.lib/name", "Faust Filter Library");
-		m->declare("filter.lib/author", "Julius O. Smith (jos at ccrma.stanford.edu)");
-		m->declare("filter.lib/copyright", "Julius O. Smith III");
-		m->declare("filter.lib/version", "1.29");
-		m->declare("filter.lib/license", "STK-4.3");
-		m->declare("filter.lib/reference", "https://ccrma.stanford.edu/~jos/filters/");
 		m->declare("effect.lib/name", "Faust Audio Effect Library");
 		m->declare("effect.lib/author", "Julius O. Smith (jos at ccrma.stanford.edu)");
 		m->declare("effect.lib/copyright", "Julius O. Smith III");
@@ -377,6 +371,12 @@ class AutoWah : public dsp {
 		m->declare("effect.lib/exciter_copyright", "Copyright (c) 2013 Priyanka Shekar");
 		m->declare("effect.lib/exciter_version", "1.0");
 		m->declare("effect.lib/exciter_license", "MIT License (MIT)");
+		m->declare("filter.lib/name", "Faust Filter Library");
+		m->declare("filter.lib/author", "Julius O. Smith (jos at ccrma.stanford.edu)");
+		m->declare("filter.lib/copyright", "Julius O. Smith III");
+		m->declare("filter.lib/version", "1.29");
+		m->declare("filter.lib/license", "STK-4.3");
+		m->declare("filter.lib/reference", "https://ccrma.stanford.edu/~jos/filters/");
 		m->declare("oscillator.lib/name", "Faust Oscillator Library");
 		m->declare("oscillator.lib/author", "Julius O. Smith (jos at ccrma.stanford.edu)");
 		m->declare("oscillator.lib/copyright", "Julius O. Smith III");
@@ -425,7 +425,7 @@ class AutoWah : public dsp {
 			float fTemp1 = fabsf((fRec2[0] - 1.0f));
 			float fTemp2 = ((fSlow0 * fTemp1) + (fSlow1 * (1.0f - fTemp1)));
 			float fTemp3 = powf(2.0f,(2.3f * fTemp2));
-			float fTemp4 = (1 - (fConst1 * (fTemp3 / powf(2.0f,((2.0f * (0 - (fTemp2 - 1.0f))) + 1.0f)))));
+			float fTemp4 = (1 - (fConst1 * (fTemp3 / powf(2.0f,(1.0f + (2.0f * (0 - (fTemp2 - 1.0f))))))));
 			fRec1[0] = ((0.999f * fRec1[1]) + (0.0010000000000000009f * (0 - (2.0f * (fTemp4 * cosf((fConst3 * fTemp3)))))));
 			fRec3[0] = ((0.999f * fRec3[1]) + (0.0010000000000000009f * faustpower<2>(fTemp4)));
 			fRec4[0] = ((0.999f * fRec4[1]) + (0.0001000000000000001f * powf(4.0f,fTemp2)));

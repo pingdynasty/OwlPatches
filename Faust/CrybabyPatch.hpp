@@ -398,7 +398,7 @@ class Crybaby : public dsp {
 	virtual void buildUserInterface(UI* interface) {
 		interface->openVerticalBox("Crybaby");
 		interface->declare(&fslider0, "1", "");
-		interface->declare(&fslider0, "OWL", "PARAMETER_A");
+		interface->declare(&fslider0, "OWL", "PARAMETER_E");
 		interface->addHorizontalSlider("AhAh", &fslider0, 0.6f, 0.0f, 1.0f, 0.01f);
 		interface->closeBox();
 	}

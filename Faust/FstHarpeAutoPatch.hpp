@@ -378,6 +378,8 @@ class FstHarpeAuto : public dsp {
 	float 	fRec10[3];
   public:
 	static void metadata(Meta* m) 	{ 
+		m->declare("name", "Kisana");
+		m->declare("author", "Yann Orlarey");
 		m->declare("music.lib/name", "Music Library");
 		m->declare("music.lib/author", "GRAME");
 		m->declare("music.lib/copyright", "GRAME");
@@ -388,8 +390,6 @@ class FstHarpeAuto : public dsp {
 		m->declare("math.lib/copyright", "GRAME");
 		m->declare("math.lib/version", "1.0");
 		m->declare("math.lib/license", "LGPL with exception");
-		m->declare("name", "Kisana");
-		m->declare("author", "Yann Orlarey");
 	}
 
 	virtual int getNumInputs() 	{ return 1; }
@@ -449,7 +449,7 @@ class FstHarpeAuto : public dsp {
 	virtual void compute (int count, FAUSTFLOAT** input, FAUSTFLOAT** output) {
 		float 	fSlow0 = (1.2889677372867592f * float(fslider0));
 		float 	fSlow1 = float(fslider1);
-		float 	fSlow2 = (fSlow1 + 1);
+		float 	fSlow2 = (1 + fSlow1);
 		float 	fSlow3 = (1 - fSlow1);
 		int 	iSlow4 = int(float(fslider2));
 		int 	iSlow5 = (iSlow4 <= 0.0f);
