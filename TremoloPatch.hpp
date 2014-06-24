@@ -84,9 +84,9 @@ private:
 	float saw;
 	float cutoff;
 	float resonance;
-	float feedback;
 	float buf0;
 	float buf1;
+	float feedback;
 	double sampleRate;
 
 	inline bool parametersChanged() {
