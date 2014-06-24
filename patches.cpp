@@ -9,6 +9,7 @@
 
 REGISTER_PATCH(DroneBoxPatch, "Contest/DroneBox", 1, 1);
 REGISTER_PATCH(FreeVerbPatch, "FreeVerb", 1, 1);
+
 REGISTER_PATCH(SimpleDelayPatch, "Simple Delay", 1, 1);
 REGISTER_PATCH(GainPatch, "Gain", 2, 2);
 REGISTER_PATCH(ParametricEqPatch, "Parametric EQ", 1, 1);
@@ -40,6 +41,7 @@ REGISTER_PATCH(SimpleDistortionPatch, "Simple Distortion", 1, 1);
 REGISTER_PATCH(TremoloPatch, "Tremolo", 2, 2);
 REGISTER_PATCH(MoogPatch, "Moog Filter", 1, 1);
 REGISTER_PATCH(KarplusStrongPatch, "Karplus Strong", 0, 2);
+
 REGISTER_PATCH(FaustVerbPatch, "Faust/FreeVerb", 1, 1);
 REGISTER_PATCH(HarpPatch, "Faust/Harp", 0, 1);
 REGISTER_PATCH(HarpAutoPatch, "Faust/AutoHarp", 0, 1);
@@ -52,17 +54,27 @@ REGISTER_PATCH(LowPassFilterPatch, "Faust/Low Pass Filter", 1, 1);
 REGISTER_PATCH(LowShelfPatch, "Faust/Low Shelf Filter", 1, 1);
 REGISTER_PATCH(PitchShifterPatch, "Faust/Pitch Shifter", 1, 1);
 
+REGISTER_PATCH(GuitarixMoogPatch, "Guitarix/Moog", 1, 1);
+REGISTER_PATCH(GuitarixOverdrivePatch, "Guitarix/Overdrive", 1, 1);
+REGISTER_PATCH(GuitarixPhaserMonoPatch, "Guitarix/PhaserMono", 1, 1);
+REGISTER_PATCH(GuitarixOscTubePatch, "Guitarix/OscTube", 1, 1);
+REGISTER_PATCH(GuitarixFlangerGXPatch, "Guitarix/FlangerGX", 1, 1);
+REGISTER_PATCH(GuitarixDunwahPatch, "Guitarix/Dunwah", 1, 1);
+REGISTER_PATCH(GuitarixTonePatch, "Guitarix/Tone", 1, 1);
+REGISTER_PATCH(GuitarixBMfpPatch, "Guitarix/BMfp", 1, 1);
+REGISTER_PATCH(GuitarixDistortion1Patch, "Guitarix/Distortion1", 1, 1);
+
 /* TO BE WORKED ON */
 // REGISTER_PATCH(QompanderPatch, "Faust/Qompander", 1, 1); // 8851 ARM cycles
 // REGISTER_PATCH(AutoWahPatch, "Faust/AutoWah", 1, 1); // 4003 ARM cycles
-// REGISTER_PATCH(JotReverbPatch,"JotReverbPatch", 2, 2);
+// REGISTER_PATCH(JotReverbPatch,"JotReverb", 2, 2);
 // REGISTER_PATCH(SimpleDriveDelayPatch, "Drive Delay", 1, 1);
 // REGISTER_PATCH(AutotalentPatch, "AutoTalent", 2, 2);
 // REGISTER_PATCH(EnvelopeFilterPatch, "Envelope Filter", 1, 1);
 // REGISTER_PATCH(TemplatePatch, "Template", 0, 0);
 // REGISTER_PATCH(JumpDelay, "Contest/JumpDelay", 0, 0);
-// REGISTER_PATCH(SampleJitterPatch, "Contest/SampleJitterPatch", 0, 0);
-// REGISTER_PATCH(SirenPatch, "Contest/SirenPatch", 0, 0);
+// REGISTER_PATCH(SampleJitterPatch, "Contest/SampleJitter", 0, 0);
+// REGISTER_PATCH(SirenPatch, "Contest/Siren", 0, 0);
 // REGISTER_PATCH(LpfDelayPatch, "Low Pass Filtered Delay", 1, 1);
 // REGISTER_PATCH(LpfDelayPhaserPatch, "Low Pass Filtered Delay with Phaser", 1, 1);
 // REGISTER_PATCH(WaveshaperPatch, "Waveshaper", 2, 2);

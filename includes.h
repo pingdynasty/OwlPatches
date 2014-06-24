@@ -46,6 +46,17 @@
 
 // #include "Faust/AutoWahPatch.hpp"
 // #include "Faust/QompanderPatch.hpp"
+
+#include "Guitarix/GuitarixMoogPatch.hpp"
+#include "Guitarix/GuitarixOverdrivePatch.hpp"
+#include "Guitarix/GuitarixPhaserMonoPatch.hpp"
+#include "Guitarix/GuitarixOscTubePatch.hpp"
+#include "Guitarix/GuitarixFlangerGXPatch.hpp"
+#include "Guitarix/GuitarixDunwahPatch.hpp"
+#include "Guitarix/GuitarixTonePatch.hpp"
+#include "Guitarix/GuitarixBMfpPatch.hpp"
+#include "Guitarix/GuitarixDistortion1Patch.hpp"
+
 // #include "JotReverbPatch.hpp" // bug fix to be done re. new firmware
 // #include "SimpleDriveDelayPatch.hpp"
 // #include "Autotalent/AutotalentPatch.hpp"
