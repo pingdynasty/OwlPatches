@@ -1,8 +1,8 @@
 declare id "bmpf";
-declare name "BigMuffFuzzPadel";
-declare shortname "FuzzPadel";
+declare name "BigMuffFuzzPedal";
+declare shortname "FuzzPedal";
 declare category "Distortion";
-declare description "BigMuffFuzzPadel";
+declare description "BigMuffFuzzPedal";
 
 
 import("guitarix.lib");
