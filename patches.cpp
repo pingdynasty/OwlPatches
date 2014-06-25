@@ -54,14 +54,14 @@ REGISTER_PATCH(LowPassFilterPatch, "Faust/Low Pass Filter", 1, 1);
 REGISTER_PATCH(LowShelfPatch, "Faust/Low Shelf Filter", 1, 1);
 REGISTER_PATCH(PitchShifterPatch, "Faust/Pitch Shifter", 1, 1);
 
-REGISTER_PATCH(GuitarixMoogPatch, "Guitarix/Moog", 1, 1);
+REGISTER_PATCH(GuitarixMoogPatch, "Guitarix/Moog Filter", 1, 1);
 REGISTER_PATCH(GuitarixOverdrivePatch, "Guitarix/Overdrive", 1, 1);
 REGISTER_PATCH(GuitarixPhaserMonoPatch, "Guitarix/PhaserMono", 1, 1);
 REGISTER_PATCH(GuitarixOscTubePatch, "Guitarix/OscTube", 1, 1);
 REGISTER_PATCH(GuitarixFlangerGXPatch, "Guitarix/FlangerGX", 1, 1);
 REGISTER_PATCH(GuitarixDunwahPatch, "Guitarix/Dunwah", 1, 1);
 REGISTER_PATCH(GuitarixTonePatch, "Guitarix/Tone", 1, 1);
-REGISTER_PATCH(GuitarixBMfpPatch, "Guitarix/BMfp", 1, 1);
+REGISTER_PATCH(GuitarixBMfpPatch, "Guitarix/BigMuffFuzz", 1, 1);
 REGISTER_PATCH(GuitarixDistortion1Patch, "Guitarix/Distortion1", 1, 1);
 
 /* TO BE WORKED ON */
