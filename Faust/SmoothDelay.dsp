@@ -25,10 +25,10 @@ smoothdelay =  (+ :sdelay(N, interp, dtime)) ~ *(fback)
 
 	};
 	
-		wet     = hslider("Dry/Wet[style:knob][OWL:PARAMETER_D]", 0.3333, 0, 1, 0.025); 
-		dry     = 1 - wet;
+dry     = 1 - hslider("Dry/Wet[style:knob][OWL:PARAMETER_D]", 0.3333, 0, 1, 0.025);
+wet     = 1 - dry + hslider("Super Wet[style:knob][OWL:PARAMETER_E]", 0.0, 0, 0.5, 0.025);
 		
-		process = _<:*(dry),(*(wet) : smoothdelay ) :>_;
+process = _<:*(dry),(*(wet) : smoothdelay ) :>_;
 	
 
 
