@@ -384,6 +384,11 @@ class GuitarixBMfp : public dsp {
 		m->declare("filter.lib/version", "1.29");
 		m->declare("filter.lib/license", "STK-4.3");
 		m->declare("filter.lib/reference", "https://ccrma.stanford.edu/~jos/filters/");
+		m->declare("reduce.lib/name", "Reduce Library");
+		m->declare("reduce.lib/author", "Yann Orlarey (orlarey at grame.fr)");
+		m->declare("reduce.lib/copyright", "Grame");
+		m->declare("reduce.lib/version", "0.1");
+		m->declare("reduce.lib/license", "LGPL");
 		m->declare("music.lib/name", "Music Library");
 		m->declare("music.lib/author", "GRAME");
 		m->declare("music.lib/copyright", "GRAME");
@@ -404,11 +409,6 @@ class GuitarixBMfp : public dsp {
 		m->declare("effect.lib/exciter_copyright", "Copyright (c) 2013 Priyanka Shekar");
 		m->declare("effect.lib/exciter_version", "1.0");
 		m->declare("effect.lib/exciter_license", "MIT License (MIT)");
-		m->declare("reduce.lib/name", "Reduce Library");
-		m->declare("reduce.lib/author", "Yann Orlarey (orlarey at grame.fr)");
-		m->declare("reduce.lib/copyright", "Grame");
-		m->declare("reduce.lib/version", "0.1");
-		m->declare("reduce.lib/license", "LGPL");
 	}
 
 	virtual int getNumInputs() 	{ return 1; }
@@ -456,18 +456,18 @@ class GuitarixBMfp : public dsp {
 	}
 	virtual void buildUserInterface(UI* interface) {
 		interface->openVerticalBox("GuitarixBMfp");
+		interface->declare(&fslider1, "OWL", "PARAMETER_C");
+		interface->declare(&fslider1, "style", "knob");
+		interface->addVerticalSlider("Drive", &fslider1, 1.0f, -3.0f, 1e+02f, 1.0f);
 		interface->declare(&fslider3, "OWL", "PARAMETER_A");
 		interface->declare(&fslider3, "style", "knob");
-		interface->addVerticalSlider("Input", &fslider3, 0.0f, -24.0f, 2e+01f, 0.1f);
+		interface->addVerticalSlider("Input", &fslider3, 0.0f, -24.0f, 12.0f, 0.1f);
 		interface->declare(&fslider0, "OWL", "PARAMETER_B");
 		interface->declare(&fslider0, "style", "knob");
 		interface->addVerticalSlider("Output", &fslider0, 1e+02f, 5e+01f, 1e+02f, 1.0f);
-		interface->declare(&fslider1, "OWL", "PARAMETER_C");
-		interface->declare(&fslider1, "style", "knob");
-		interface->addVerticalSlider("drive", &fslider1, 1.0f, -3.0f, 1e+02f, 1.0f);
 		interface->declare(&fslider2, "OWL", "PARAMETER_D");
 		interface->declare(&fslider2, "style", "knob");
-		interface->addVerticalSlider("tone", &fslider2, 0.5f, 0.0f, 1.0f, 0.01f);
+		interface->addVerticalSlider("Tone", &fslider2, 0.5f, 0.0f, 1.0f, 0.01f);
 		interface->closeBox();
 	}
 	virtual void compute (int count, FAUSTFLOAT** input, FAUSTFLOAT** output) {
