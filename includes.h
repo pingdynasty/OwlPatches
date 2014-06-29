@@ -47,6 +47,7 @@
 // #include "Faust/AutoWahPatch.hpp"
 // #include "Faust/QompanderPatch.hpp"
 
+#include "Guitarix/GuitarixPhaserPatch.hpp"
 #include "Guitarix/GuitarixMoogPatch.hpp"
 #include "Guitarix/GuitarixOverdrivePatch.hpp"
 #include "Guitarix/GuitarixPhaserMonoPatch.hpp"

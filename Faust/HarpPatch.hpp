@@ -437,7 +437,7 @@ class Harp : public dsp {
 		FAUSTFLOAT* output0 = output[0];
 		FAUSTFLOAT* output1 = output[1];
 		for (int i=0; i<count; i++) {
-			iRec1[0] = (12345 + (1103515245 * iRec1[1]));
+			iRec1[0] = ((1103515245 * iRec1[1]) + 12345);
 			fRec3[0] = ((0.9f * fRec3[1]) + fSlow2);
 			float fTemp0 = min(fRec3[0], fRec3[1]);
 			float fTemp1 = max(fRec3[0], fRec3[1]);

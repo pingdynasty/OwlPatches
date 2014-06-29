@@ -418,7 +418,7 @@ class GuitarixDunwah : public dsp {
 	}
 	virtual void buildUserInterface(UI* interface) {
 		interface->openVerticalBox("GuitarixDunwah");
-		interface->declare(&fslider0, "OWL", "PARAMETER_E");
+		interface->declare(&fslider0, "OWL", "PARAMETER_A");
 		interface->declare(&fslider0, "style", "knob");
 		interface->addVerticalSlider("wah", &fslider0, 0.0f, 0.0f, 1.0f, 0.01f);
 		interface->closeBox();

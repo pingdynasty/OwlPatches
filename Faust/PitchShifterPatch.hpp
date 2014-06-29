@@ -345,6 +345,7 @@ class PitchShifter : public dsp {
 		m->declare("version", "1.0");
 		m->declare("author", "Grame");
 		m->declare("license", "BSD");
+		m->declare("copyright", "(c)GRAME 2006");
 		m->declare("music.lib/name", "Music Library");
 		m->declare("music.lib/author", "GRAME");
 		m->declare("music.lib/copyright", "GRAME");
@@ -355,7 +356,6 @@ class PitchShifter : public dsp {
 		m->declare("math.lib/copyright", "GRAME");
 		m->declare("math.lib/version", "1.0");
 		m->declare("math.lib/license", "LGPL with exception");
-		m->declare("copyright", "(c)GRAME 2006");
 	}
 
 	virtual int getNumInputs() 	{ return 1; }
@@ -390,7 +390,7 @@ class PitchShifter : public dsp {
 	}
 	virtual void compute (int count, FAUSTFLOAT** input, FAUSTFLOAT** output) {
 		float 	fSlow0 = float(fslider0);
-		float 	fSlow1 = ((fSlow0 + 1) - powf(2,(0.08333333333333333f * float(fslider1))));
+		float 	fSlow1 = ((1 + fSlow0) - powf(2,(0.08333333333333333f * float(fslider1))));
 		float 	fSlow2 = (1.0f / float(fslider2));
 		float 	fSlow3 = (fSlow0 - 1);
 		FAUSTFLOAT* input0 = input[0];
