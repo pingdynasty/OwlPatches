@@ -97,13 +97,13 @@ stereoReverb(fb1, fb2, damp, spread)
 // fxctrl : add an input gain and a wet-dry control to a stereo FX
 //----------------------------------------------------------------
 
-fxctrl(g,w,Fx) =  _,_ <: (*(g),*(g) : Fx : *(w),*(w)), *(1-w), *(1-w) +> _,_;
+fxctrl(g,w,Fx) =  _ <: (*(g) : Fx : *(w)), *(1-w) +> _;
 
 
 // Freeverb
 //---------
 
-//freeverb = vgroup("Freeverb", fxctrl(fixedgain, wetSlider, stereoReverb(combfeed, allpassfeed, dampSlider, stereospread)));
-freeverb = vgroup("Freeverb", monoReverb(combfeed, allpassfeed, dampSlider, 0));
+freeverb = vgroup("Freeverb", fxctrl(fixedgain, wetSlider, monoReverb(combfeed, allpassfeed, dampSlider, 0)));
+//freeverb = vgroup("Freeverb", monoReverb(combfeed, allpassfeed, dampSlider, 0));
 
 process = freeverb;

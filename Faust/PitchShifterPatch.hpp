@@ -1,14 +1,13 @@
 //-----------------------------------------------------
-// name: "SmoothDelay"
-// author: "Yann Orlarey"
-// copyright: "Grame"
+// name: "pitch-shifter"
 // version: "1.0"
-// license: "STK-4.3"
+// author: "Grame"
+// license: "BSD"
+// copyright: "(c)GRAME 2006"
 //
 // Code generated with Faust 0.9.67 (http://faust.grame.fr)
 //-----------------------------------------------------
 /* link with  */
-#include <math.h>
 /************************************************************************
 
 	IMPORTANT NOTE : this file contains two clearly delimited sections :
@@ -45,8 +44,8 @@
  ************************************************************************
  ************************************************************************/
 
-#ifndef __SmoothDelayPatch_h__
-#define __SmoothDelayPatch_h__
+#ifndef __pitch_shifterPatch_h__
+#define __pitch_shifterPatch_h__
 
 #include "StompBox.h"
 #include "owlcontrol.h"
@@ -329,32 +328,24 @@ class OwlUI : public UI
 typedef long double quad;
 
 #ifndef FAUSTCLASS 
-#define FAUSTCLASS SmoothDelay
+#define FAUSTCLASS pitch_shifter
 #endif
 
-class SmoothDelay : public dsp {
+class pitch_shifter : public dsp {
   private:
-	int 	iConst0;
-	float 	fConst1;
-	FAUSTFLOAT 	fslider0;
-	float 	fConst2;
-	FAUSTFLOAT 	fslider1;
-	float 	fRec1[2];
-	float 	fRec2[2];
-	float 	fRec3[2];
-	float 	fRec4[2];
-	FAUSTFLOAT 	fslider2;
-	FAUSTFLOAT 	fslider3;
 	int 	IOTA;
-	float 	fVec0[131072];
+	float 	fVec0[65536];
+	FAUSTFLOAT 	fslider0;
+	FAUSTFLOAT 	fslider1;
 	float 	fRec0[2];
+	FAUSTFLOAT 	fslider2;
   public:
 	static void metadata(Meta* m) 	{ 
-		m->declare("name", "SmoothDelay");
-		m->declare("author", "Yann Orlarey");
-		m->declare("copyright", "Grame");
+		m->declare("name", "pitch-shifter");
 		m->declare("version", "1.0");
-		m->declare("license", "STK-4.3");
+		m->declare("author", "Grame");
+		m->declare("license", "BSD");
+		m->declare("copyright", "(c)GRAME 2006");
 		m->declare("music.lib/name", "Music Library");
 		m->declare("music.lib/author", "GRAME");
 		m->declare("music.lib/copyright", "GRAME");
@@ -373,70 +364,50 @@ class SmoothDelay : public dsp {
 	}
 	virtual void instanceInit(int samplingFreq) {
 		fSamplingFreq = samplingFreq;
-		iConst0 = min(192000, max(1, fSamplingFreq));
-		fConst1 = (0.001f * iConst0);
-		fslider0 = 0.0f;
-		fConst2 = (1e+03f / float(iConst0));
-		fslider1 = 1e+01f;
-		for (int i=0; i<2; i++) fRec1[i] = 0;
-		for (int i=0; i<2; i++) fRec2[i] = 0;
-		for (int i=0; i<2; i++) fRec3[i] = 0;
-		for (int i=0; i<2; i++) fRec4[i] = 0;
-		fslider2 = 0.0f;
-		fslider3 = 0.3333f;
 		IOTA = 0;
-		for (int i=0; i<131072; i++) fVec0[i] = 0;
+		for (int i=0; i<65536; i++) fVec0[i] = 0;
+		fslider0 = 1e+03f;
+		fslider1 = 0.0f;
 		for (int i=0; i<2; i++) fRec0[i] = 0;
+		fslider2 = 1e+01f;
 	}
 	virtual void init(int samplingFreq) {
 		classInit(samplingFreq);
 		instanceInit(samplingFreq);
 	}
 	virtual void buildUserInterface(UI* interface) {
-		interface->openVerticalBox("SmoothDelay");
-		interface->declare(&fslider0, "OWL", "PARAMETER_B");
-		interface->declare(&fslider0, "style", "knob");
-		interface->declare(&fslider0, "unit", "ms");
-		interface->addHorizontalSlider("delay", &fslider0, 0.0f, 0.0f, 5e+02f, 0.1f);
-		interface->declare(&fslider3, "OWL", "PARAMETER_D");
-		interface->declare(&fslider3, "style", "knob");
-		interface->addHorizontalSlider("dry/wet", &fslider3, 0.3333f, 0.0f, 1.0f, 0.025f);
-		interface->declare(&fslider2, "OWL", "PARAMETER_C");
-		interface->declare(&fslider2, "style", "knob");
-		interface->addHorizontalSlider("feedback", &fslider2, 0.0f, 0.0f, 1e+02f, 0.1f);
-		interface->declare(&fslider1, "OWL", "PARAMETER_A");
+		interface->openVerticalBox("Pitch Shifter");
+		interface->declare(&fslider1, "OWL", "PARAMETER_C");
 		interface->declare(&fslider1, "style", "knob");
-		interface->declare(&fslider1, "unit", "ms");
-		interface->addHorizontalSlider("interpolation", &fslider1, 1e+01f, 1.0f, 1e+02f, 0.1f);
+		interface->addHorizontalSlider("shift (semitones)", &fslider1, 0.0f, -12.0f, 12.0f, 0.1f);
+		interface->declare(&fslider0, "OWL", "PARAMETER_A");
+		interface->declare(&fslider0, "style", "knob");
+		interface->addHorizontalSlider("window (samples)", &fslider0, 1e+03f, 5e+01f, 1e+04f, 1.0f);
+		interface->declare(&fslider2, "OWL", "PARAMETER_B");
+		interface->declare(&fslider2, "style", "knob");
+		interface->addHorizontalSlider("xfade (samples)", &fslider2, 1e+01f, 1.0f, 1e+04f, 1.0f);
 		interface->closeBox();
 	}
 	virtual void compute (int count, FAUSTFLOAT** input, FAUSTFLOAT** output) {
-		float 	fSlow0 = (fConst1 * float(fslider0));
-		float 	fSlow1 = (fConst2 / float(fslider1));
-		float 	fSlow2 = (0 - fSlow1);
-		float 	fSlow3 = (0.01f * float(fslider2));
-		float 	fSlow4 = float(fslider3);
-		float 	fSlow5 = (1 - fSlow4);
+		float 	fSlow0 = float(fslider0);
+		float 	fSlow1 = ((1 + fSlow0) - powf(2,(0.08333333333333333f * float(fslider1))));
+		float 	fSlow2 = (1.0f / float(fslider2));
+		float 	fSlow3 = (fSlow0 - 1);
 		FAUSTFLOAT* input0 = input[0];
 		FAUSTFLOAT* output0 = output[0];
 		for (int i=0; i<count; i++) {
 			float fTemp0 = (float)input0[i];
-			float fTemp1 = ((int((fRec1[1] != 0.0f)))?((int(((fRec2[1] > 0.0f) & (fRec2[1] < 1.0f))))?fRec1[1]:0):((int(((fRec2[1] == 0.0f) & (fSlow0 != fRec3[1]))))?fSlow1:((int(((fRec2[1] == 1.0f) & (fSlow0 != fRec4[1]))))?fSlow2:0)));
-			fRec1[0] = fTemp1;
-			fRec2[0] = max(0.0f, min(1.0f, (fRec2[1] + fTemp1)));
-			fRec3[0] = ((int(((fRec2[1] >= 1.0f) & (fRec4[1] != fSlow0))))?fSlow0:fRec3[1]);
-			fRec4[0] = ((int(((fRec2[1] <= 0.0f) & (fRec3[1] != fSlow0))))?fSlow0:fRec4[1]);
-			float fTemp2 = ((fSlow3 * fRec0[1]) + (fSlow4 * fTemp0));
-			fVec0[IOTA&131071] = fTemp2;
-			fRec0[0] = (((1.0f - fRec2[0]) * fVec0[(IOTA-int((int(fRec3[0]) & 131071)))&131071]) + (fRec2[0] * fVec0[(IOTA-int((int(fRec4[0]) & 131071)))&131071]));
-			output0[i] = (FAUSTFLOAT)(fRec0[0] + (fSlow5 * fTemp0));
+			fVec0[IOTA&65535] = fTemp0;
+			fRec0[0] = fmodf((fRec0[1] + fSlow1),fSlow0);
+			int iTemp1 = int(fRec0[0]);
+			int iTemp2 = (1 + iTemp1);
+			float fTemp3 = min((fSlow2 * fRec0[0]), (float)1);
+			float fTemp4 = (fSlow0 + fRec0[0]);
+			int iTemp5 = int(fTemp4);
+			output0[i] = (FAUSTFLOAT)((((fVec0[(IOTA-int((iTemp1 & 65535)))&65535] * (iTemp2 - fRec0[0])) + ((fRec0[0] - iTemp1) * fVec0[(IOTA-int((int(iTemp2) & 65535)))&65535])) * fTemp3) + (((fVec0[(IOTA-int((iTemp5 & 65535)))&65535] * (0 - ((fRec0[0] + fSlow3) - iTemp5))) + ((fTemp4 - iTemp5) * fVec0[(IOTA-int((int((1 + iTemp5)) & 65535)))&65535])) * (1 - fTemp3)));
 			// post processing
 			fRec0[1] = fRec0[0];
 			IOTA = IOTA+1;
-			fRec4[1] = fRec4[0];
-			fRec3[1] = fRec3[0];
-			fRec2[1] = fRec2[0];
-			fRec1[1] = fRec1[0];
 		}
 	}
 };
@@ -451,18 +422,18 @@ class SmoothDelay : public dsp {
 
 /**************************************************************************************
 
-	SmoothDelayPatch : an OWL patch that calls Faust generated DSP code
+	pitch_shifterPatch : an OWL patch that calls Faust generated DSP code
 	
 ***************************************************************************************/
 
-class SmoothDelayPatch : public Patch
+class pitch_shifterPatch : public Patch
 {
-    SmoothDelay   fDSP;
+    pitch_shifter   fDSP;
     OwlUI	fUI;
     
 public:
 
-    SmoothDelayPatch() : fUI(patches.getCurrentPatchProcessor())
+    pitch_shifterPatch() : fUI(patches.getCurrentPatchProcessor())
     {
         fDSP.init(int(getSampleRate()));		// Init Faust code with the OWL sampling rate
         fDSP.buildUserInterface(&fUI);			// Maps owl parameters and faust widgets 
@@ -497,7 +468,7 @@ public:
 
 };
 
-#endif // __SmoothDelayPatch_h__
+#endif // __pitch_shifterPatch_h__
 
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////
