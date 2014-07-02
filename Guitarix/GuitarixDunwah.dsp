@@ -21,8 +21,8 @@ with {
     gs =  g  : smooth(s);
 
     tf2 = component("filter.lib").tf2;
-    //wah = vslider("wah", 0, 0, 1, 0.01) : *(9) : +(1) : log10;
-    wah = vslider("wah", 0, 0, 1, 0.01);
+    //wah = vslider("Wah", 0, 0, 1, 0.01) : *(9) : +(1) : log10;
+    wah = vslider("Wah", 0, 0, 1, 0.01);
 };
 
 dunwah2 = *(gs) : iir((b0, b1, b2, b3), (A1, A2, A3))
@@ -56,8 +56,8 @@ with {
 
     iir = component("filter.lib").iir;
 
-    //wah = vslider("wah", 0, 0, 1, 0.01) : *(9) : +(1) : log10;
-    wah = vslider("wah[style:knob][OWL:PARAMETER_A]", 0, 0, 1, 0.01);
+    //wah = vslider("Wah", 0, 0, 1, 0.01) : *(9) : +(1) : log10;
+    wah = vslider("Wah[style:knob][OWL:PARAMETER_A]", 0, 0, 1, 0.01);
 };
 
 process = dunwah2;

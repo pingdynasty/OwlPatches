@@ -37,9 +37,9 @@ pass 		 	= hgroup("low_highpass", bypass(switch, passo));
 */
 
 //-distortion
-drivelevel      = vslider("level[style:knob][OWL:PARAMETER_A]", 0.01, 0, 0.5, 0.01);
-drivegain1      = vslider("gain[style:knob][OWL:PARAMETER_B]", 2, -10, 10, 0.1)-10 : db2linear : smoothi(0.999);
-drive		= vslider("drive[style:knob][OWL:PARAMETER_C]", 0.64, 0, 1, 0.01);
+drivelevel      = vslider("Level[style:knob][OWL:PARAMETER_A]", 0.01, 0, 0.5, 0.01);
+drivegain1      = vslider("Gain[style:knob][OWL:PARAMETER_B]", 2, -10, 10, 0.1)-10 : db2linear : smoothi(0.999);
+drive		= vslider("Drive[style:knob][OWL:PARAMETER_C]", 0.64, 0, 1, 0.01);
 distortion 	= cubicnl(drive,drivelevel); 
 
 

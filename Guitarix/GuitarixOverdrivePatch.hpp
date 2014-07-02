@@ -381,29 +381,28 @@ class GuitarixOverdrive : public dsp {
 		interface->openVerticalBox("GuitarixOverdrive");
 		interface->declare(&fslider1, "OWL", "PARAMETER_A");
 		interface->declare(&fslider1, "style", "knob");
-		interface->addVerticalSlider("drive", &fslider1, 1.0f, 1.0f, 2e+01f, 0.1f);
-		interface->declare(&fslider0, "OWL", "PARAMETER_B");
-		interface->declare(&fslider0, "name", "wet/dry");
+		interface->addVerticalSlider("Drive", &fslider1, 1.0f, 1.0f, 2e+01f, 0.1f);
+		interface->declare(&fslider0, "OWL", "PARAMETER_D");
 		interface->declare(&fslider0, "style", "knob");
 		interface->declare(&fslider0, "tooltip", "percentage of processed signal in output signal");
-		interface->addVerticalSlider("wet_dry", &fslider0, 1e+02f, 0.0f, 1e+02f, 1.0f);
+		interface->addVerticalSlider("Wet/Dry", &fslider0, 1e+02f, 0.0f, 1e+02f, 1.0f);
 		interface->closeBox();
 	}
 	virtual void compute (int count, FAUSTFLOAT** input, FAUSTFLOAT** output) {
 		float 	fSlow0 = float(fslider0);
 		float 	fSlow1 = (0.01f * fSlow0);
-		float 	fSlow2 = (1 - fSlow1);
-		float 	fSlow3 = float(fslider1);
-		float 	fSlow4 = (0.0010000000000000009f * powf(10,(0.05f * (0 - (0.5f * fSlow3)))));
-		float 	fSlow5 = (0.0001f * faustpower<2>(fSlow0));
-		float 	fSlow6 = (fSlow3 - 1);
+		float 	fSlow2 = float(fslider1);
+		float 	fSlow3 = (fSlow2 - 1);
+		float 	fSlow4 = (0.0001f * faustpower<2>(fSlow0));
+		float 	fSlow5 = (0.0010000000000000009f * powf(10,(0.05f * (0 - (0.5f * fSlow2)))));
+		float 	fSlow6 = (1 - fSlow1);
 		FAUSTFLOAT* input0 = input[0];
 		FAUSTFLOAT* output0 = output[0];
 		for (int i=0; i<count; i++) {
 			float fTemp0 = (float)input0[i];
-			fRec0[0] = ((0.999f * fRec0[1]) + fSlow4);
 			float fTemp1 = fabsf((fSlow1 * fTemp0));
-			output0[i] = (FAUSTFLOAT)(fTemp0 * (fSlow2 + (fSlow1 * ((fRec0[0] * (fSlow3 + fTemp1)) / (1 + ((fSlow5 * faustpower<2>(fTemp0)) + (fSlow6 * fTemp1)))))));
+			fRec0[0] = ((0.999f * fRec0[1]) + fSlow5);
+			output0[i] = (FAUSTFLOAT)(fTemp0 * (fSlow6 + (fSlow1 * ((fRec0[0] * (fSlow2 + fTemp1)) / (1 + ((fSlow4 * faustpower<2>(fTemp0)) + (fSlow3 * fTemp1)))))));
 			// post processing
 			fRec0[1] = fRec0[0];
 		}

@@ -57,9 +57,9 @@ with {
 bass_freq	= 600;
 treble_freq	= 2400;
 
-bass_gain	= vslider("bass[name:bass][style:knob][OWL:PARAMETER_A]", 0, -20, 20, 0.1);
-mid_gain	= vslider("middle[name:middle][style:knob][OWL:PARAMETER_B]", 0, -20, 20, 0.1)/2;
-treble_gain	= vslider("treble[name:treble][style:knob][OWL:PARAMETER_C]", 0, -20, 20, 0.1);
+bass_gain	= vslider("Bass[name:bass][style:knob][OWL:PARAMETER_A]", 0, -20, 20, 0.1);
+mid_gain	= vslider("Middle[name:middle][style:knob][OWL:PARAMETER_B]", 0, -20, 20, 0.1)/2;
+treble_gain	= vslider("Treble[name:treble][style:knob][OWL:PARAMETER_C]", 0, -20, 20, 0.1);
 tone(b,m,t)     = gxlow_shelf(bass_freq,b-m) :
 				  gxlow_shelf(treble_freq,m):
                   gxhigh_shelf(bass_freq,m) :

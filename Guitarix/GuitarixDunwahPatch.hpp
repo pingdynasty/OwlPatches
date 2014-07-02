@@ -339,13 +339,13 @@ typedef long double quad;
 
 class GuitarixDunwah : public dsp {
   private:
+	FAUSTFLOAT 	fslider0;
 	int 	iConst0;
 	float 	fConst1;
-	FAUSTFLOAT 	fslider0;
-	float 	fConst2;
 	float 	fRec1[2];
-	float 	fConst3;
+	float 	fConst2;
 	float 	fRec2[2];
+	float 	fConst3;
 	float 	fConst4;
 	float 	fRec3[2];
 	float 	fRec0[4];
@@ -394,23 +394,23 @@ class GuitarixDunwah : public dsp {
 	}
 	virtual void instanceInit(int samplingFreq) {
 		fSamplingFreq = samplingFreq;
-		iConst0 = min(192000, max(1, fSamplingFreq));
-		fConst1 = (0.5f / float(iConst0));
 		fslider0 = 0.0f;
-		fConst2 = (1.0f / float(iConst0));
+		iConst0 = min(192000, max(1, fSamplingFreq));
+		fConst1 = (0.007000000000000006f * ((iConst0 * (1.73888e-06f - (8.38823e-12f * iConst0))) - 0.193457f));
 		for (int i=0; i<2; i++) fRec1[i] = 0;
-		fConst3 = expf((0 - (1236.9027460477864f / float(iConst0))));
+		fConst2 = (0.5f / float(iConst0));
 		for (int i=0; i<2; i++) fRec2[i] = 0;
-		fConst4 = (0.007000000000000006f * ((iConst0 * (1.73888e-06f - (8.38823e-12f * iConst0))) - 0.193457f));
+		fConst3 = expf((0 - (1236.9027460477864f / float(iConst0))));
+		fConst4 = (1.0f / float(iConst0));
 		for (int i=0; i<2; i++) fRec3[i] = 0;
 		for (int i=0; i<4; i++) fRec0[i] = 0;
 		fConst5 = (1.77528e-06f - (8.52216e-12f * iConst0));
-		fConst6 = (1.54419e-05f - (6.43963e-11f * iConst0));
-		fConst7 = (0 - (1.4935970000000003f + (iConst0 * (fConst5 + fConst6))));
-		fConst8 = (0.879905f + (iConst0 * fConst5));
-		fConst9 = ((iConst0 * fConst6) - 0.386688f);
-		fConst10 = ((1.00038f * (fConst8 + fConst9)) + (fConst8 * fConst9));
-		fConst11 = (fConst9 * (0 - (1.00038f * fConst8)));
+		fConst6 = (0.879905f + (iConst0 * fConst5));
+		fConst7 = (1.54419e-05f - (6.43963e-11f * iConst0));
+		fConst8 = ((iConst0 * fConst7) - 0.386688f);
+		fConst9 = (fConst8 * (0 - (1.00038f * fConst6)));
+		fConst10 = ((1.00038f * (fConst6 + fConst8)) + (fConst6 * fConst8));
+		fConst11 = (0 - ((iConst0 * (fConst5 + fConst7)) + 1.4935970000000003f));
 	}
 	virtual void init(int samplingFreq) {
 		classInit(samplingFreq);
@@ -420,25 +420,25 @@ class GuitarixDunwah : public dsp {
 		interface->openVerticalBox("GuitarixDunwah");
 		interface->declare(&fslider0, "OWL", "PARAMETER_A");
 		interface->declare(&fslider0, "style", "knob");
-		interface->addVerticalSlider("wah", &fslider0, 0.0f, 0.0f, 1.0f, 0.01f);
+		interface->addVerticalSlider("Wah", &fslider0, 0.0f, 0.0f, 1.0f, 0.01f);
 		interface->closeBox();
 	}
 	virtual void compute (int count, FAUSTFLOAT** input, FAUSTFLOAT** output) {
 		float 	fSlow0 = float(fslider0);
-		float 	fSlow1 = (1973.48f - (float(1000) / ((fSlow0 * (1.9841f + (fSlow0 * (5.76598f + (fSlow0 * ((fSlow0 * (49.9836f + (fSlow0 * ((12.499f * fSlow0) - 40.3658f)))) - 28.3434f)))))) - 1.6086f)));
-		float 	fSlow2 = (1 - (fConst1 * (fSlow1 / (21.9737f + (fSlow0 * ((fSlow0 * (42.2734f + (fSlow0 * ((fSlow0 * (115.375f - (52.3051f * fSlow0))) - 99.7712f)))) - 24.555f))))));
-		float 	fSlow3 = (0.007000000000000006f * ((0 - (2.0f * fSlow2)) * cosf((fConst2 * fSlow1))));
-		float 	fSlow4 = (0.007000000000000006f * faustpower<2>(fSlow2));
-		float 	fSlow5 = (fConst4 * (0 - ((1.0f / ((fSlow0 * (0.270546f + (fSlow0 * ((fSlow0 * (3.64419f + (fSlow0 * ((2.85511f * fSlow0) - 5.20364f)))) - 0.86331f)))) - 0.814203f)) + 0.933975f)));
+		float 	fSlow1 = (fConst1 * (0 - ((1.0f / ((fSlow0 * (0.270546f + (fSlow0 * ((fSlow0 * (3.64419f + (fSlow0 * ((2.85511f * fSlow0) - 5.20364f)))) - 0.86331f)))) - 0.814203f)) + 0.933975f)));
+		float 	fSlow2 = (1973.48f - (float(1000) / ((fSlow0 * (1.9841f + (fSlow0 * (5.76598f + (fSlow0 * ((fSlow0 * (49.9836f + (fSlow0 * ((12.499f * fSlow0) - 40.3658f)))) - 28.3434f)))))) - 1.6086f)));
+		float 	fSlow3 = (1 - (fConst2 * (fSlow2 / (21.9737f + (fSlow0 * ((fSlow0 * (42.2734f + (fSlow0 * ((fSlow0 * (115.375f - (52.3051f * fSlow0))) - 99.7712f)))) - 24.555f))))));
+		float 	fSlow4 = (0.007000000000000006f * faustpower<2>(fSlow3));
+		float 	fSlow5 = (0.007000000000000006f * ((0 - (2.0f * fSlow3)) * cosf((fConst4 * fSlow2))));
 		FAUSTFLOAT* input0 = input[0];
 		FAUSTFLOAT* output0 = output[0];
 		for (int i=0; i<count; i++) {
 			float fTemp0 = (float)input0[i];
-			fRec1[0] = ((0.993f * fRec1[1]) + fSlow3);
+			fRec1[0] = ((0.993f * fRec1[1]) + fSlow1);
 			fRec2[0] = ((0.993f * fRec2[1]) + fSlow4);
 			fRec3[0] = ((0.993f * fRec3[1]) + fSlow5);
-			fRec0[0] = (0 - ((((fRec0[1] * (fRec1[0] - fConst3)) + (fRec0[2] * (fRec2[0] - (fConst3 * fRec1[0])))) + (fConst3 * ((0 - fRec2[0]) * fRec0[3]))) - (fTemp0 * fRec3[0])));
-			output0[i] = (FAUSTFLOAT)(((fRec0[0] + (fConst7 * fRec0[1])) + (fConst10 * fRec0[2])) + (fConst11 * fRec0[3]));
+			fRec0[0] = (0 - ((((fRec0[1] * (fRec3[0] - fConst3)) + (fRec0[2] * (fRec2[0] - (fConst3 * fRec3[0])))) + (fConst3 * ((0 - fRec2[0]) * fRec0[3]))) - (fTemp0 * fRec1[0])));
+			output0[i] = (FAUSTFLOAT)(((fRec0[0] + (fConst11 * fRec0[1])) + (fConst10 * fRec0[2])) + (fConst9 * fRec0[3]));
 			// post processing
 			for (int i=3; i>0; i--) fRec0[i] = fRec0[i-1];
 			fRec3[1] = fRec3[0];

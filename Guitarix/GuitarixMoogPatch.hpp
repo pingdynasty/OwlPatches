@@ -340,16 +340,16 @@ typedef long double quad;
 
 class GuitarixMoog : public dsp {
   private:
-	FAUSTFLOAT 	fslider0;
 	int 	iVec0[2];
-	float 	fRec5[2];
+	FAUSTFLOAT 	fslider0;
+	float 	fRec1[2];
 	float 	fConst0;
-	FAUSTFLOAT 	fslider1;
 	float 	fRec6[2];
+	FAUSTFLOAT 	fslider1;
+	float 	fRec5[2];
 	float 	fRec4[2];
 	float 	fRec3[2];
 	float 	fRec2[2];
-	float 	fRec1[2];
 	float 	fRec0[2];
 	float 	fRec11[2];
 	float 	fRec10[2];
@@ -396,16 +396,16 @@ class GuitarixMoog : public dsp {
 	}
 	virtual void instanceInit(int samplingFreq) {
 		fSamplingFreq = samplingFreq;
-		fslider0 = 1.0f;
 		for (int i=0; i<2; i++) iVec0[i] = 0;
-		for (int i=0; i<2; i++) fRec5[i] = 0;
+		fslider0 = 3e+03f;
+		for (int i=0; i<2; i++) fRec1[i] = 0;
 		fConst0 = (6.283185307179586f / float(min(192000, max(1, fSamplingFreq))));
-		fslider1 = 3e+03f;
 		for (int i=0; i<2; i++) fRec6[i] = 0;
+		fslider1 = 1.0f;
+		for (int i=0; i<2; i++) fRec5[i] = 0;
 		for (int i=0; i<2; i++) fRec4[i] = 0;
 		for (int i=0; i<2; i++) fRec3[i] = 0;
 		for (int i=0; i<2; i++) fRec2[i] = 0;
-		for (int i=0; i<2; i++) fRec1[i] = 0;
 		for (int i=0; i<2; i++) fRec0[i] = 0;
 		for (int i=0; i<2; i++) fRec11[i] = 0;
 		for (int i=0; i<2; i++) fRec10[i] = 0;
@@ -421,15 +421,15 @@ class GuitarixMoog : public dsp {
 		interface->openVerticalBox("GuitarixMoog");
 		interface->declare(&fslider0, "OWL", "PARAMETER_A");
 		interface->declare(&fslider0, "style", "knob");
-		interface->addHorizontalSlider("Q", &fslider0, 1.0f, 0.0f, 4.0f, 0.1f);
+		interface->addHorizontalSlider("Freq", &fslider0, 3e+03f, 4.4e+02f, 6e+03f, 1e+01f);
 		interface->declare(&fslider1, "OWL", "PARAMETER_B");
 		interface->declare(&fslider1, "style", "knob");
-		interface->addHorizontalSlider("fr", &fslider1, 3e+03f, 4.4e+02f, 6e+03f, 1e+01f);
+		interface->addHorizontalSlider("Q", &fslider1, 1.0f, 0.0f, 4.0f, 0.1f);
 		interface->closeBox();
 	}
 	virtual void compute (int count, FAUSTFLOAT** input, FAUSTFLOAT** output) {
-		float 	fSlow0 = (0 - float(fslider0));
-		float 	fSlow1 = (0.0010000000000000009f * float(fslider1));
+		float 	fSlow0 = (0.0010000000000000009f * float(fslider0));
+		float 	fSlow1 = (0 - float(fslider1));
 		FAUSTFLOAT* input0 = input[0];
 		FAUSTFLOAT* input1 = input[1];
 		FAUSTFLOAT* output0 = output[0];
@@ -438,22 +438,22 @@ class GuitarixMoog : public dsp {
 			float fTemp0 = (float)input0[i];
 			float fTemp1 = (float)input1[i];
 			iVec0[0] = 1;
-			fRec5[0] = ((1e-20f * (1 - iVec0[1])) - fRec5[1]);
-			fRec6[0] = (fSlow1 + (0.999f * fRec6[1]));
-			float fTemp2 = (fConst0 * fRec6[0]);
-			float fTemp3 = (1.0f - fTemp2);
-			fRec4[0] = ((fSlow0 * fRec0[1]) + ((fTemp0 + fRec5[0]) + (fTemp3 * fRec4[1])));
-			fRec3[0] = (fRec4[0] + (fTemp3 * fRec3[1]));
-			fRec2[0] = (fRec3[0] + (fTemp3 * fRec2[1]));
-			fRec1[0] = (fRec2[0] + (fRec1[1] * fTemp3));
-			float fTemp4 = faustpower<4>(fTemp2);
-			fRec0[0] = (fRec1[0] * fTemp4);
+			fRec1[0] = (fSlow0 + (0.999f * fRec1[1]));
+			float fTemp2 = (fConst0 * fRec1[0]);
+			float fTemp3 = faustpower<4>(fTemp2);
+			float fTemp4 = (1.0f - fTemp2);
+			fRec6[0] = ((1e-20f * (1 - iVec0[1])) - fRec6[1]);
+			fRec5[0] = ((fSlow1 * fRec0[1]) + ((fTemp0 + fRec6[0]) + (fTemp4 * fRec5[1])));
+			fRec4[0] = (fRec5[0] + (fTemp4 * fRec4[1]));
+			fRec3[0] = (fRec4[0] + (fTemp4 * fRec3[1]));
+			fRec2[0] = (fRec3[0] + (fRec2[1] * fTemp4));
+			fRec0[0] = (fRec2[0] * fTemp3);
 			output0[i] = (FAUSTFLOAT)fRec0[0];
-			fRec11[0] = ((fSlow0 * fRec7[1]) + ((fTemp1 + fRec5[0]) + (fTemp3 * fRec11[1])));
-			fRec10[0] = (fRec11[0] + (fTemp3 * fRec10[1]));
-			fRec9[0] = (fRec10[0] + (fTemp3 * fRec9[1]));
-			fRec8[0] = (fRec9[0] + (fTemp3 * fRec8[1]));
-			fRec7[0] = (fRec8[0] * fTemp4);
+			fRec11[0] = ((fSlow1 * fRec7[1]) + ((fTemp1 + fRec6[0]) + (fTemp4 * fRec11[1])));
+			fRec10[0] = (fRec11[0] + (fTemp4 * fRec10[1]));
+			fRec9[0] = (fRec10[0] + (fTemp4 * fRec9[1]));
+			fRec8[0] = (fRec9[0] + (fTemp4 * fRec8[1]));
+			fRec7[0] = (fRec8[0] * fTemp3);
 			output1[i] = (FAUSTFLOAT)fRec7[0];
 			// post processing
 			fRec7[1] = fRec7[0];
@@ -462,12 +462,12 @@ class GuitarixMoog : public dsp {
 			fRec10[1] = fRec10[0];
 			fRec11[1] = fRec11[0];
 			fRec0[1] = fRec0[0];
-			fRec1[1] = fRec1[0];
 			fRec2[1] = fRec2[0];
 			fRec3[1] = fRec3[0];
 			fRec4[1] = fRec4[0];
-			fRec6[1] = fRec6[0];
 			fRec5[1] = fRec5[0];
+			fRec6[1] = fRec6[0];
+			fRec1[1] = fRec1[0];
 			iVec0[1] = iVec0[0];
 		}
 	}

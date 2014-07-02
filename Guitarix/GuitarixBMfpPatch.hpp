@@ -339,36 +339,36 @@ typedef long double quad;
 
 class GuitarixBMfp : public dsp {
   private:
+	FAUSTFLOAT 	fslider0;
+	float 	fRec3[2];
+	FAUSTFLOAT 	fslider1;
+	float 	fVec0[2];
 	int 	iConst0;
 	float 	fConst1;
 	float 	fConst2;
 	float 	fConst3;
 	float 	fConst4;
+	float 	fRec2[2];
+	FAUSTFLOAT 	fslider2;
 	float 	fConst5;
 	float 	fConst6;
 	float 	fConst7;
 	float 	fConst8;
-	FAUSTFLOAT 	fslider0;
-	FAUSTFLOAT 	fslider1;
-	FAUSTFLOAT 	fslider2;
 	float 	fConst9;
 	float 	fConst10;
 	float 	fConst11;
+	float 	fRec4[2];
+	FAUSTFLOAT 	fslider3;
+	float 	fVec1[2];
 	float 	fConst12;
 	float 	fConst13;
 	float 	fConst14;
-	FAUSTFLOAT 	fslider3;
-	float 	fRec3[2];
 	float 	fConst15;
-	float 	fVec0[2];
-	float 	fRec2[2];
+	float 	fRec1[2];
 	float 	fConst16;
 	float 	fConst17;
 	float 	fConst18;
 	float 	fConst19;
-	float 	fRec4[2];
-	float 	fVec1[2];
-	float 	fRec1[2];
 	float 	fConst20;
 	float 	fRec0[2];
   public:
@@ -384,11 +384,6 @@ class GuitarixBMfp : public dsp {
 		m->declare("filter.lib/version", "1.29");
 		m->declare("filter.lib/license", "STK-4.3");
 		m->declare("filter.lib/reference", "https://ccrma.stanford.edu/~jos/filters/");
-		m->declare("reduce.lib/name", "Reduce Library");
-		m->declare("reduce.lib/author", "Yann Orlarey (orlarey at grame.fr)");
-		m->declare("reduce.lib/copyright", "Grame");
-		m->declare("reduce.lib/version", "0.1");
-		m->declare("reduce.lib/license", "LGPL");
 		m->declare("music.lib/name", "Music Library");
 		m->declare("music.lib/author", "GRAME");
 		m->declare("music.lib/copyright", "GRAME");
@@ -409,6 +404,11 @@ class GuitarixBMfp : public dsp {
 		m->declare("effect.lib/exciter_copyright", "Copyright (c) 2013 Priyanka Shekar");
 		m->declare("effect.lib/exciter_version", "1.0");
 		m->declare("effect.lib/exciter_license", "MIT License (MIT)");
+		m->declare("reduce.lib/name", "Reduce Library");
+		m->declare("reduce.lib/author", "Yann Orlarey (orlarey at grame.fr)");
+		m->declare("reduce.lib/copyright", "Grame");
+		m->declare("reduce.lib/version", "0.1");
+		m->declare("reduce.lib/license", "LGPL");
 	}
 
 	virtual int getNumInputs() 	{ return 1; }
@@ -417,37 +417,37 @@ class GuitarixBMfp : public dsp {
 	}
 	virtual void instanceInit(int samplingFreq) {
 		fSamplingFreq = samplingFreq;
-		iConst0 = min(192000, max(1, fSamplingFreq));
-		fConst1 = (1.0f / tanf((251.32741228718345f / float(iConst0))));
-		fConst2 = (1 + fConst1);
-		fConst3 = (0 - ((1 - fConst1) / fConst2));
-		fConst4 = (1.0f / fConst2);
-		fConst5 = (1.0f / tanf((17690.308232364125f / float(iConst0))));
-		fConst6 = (1 + fConst5);
-		fConst7 = (0 - ((1 - fConst5) / fConst6));
-		fConst8 = (1.0f / fConst6);
-		fslider0 = 1e+02f;
-		fslider1 = 1.0f;
-		fslider2 = 0.5f;
-		fConst9 = tanf((5830.795965062656f / float(iConst0)));
-		fConst10 = (1.0f / fConst9);
-		fConst11 = (1 + fConst10);
-		fConst12 = (0 - ((1 - fConst10) / fConst11));
-		fConst13 = (1.0f / fConst11);
-		fConst14 = (0.01f / fConst9);
-		fslider3 = 0.0f;
+		fslider0 = 0.0f;
 		for (int i=0; i<2; i++) fRec3[i] = 0;
-		fConst15 = (0 - fConst10);
+		fslider1 = 1e+02f;
 		for (int i=0; i<2; i++) fVec0[i] = 0;
+		iConst0 = min(192000, max(1, fSamplingFreq));
+		fConst1 = (1.0f / tanf((1281.7698026646356f / float(iConst0))));
+		fConst2 = (1 + fConst1);
+		fConst3 = (1.0f / fConst2);
+		fConst4 = (0 - ((1 - fConst1) / fConst2));
 		for (int i=0; i<2; i++) fRec2[i] = 0;
-		fConst16 = (1.0f / tanf((1281.7698026646356f / float(iConst0))));
-		fConst17 = (1 + fConst16);
-		fConst18 = (0 - ((1 - fConst16) / fConst17));
-		fConst19 = (1.0f / fConst17);
+		fslider2 = 0.5f;
+		fConst5 = tanf((5830.795965062656f / float(iConst0)));
+		fConst6 = (0.01f / fConst5);
+		fConst7 = (1.0f / fConst5);
+		fConst8 = (0 - fConst7);
+		fConst9 = (1 + fConst7);
+		fConst10 = (1.0f / fConst9);
+		fConst11 = (0 - ((1 - fConst7) / fConst9));
 		for (int i=0; i<2; i++) fRec4[i] = 0;
+		fslider3 = 1.0f;
 		for (int i=0; i<2; i++) fVec1[i] = 0;
+		fConst12 = (1.0f / tanf((17690.308232364125f / float(iConst0))));
+		fConst13 = (1 + fConst12);
+		fConst14 = (1.0f / fConst13);
+		fConst15 = (0 - ((1 - fConst12) / fConst13));
 		for (int i=0; i<2; i++) fRec1[i] = 0;
-		fConst20 = (0 - fConst1);
+		fConst16 = (1.0f / tanf((251.32741228718345f / float(iConst0))));
+		fConst17 = (0 - fConst16);
+		fConst18 = (1 + fConst16);
+		fConst19 = (1.0f / fConst18);
+		fConst20 = (0 - ((1 - fConst16) / fConst18));
 		for (int i=0; i<2; i++) fRec0[i] = 0;
 	}
 	virtual void init(int samplingFreq) {
@@ -456,49 +456,49 @@ class GuitarixBMfp : public dsp {
 	}
 	virtual void buildUserInterface(UI* interface) {
 		interface->openVerticalBox("GuitarixBMfp");
-		interface->declare(&fslider1, "OWL", "PARAMETER_C");
-		interface->declare(&fslider1, "style", "knob");
-		interface->addVerticalSlider("Drive", &fslider1, 1.0f, -3.0f, 1e+02f, 1.0f);
-		interface->declare(&fslider3, "OWL", "PARAMETER_A");
+		interface->declare(&fslider3, "OWL", "PARAMETER_C");
 		interface->declare(&fslider3, "style", "knob");
-		interface->addVerticalSlider("Input", &fslider3, 0.0f, -24.0f, 12.0f, 0.1f);
-		interface->declare(&fslider0, "OWL", "PARAMETER_B");
+		interface->addVerticalSlider("Drive", &fslider3, 1.0f, -3.0f, 1e+02f, 1.0f);
+		interface->declare(&fslider0, "OWL", "PARAMETER_A");
 		interface->declare(&fslider0, "style", "knob");
-		interface->addVerticalSlider("Output", &fslider0, 1e+02f, 5e+01f, 1e+02f, 1.0f);
+		interface->addVerticalSlider("Input", &fslider0, 0.0f, -24.0f, 12.0f, 0.1f);
+		interface->declare(&fslider1, "OWL", "PARAMETER_B");
+		interface->declare(&fslider1, "style", "knob");
+		interface->addVerticalSlider("Output", &fslider1, 1e+02f, 5e+01f, 1e+02f, 1.0f);
 		interface->declare(&fslider2, "OWL", "PARAMETER_D");
 		interface->declare(&fslider2, "style", "knob");
 		interface->addVerticalSlider("Tone", &fslider2, 0.5f, 0.0f, 1.0f, 0.01f);
 		interface->closeBox();
 	}
 	virtual void compute (int count, FAUSTFLOAT** input, FAUSTFLOAT** output) {
-		float 	fSlow0 = float(fslider0);
-		float 	fSlow1 = (0.01f * fSlow0);
-		float 	fSlow2 = (1 - fSlow1);
-		float 	fSlow3 = float(fslider1);
-		float 	fSlow4 = (0.009900990099009901f * fSlow3);
-		float 	fSlow5 = (1 + fSlow4);
-		float 	fSlow6 = float(fslider2);
-		float 	fSlow7 = (fConst14 * fSlow0);
-		float 	fSlow8 = (0.0010000000000000009f * powf(10,(0.05f * float(fslider3))));
-		float 	fSlow9 = (1 - fSlow6);
-		float 	fSlow10 = (0.25f * fSlow3);
+		float 	fSlow0 = (0.0010000000000000009f * powf(10,(0.05f * float(fslider0))));
+		float 	fSlow1 = float(fslider1);
+		float 	fSlow2 = (0.01f * fSlow1);
+		float 	fSlow3 = float(fslider2);
+		float 	fSlow4 = (1 - fSlow3);
+		float 	fSlow5 = (fConst6 * fSlow1);
+		float 	fSlow6 = float(fslider3);
+		float 	fSlow7 = (0.009900990099009901f * fSlow6);
+		float 	fSlow8 = (1 + fSlow7);
+		float 	fSlow9 = (0.25f * fSlow6);
+		float 	fSlow10 = (1 - fSlow2);
 		FAUSTFLOAT* input0 = input[0];
 		FAUSTFLOAT* output0 = output[0];
 		for (int i=0; i<count; i++) {
 			float fTemp0 = (float)input0[i];
-			fRec3[0] = ((0.999f * fRec3[1]) + fSlow8);
+			fRec3[0] = ((0.999f * fRec3[1]) + fSlow0);
 			float fTemp1 = (fTemp0 * fRec3[0]);
-			float fTemp2 = (fSlow1 * fTemp1);
+			float fTemp2 = (fSlow2 * fTemp1);
 			fVec0[0] = fTemp2;
-			fRec2[0] = ((fConst12 * fRec2[1]) + (fConst13 * ((fSlow7 * fTemp1) + (fConst15 * fVec0[1]))));
-			fRec4[0] = ((fConst18 * fRec4[1]) + (fConst19 * (fVec0[0] + fVec0[1])));
-			float fTemp3 = ((fSlow6 * fRec2[0]) + (fSlow9 * fRec4[0]));
-			float fTemp4 = (1 + (fSlow4 * fabsf(fTemp3)));
-			float fTemp5 = max(-0.7f, min(0.7f, (fSlow5 * ((fTemp3 * (1 + (fSlow10 * ((2 - fabsf((fSlow5 * (fTemp3 / fTemp4)))) - 1)))) / fTemp4))));
-			float fTemp6 = ((fSlow2 * fTemp0) + (fTemp5 * (1 + faustpower<6>(fTemp5))));
+			fRec2[0] = ((fConst4 * fRec2[1]) + (fConst3 * (fVec0[0] + fVec0[1])));
+			fRec4[0] = ((fConst11 * fRec4[1]) + (fConst10 * ((fConst8 * fVec0[1]) + (fSlow5 * fTemp1))));
+			float fTemp3 = ((fSlow3 * fRec4[0]) + (fSlow4 * fRec2[0]));
+			float fTemp4 = (1 + (fSlow7 * fabsf(fTemp3)));
+			float fTemp5 = max(-0.7f, min(0.7f, (fSlow8 * ((fTemp3 * (1 + (fSlow9 * ((2 - fabsf((fSlow8 * (fTemp3 / fTemp4)))) - 1)))) / fTemp4))));
+			float fTemp6 = ((fSlow10 * fTemp0) + (fTemp5 * (1 + faustpower<6>(fTemp5))));
 			fVec1[0] = fTemp6;
-			fRec1[0] = ((fConst7 * fRec1[1]) + (fConst8 * (fVec1[0] + fVec1[1])));
-			fRec0[0] = ((fConst3 * fRec0[1]) + (fConst4 * ((fConst1 * fRec1[0]) + (fConst20 * fRec1[1]))));
+			fRec1[0] = ((fConst15 * fRec1[1]) + (fConst14 * (fVec1[0] + fVec1[1])));
+			fRec0[0] = ((fConst20 * fRec0[1]) + (fConst19 * ((fConst16 * fRec1[0]) + (fConst17 * fRec1[1]))));
 			output0[i] = (FAUSTFLOAT)fRec0[0];
 			// post processing
 			fRec0[1] = fRec0[0];

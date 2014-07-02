@@ -353,16 +353,16 @@ class GuitarixDistortion1 : public dsp {
 	float 	fConst6;
 	float 	fConst7;
 	float 	fConst8;
+	float 	fConst9;
+	float 	fRec2[2];
+	float 	fRec1[3];
+	float 	fConst10;
+	float 	fConst11;
+	float 	fConst12;
 	FAUSTFLOAT 	fslider0;
-	float 	fRec1[2];
 	FAUSTFLOAT 	fslider1;
 	FAUSTFLOAT 	fslider2;
 	float 	fRec4[2];
-	float 	fConst9;
-	float 	fConst10;
-	float 	fRec2[3];
-	float 	fConst11;
-	float 	fConst12;
 	float 	fRec0[3];
   public:
 	static void metadata(Meta* m) 	{ 
@@ -416,22 +416,22 @@ class GuitarixDistortion1 : public dsp {
 		iConst0 = min(192000, max(1, fSamplingFreq));
 		fConst1 = (6.283185307179586f * (max((float)0, ((0.5f * iConst0) - 1e+02f)) / float(iConst0)));
 		fConst2 = cosf(fConst1);
-		fConst3 = (0.683772233983162f * fConst2);
-		fConst4 = (0.005623413251903491f * sinf(fConst1));
-		fConst5 = (fConst3 + fConst4);
-		fConst6 = (1.0f / (1.316227766016838f + fConst5));
-		fConst7 = (1.316227766016838f * fConst2);
-		fConst8 = (0 - (0.6324555320336759f * (fConst7 - 0.683772233983162f)));
-		fslider0 = 2.0f;
-		for (int i=0; i<2; i++) fRec1[i] = 0;
+		fConst3 = (1.316227766016838f * fConst2);
+		fConst4 = (2 * (0 - (0.683772233983162f + fConst3)));
+		fConst5 = (0.005623413251903491f * sinf(fConst1));
+		fConst6 = (0.683772233983162f * fConst2);
+		fConst7 = ((1.316227766016838f + fConst6) - fConst5);
+		fConst8 = (fConst6 + fConst5);
+		fConst9 = (1.0f / (1.316227766016838f + fConst8));
+		for (int i=0; i<2; i++) fRec2[i] = 0;
+		for (int i=0; i<3; i++) fRec1[i] = 0;
+		fConst10 = (0.31622776601683794f * (1.316227766016838f - fConst8));
+		fConst11 = (0.31622776601683794f * ((1.316227766016838f + fConst5) - fConst6));
+		fConst12 = (0 - (0.6324555320336759f * (fConst3 - 0.683772233983162f)));
+		fslider0 = 0.64f;
 		fslider1 = 0.01f;
-		fslider2 = 0.64f;
+		fslider2 = 2.0f;
 		for (int i=0; i<2; i++) fRec4[i] = 0;
-		fConst9 = ((1.316227766016838f + fConst3) - fConst4);
-		fConst10 = (2 * (0 - (0.683772233983162f + fConst7)));
-		for (int i=0; i<3; i++) fRec2[i] = 0;
-		fConst11 = (0.31622776601683794f * ((1.316227766016838f + fConst4) - fConst3));
-		fConst12 = (0.31622776601683794f * (1.316227766016838f - fConst5));
 		for (int i=0; i<3; i++) fRec0[i] = 0;
 	}
 	virtual void init(int samplingFreq) {
@@ -440,39 +440,39 @@ class GuitarixDistortion1 : public dsp {
 	}
 	virtual void buildUserInterface(UI* interface) {
 		interface->openVerticalBox("GuitarixDistortion1");
-		interface->declare(&fslider2, "OWL", "PARAMETER_C");
-		interface->declare(&fslider2, "style", "knob");
-		interface->addVerticalSlider("drive", &fslider2, 0.64f, 0.0f, 1.0f, 0.01f);
-		interface->declare(&fslider0, "OWL", "PARAMETER_B");
+		interface->declare(&fslider0, "OWL", "PARAMETER_C");
 		interface->declare(&fslider0, "style", "knob");
-		interface->addVerticalSlider("gain", &fslider0, 2.0f, -1e+01f, 1e+01f, 0.1f);
+		interface->addVerticalSlider("Drive", &fslider0, 0.64f, 0.0f, 1.0f, 0.01f);
+		interface->declare(&fslider2, "OWL", "PARAMETER_B");
+		interface->declare(&fslider2, "style", "knob");
+		interface->addVerticalSlider("Gain", &fslider2, 2.0f, -1e+01f, 1e+01f, 0.1f);
 		interface->declare(&fslider1, "OWL", "PARAMETER_A");
 		interface->declare(&fslider1, "style", "knob");
-		interface->addVerticalSlider("level", &fslider1, 0.01f, 0.0f, 0.5f, 0.01f);
+		interface->addVerticalSlider("Level", &fslider1, 0.01f, 0.0f, 0.5f, 0.01f);
 		interface->closeBox();
 	}
 	virtual void compute (int count, FAUSTFLOAT** input, FAUSTFLOAT** output) {
-		float 	fSlow0 = (0.0010000000000000009f * powf(10,(0.05f * (float(fslider0) - 10))));
+		float 	fSlow0 = (fConst9 * powf(1e+01f,(2 * float(fslider0))));
 		float 	fSlow1 = float(fslider1);
-		float 	fSlow2 = (fConst6 * powf(1e+01f,(2 * float(fslider2))));
+		float 	fSlow2 = (0.0010000000000000009f * powf(10,(0.05f * (float(fslider2) - 10))));
 		FAUSTFLOAT* input0 = input[0];
 		FAUSTFLOAT* output0 = output[0];
 		for (int i=0; i<count; i++) {
 			float fTemp0 = (float)input0[i];
 			fVec0[0] = fTemp0;
 			iVec1[0] = 1;
-			fRec1[0] = ((0.999f * fRec1[1]) + fSlow0);
+			fRec2[0] = ((1e-20f * (1 - iVec1[1])) - fRec2[1]);
 			float 	fRec3 = (0.5f * (fVec0[0] + fVec0[1]));
-			fRec4[0] = ((1e-20f * (1 - iVec1[1])) - fRec4[1]);
-			fRec2[0] = ((1e-20f + (fRec3 + fRec4[0])) - (fConst6 * ((fConst9 * fRec2[2]) + (fConst10 * fRec2[1]))));
-			float fTemp1 = max((float)-1, min((float)1, (fSlow1 + (fSlow2 * (((fConst8 * fRec2[1]) + (fConst11 * fRec2[0])) + (fConst12 * fRec2[2]))))));
-			fRec0[0] = (((fRec1[0] * fTemp1) * (1 - (0.3333333333333333f * faustpower<2>(fTemp1)))) - (fConst6 * ((fConst10 * fRec0[1]) + (fConst9 * fRec0[2]))));
-			output0[i] = (FAUSTFLOAT)(fConst6 * (((fConst8 * fRec0[1]) + (fConst11 * fRec0[0])) + (fConst12 * fRec0[2])));
+			fRec1[0] = ((1e-20f + (fRec3 + fRec2[0])) - (fConst9 * ((fConst7 * fRec1[2]) + (fConst4 * fRec1[1]))));
+			float fTemp1 = max((float)-1, min((float)1, (fSlow1 + (fSlow0 * (((fConst12 * fRec1[1]) + (fConst11 * fRec1[0])) + (fConst10 * fRec1[2]))))));
+			fRec4[0] = ((0.999f * fRec4[1]) + fSlow2);
+			fRec0[0] = (((fRec4[0] * fTemp1) * (1 - (0.3333333333333333f * faustpower<2>(fTemp1)))) - (fConst9 * ((fConst7 * fRec0[2]) + (fConst4 * fRec0[1]))));
+			output0[i] = (FAUSTFLOAT)(fConst9 * (((fConst12 * fRec0[1]) + (fConst11 * fRec0[0])) + (fConst10 * fRec0[2])));
 			// post processing
 			fRec0[2] = fRec0[1]; fRec0[1] = fRec0[0];
-			fRec2[2] = fRec2[1]; fRec2[1] = fRec2[0];
 			fRec4[1] = fRec4[0];
-			fRec1[1] = fRec1[0];
+			fRec1[2] = fRec1[1]; fRec1[1] = fRec1[0];
+			fRec2[1] = fRec2[0];
 			iVec1[1] = iVec1[0];
 			fVec0[1] = fVec0[0];
 		}
