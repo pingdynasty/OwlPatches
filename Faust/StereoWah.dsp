@@ -4,6 +4,6 @@ wahwah = crybaby(wah) with {
 };
 stereodrywet (monofx) = _,_ <: *(1-dw), *(1-dw), monofx*dw, monofx*dw :> _,_
 	with {
-		dw = hslider("dry wet[OWL:PARAMETER_B]",0.5,0,1,0.01);
+		dw = hslider("Dry/Wet[OWL:PARAMETER_D]",0.5,0,1,0.01);
 	};	
 process = stereodrywet(wahwah);

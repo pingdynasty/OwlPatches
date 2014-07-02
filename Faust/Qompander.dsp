@@ -17,10 +17,10 @@ import ("effect.lib");
 // the GUI
 //-----------------------------------------------
 qompanderGroup(x) = (vgroup("[0] qompander [tooltip: Reference: http://www.katjaas.nl/compander/compander.html]", x));
-factor = qompanderGroup(hslider("[0] factor[unit:: 1][style:knob][OWL:PARAMETER_A]", 3, 0.8, 8, 0.01):smooth(0.999));
-threshold = qompanderGroup(hslider("[1] threshold [unit: dB][style:knob][OWL:PARAMETER_B]", -40, -96, -20, 0.01):smooth(0.999));
-attack = qompanderGroup(hslider("[2] attack[unit: ms][style:knob][OWL:PARAMETER_C]", 1, 1, 20, 0.01):smooth(0.999));
-release = qompanderGroup(hslider("[3] release[unit: ms][style:knob][OWL:PARAMETER_D]", 20, 20, 1000, 0.01):smooth(0.999));
+factor = qompanderGroup(hslider("[0] Factor[unit:: 1][style:knob][OWL:PARAMETER_A]", 3, 0.8, 8, 0.01):smooth(0.999));
+threshold = qompanderGroup(hslider("[1] Threshold [unit: dB][style:knob][OWL:PARAMETER_B]", -40, -96, -20, 0.01):smooth(0.999));
+attack = qompanderGroup(hslider("[2] Attack[unit: ms][style:knob][OWL:PARAMETER_C]", 1, 1, 20, 0.01):smooth(0.999));
+release = qompanderGroup(hslider("[3] Release[unit: ms][style:knob][OWL:PARAMETER_D]", 20, 20, 1000, 0.01):smooth(0.999));
 
 //-----------------------------------------------
 // the DSP

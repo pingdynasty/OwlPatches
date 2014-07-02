@@ -335,8 +335,8 @@ class FaustVerb : public dsp {
   private:
 	FAUSTFLOAT 	fslider0;
 	FAUSTFLOAT 	fslider1;
-	FAUSTFLOAT 	fslider2;
 	float 	fRec9[2];
+	FAUSTFLOAT 	fslider2;
 	int 	IOTA;
 	float 	fVec0[2048];
 	float 	fRec8[2];
@@ -387,8 +387,8 @@ class FaustVerb : public dsp {
 		fSamplingFreq = samplingFreq;
 		fslider0 = 0.3333f;
 		fslider1 = 0.5f;
-		fslider2 = 0.5f;
 		for (int i=0; i<2; i++) fRec9[i] = 0;
+		fslider2 = 0.5f;
 		IOTA = 0;
 		for (int i=0; i<2048; i++) fVec0[i] = 0;
 		for (int i=0; i<2; i++) fRec8[i] = 0;
@@ -428,50 +428,50 @@ class FaustVerb : public dsp {
 	}
 	virtual void buildUserInterface(UI* interface) {
 		interface->openVerticalBox("Freeverb");
-		interface->declare(&fslider2, "OWL", "PARAMETER_A");
-		interface->addHorizontalSlider("Damp", &fslider2, 0.5f, 0.0f, 1.0f, 0.025f);
-		interface->declare(&fslider1, "OWL", "PARAMETER_B");
-		interface->addHorizontalSlider("RoomSize", &fslider1, 0.5f, 0.0f, 1.0f, 0.025f);
+		interface->declare(&fslider1, "OWL", "PARAMETER_A");
+		interface->addHorizontalSlider("Damp", &fslider1, 0.5f, 0.0f, 1.0f, 0.025f);
+		interface->declare(&fslider2, "OWL", "PARAMETER_B");
+		interface->addHorizontalSlider("RoomSize", &fslider2, 0.5f, 0.0f, 1.0f, 0.025f);
 		interface->declare(&fslider0, "OWL", "PARAMETER_C");
 		interface->addHorizontalSlider("Wet", &fslider0, 0.3333f, 0.0f, 1.0f, 0.025f);
 		interface->closeBox();
 	}
 	virtual void compute (int count, FAUSTFLOAT** input, FAUSTFLOAT** output) {
 		float 	fSlow0 = float(fslider0);
-		float 	fSlow1 = (0.7f + (0.28f * float(fslider1)));
-		float 	fSlow2 = (0.4f * float(fslider2));
+		float 	fSlow1 = (1 - fSlow0);
+		float 	fSlow2 = (0.4f * float(fslider1));
 		float 	fSlow3 = (1 - fSlow2);
-		float 	fSlow4 = (1 - fSlow0);
+		float 	fSlow4 = (0.7f + (0.28f * float(fslider2)));
 		FAUSTFLOAT* input0 = input[0];
 		FAUSTFLOAT* output0 = output[0];
 		for (int i=0; i<count; i++) {
 			float fTemp0 = (float)input0[i];
 			fRec9[0] = ((fSlow2 * fRec9[1]) + (fSlow3 * fRec8[1]));
 			float fTemp1 = (0.015f * fTemp0);
-			fVec0[IOTA&2047] = ((fSlow1 * fRec9[0]) + fTemp1);
-			fRec8[0] = fVec0[(IOTA-1116)&2047];
+			fVec0[IOTA&2047] = (fTemp1 + (fSlow4 * fRec9[0]));
+			fRec8[0] = fVec0[(IOTA-1617)&2047];
 			fRec11[0] = ((fSlow2 * fRec11[1]) + (fSlow3 * fRec10[1]));
-			fVec1[IOTA&2047] = (fTemp1 + (fSlow1 * fRec11[0]));
-			fRec10[0] = fVec1[(IOTA-1188)&2047];
+			fVec1[IOTA&2047] = (fTemp1 + (fSlow4 * fRec11[0]));
+			fRec10[0] = fVec1[(IOTA-1557)&2047];
 			fRec13[0] = ((fSlow2 * fRec13[1]) + (fSlow3 * fRec12[1]));
-			fVec2[IOTA&2047] = (fTemp1 + (fSlow1 * fRec13[0]));
-			fRec12[0] = fVec2[(IOTA-1277)&2047];
+			fVec2[IOTA&2047] = (fTemp1 + (fSlow4 * fRec13[0]));
+			fRec12[0] = fVec2[(IOTA-1491)&2047];
 			fRec15[0] = ((fSlow2 * fRec15[1]) + (fSlow3 * fRec14[1]));
-			fVec3[IOTA&2047] = (fTemp1 + (fSlow1 * fRec15[0]));
-			fRec14[0] = fVec3[(IOTA-1356)&2047];
+			fVec3[IOTA&2047] = (fTemp1 + (fSlow4 * fRec15[0]));
+			fRec14[0] = fVec3[(IOTA-1422)&2047];
 			fRec17[0] = ((fSlow2 * fRec17[1]) + (fSlow3 * fRec16[1]));
-			fVec4[IOTA&2047] = (fTemp1 + (fSlow1 * fRec17[0]));
-			fRec16[0] = fVec4[(IOTA-1422)&2047];
+			fVec4[IOTA&2047] = (fTemp1 + (fSlow4 * fRec17[0]));
+			fRec16[0] = fVec4[(IOTA-1356)&2047];
 			fRec19[0] = ((fSlow2 * fRec19[1]) + (fSlow3 * fRec18[1]));
-			fVec5[IOTA&2047] = (fTemp1 + (fSlow1 * fRec19[0]));
-			fRec18[0] = fVec5[(IOTA-1491)&2047];
+			fVec5[IOTA&2047] = (fTemp1 + (fSlow4 * fRec19[0]));
+			fRec18[0] = fVec5[(IOTA-1277)&2047];
 			fRec21[0] = ((fSlow2 * fRec21[1]) + (fSlow3 * fRec20[1]));
-			fVec6[IOTA&2047] = (fTemp1 + (fSlow1 * fRec21[0]));
-			fRec20[0] = fVec6[(IOTA-1557)&2047];
+			fVec6[IOTA&2047] = (fTemp1 + (fSlow4 * fRec21[0]));
+			fRec20[0] = fVec6[(IOTA-1188)&2047];
 			fRec23[0] = ((fSlow2 * fRec23[1]) + (fSlow3 * fRec22[1]));
-			fVec7[IOTA&2047] = (fTemp1 + (fSlow1 * fRec23[0]));
-			fRec22[0] = fVec7[(IOTA-1617)&2047];
-			float fTemp2 = (((((((fRec8[0] + fRec10[0]) + fRec12[0]) + fRec14[0]) + fRec16[0]) + fRec18[0]) + fRec20[0]) + fRec22[0]);
+			fVec7[IOTA&2047] = ((fSlow4 * fRec23[0]) + fTemp1);
+			fRec22[0] = fVec7[(IOTA-1116)&2047];
+			float fTemp2 = (((((((fRec22[0] + fRec20[0]) + fRec18[0]) + fRec16[0]) + fRec14[0]) + fRec12[0]) + fRec10[0]) + fRec8[0]);
 			fVec8[IOTA&1023] = (fTemp2 + (0.5f * fRec6[1]));
 			fRec6[0] = fVec8[(IOTA-556)&1023];
 			float 	fRec7 = (0 - (fTemp2 - fRec6[1]));
@@ -484,7 +484,7 @@ class FaustVerb : public dsp {
 			fVec11[IOTA&255] = (fRec3 + (0.5f * fRec0[1]));
 			fRec0[0] = fVec11[(IOTA-225)&255];
 			float 	fRec1 = (fRec0[1] - fRec3);
-			output0[i] = (FAUSTFLOAT)((fSlow0 * fRec1) + (fSlow4 * fTemp0));
+			output0[i] = (FAUSTFLOAT)((fSlow0 * fRec1) + (fSlow1 * fTemp0));
 			// post processing
 			fRec0[1] = fRec0[0];
 			fRec2[1] = fRec2[0];

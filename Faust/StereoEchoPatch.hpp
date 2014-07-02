@@ -355,15 +355,15 @@ class StereoEcho : public dsp {
 	}
 	virtual void buildUserInterface(UI* interface) {
 		interface->openVerticalBox("stereoecho");
-		interface->declare(&fslider0, "OWL", "PARAMETER_B");
-		interface->addHorizontalSlider("feedback", &fslider0, 0.0f, 0.0f, 1.0f, 0.01f);
-		interface->declare(&fslider1, "OWL", "PARAMETER_A");
-		interface->addHorizontalSlider("millisecond", &fslider1, 0.0f, 0.0f, 1e+03f, 0.1f);
+		interface->declare(&fslider0, "OWL", "PARAMETER_A");
+		interface->addHorizontalSlider("Delay", &fslider0, 0.0f, 0.0f, 1e+03f, 0.1f);
+		interface->declare(&fslider1, "OWL", "PARAMETER_B");
+		interface->addHorizontalSlider("Feedback", &fslider1, 0.0f, 0.0f, 1.0f, 0.01f);
 		interface->closeBox();
 	}
 	virtual void compute (int count, FAUSTFLOAT** input, FAUSTFLOAT** output) {
-		float 	fSlow0 = float(fslider0);
-		int 	iSlow1 = int((1 + int((48 * float(fslider1)))));
+		int 	iSlow0 = int((1 + int((48 * float(fslider0)))));
+		float 	fSlow1 = float(fslider1);
 		FAUSTFLOAT* input0 = input[0];
 		FAUSTFLOAT* input1 = input[1];
 		FAUSTFLOAT* output0 = output[0];
@@ -371,9 +371,9 @@ class StereoEcho : public dsp {
 		for (int i=0; i<count; i++) {
 			float fTemp0 = (float)input0[i];
 			float fTemp1 = (float)input1[i];
-			fRec0[IOTA&65535] = (fTemp0 + (fSlow0 * fRec0[(IOTA-iSlow1)&65535]));
+			fRec0[IOTA&65535] = (fTemp0 + (fSlow1 * fRec0[(IOTA-iSlow0)&65535]));
 			output0[i] = (FAUSTFLOAT)fRec0[(IOTA-0)&65535];
-			fRec1[IOTA&65535] = (fTemp1 + (fSlow0 * fRec1[(IOTA-iSlow1)&65535]));
+			fRec1[IOTA&65535] = (fTemp1 + (fSlow1 * fRec1[(IOTA-iSlow0)&65535]));
 			output1[i] = (FAUSTFLOAT)fRec1[(IOTA-0)&65535];
 			// post processing
 			IOTA = IOTA+1;

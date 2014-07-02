@@ -334,28 +334,23 @@ typedef long double quad;
 
 class SmoothDelay : public dsp {
   private:
+	FAUSTFLOAT 	fslider0;
+	FAUSTFLOAT 	fslider1;
+	FAUSTFLOAT 	fslider2;
+	int 	IOTA;
+	float 	fVec0[131072];
+	FAUSTFLOAT 	fslider3;
 	int 	iConst0;
 	float 	fConst1;
-	FAUSTFLOAT 	fslider0;
+	FAUSTFLOAT 	fslider4;
 	float 	fConst2;
-	FAUSTFLOAT 	fslider1;
 	float 	fRec1[2];
 	float 	fRec2[2];
 	float 	fRec3[2];
 	float 	fRec4[2];
-	FAUSTFLOAT 	fslider2;
-	FAUSTFLOAT 	fslider3;
-	FAUSTFLOAT 	fslider4;
-	int 	IOTA;
-	float 	fVec0[131072];
 	float 	fRec0[2];
   public:
 	static void metadata(Meta* m) 	{ 
-		m->declare("math.lib/name", "Math Library");
-		m->declare("math.lib/author", "GRAME");
-		m->declare("math.lib/copyright", "GRAME");
-		m->declare("math.lib/version", "1.0");
-		m->declare("math.lib/license", "LGPL with exception");
 		m->declare("name", "SmoothDelay");
 		m->declare("author", "Yann Orlarey");
 		m->declare("copyright", "Grame");
@@ -366,6 +361,11 @@ class SmoothDelay : public dsp {
 		m->declare("music.lib/copyright", "GRAME");
 		m->declare("music.lib/version", "1.0");
 		m->declare("music.lib/license", "LGPL with exception");
+		m->declare("math.lib/name", "Math Library");
+		m->declare("math.lib/author", "GRAME");
+		m->declare("math.lib/copyright", "GRAME");
+		m->declare("math.lib/version", "1.0");
+		m->declare("math.lib/license", "LGPL with exception");
 	}
 
 	virtual int getNumInputs() 	{ return 1; }
@@ -374,20 +374,20 @@ class SmoothDelay : public dsp {
 	}
 	virtual void instanceInit(int samplingFreq) {
 		fSamplingFreq = samplingFreq;
+		fslider0 = 0.3333f;
+		fslider1 = 0.0f;
+		fslider2 = 0.0f;
+		IOTA = 0;
+		for (int i=0; i<131072; i++) fVec0[i] = 0;
+		fslider3 = 1e+01f;
 		iConst0 = min(192000, max(1, fSamplingFreq));
-		fConst1 = (0.001f * iConst0);
-		fslider0 = 0.0f;
-		fConst2 = (1e+03f / float(iConst0));
-		fslider1 = 1e+01f;
+		fConst1 = (1e+03f / float(iConst0));
+		fslider4 = 0.0f;
+		fConst2 = (0.001f * iConst0);
 		for (int i=0; i<2; i++) fRec1[i] = 0;
 		for (int i=0; i<2; i++) fRec2[i] = 0;
 		for (int i=0; i<2; i++) fRec3[i] = 0;
 		for (int i=0; i<2; i++) fRec4[i] = 0;
-		fslider2 = 0.0f;
-		fslider3 = 0.3333f;
-		fslider4 = 0.0f;
-		IOTA = 0;
-		for (int i=0; i<131072; i++) fVec0[i] = 0;
 		for (int i=0; i<2; i++) fRec0[i] = 0;
 	}
 	virtual void init(int samplingFreq) {
@@ -396,53 +396,53 @@ class SmoothDelay : public dsp {
 	}
 	virtual void buildUserInterface(UI* interface) {
 		interface->openVerticalBox("SmoothDelay");
-		interface->declare(&fslider0, "OWL", "PARAMETER_B");
+		interface->declare(&fslider4, "OWL", "PARAMETER_B");
+		interface->declare(&fslider4, "style", "knob");
+		interface->declare(&fslider4, "unit", "ms");
+		interface->addHorizontalSlider("Delay", &fslider4, 0.0f, 0.0f, 5e+02f, 0.1f);
+		interface->declare(&fslider0, "OWL", "PARAMETER_D");
 		interface->declare(&fslider0, "style", "knob");
-		interface->declare(&fslider0, "unit", "ms");
-		interface->addHorizontalSlider("Delay", &fslider0, 0.0f, 0.0f, 5e+02f, 0.1f);
-		interface->declare(&fslider3, "OWL", "PARAMETER_D");
-		interface->declare(&fslider3, "style", "knob");
-		interface->addHorizontalSlider("Dry/Wet", &fslider3, 0.3333f, 0.0f, 1.0f, 0.025f);
+		interface->addHorizontalSlider("Dry/Wet", &fslider0, 0.3333f, 0.0f, 1.0f, 0.025f);
 		interface->declare(&fslider2, "OWL", "PARAMETER_C");
 		interface->declare(&fslider2, "style", "knob");
 		interface->addHorizontalSlider("Feedback", &fslider2, 0.0f, 0.0f, 1e+02f, 0.1f);
-		interface->declare(&fslider1, "OWL", "PARAMETER_A");
+		interface->declare(&fslider3, "OWL", "PARAMETER_A");
+		interface->declare(&fslider3, "style", "knob");
+		interface->declare(&fslider3, "unit", "ms");
+		interface->addHorizontalSlider("Interpolation", &fslider3, 1e+01f, 1.0f, 1e+02f, 0.1f);
+		interface->declare(&fslider1, "OWL", "PARAMETER_E");
 		interface->declare(&fslider1, "style", "knob");
-		interface->declare(&fslider1, "unit", "ms");
-		interface->addHorizontalSlider("Interpolation", &fslider1, 1e+01f, 1.0f, 1e+02f, 0.1f);
-		interface->declare(&fslider4, "OWL", "PARAMETER_E");
-		interface->declare(&fslider4, "style", "knob");
-		interface->addHorizontalSlider("Super Wet", &fslider4, 0.0f, 0.0f, 0.5f, 0.025f);
+		interface->addHorizontalSlider("Super Wet", &fslider1, 0.0f, 0.0f, 0.5f, 0.025f);
 		interface->closeBox();
 	}
 	virtual void compute (int count, FAUSTFLOAT** input, FAUSTFLOAT** output) {
-		float 	fSlow0 = (fConst1 * float(fslider0));
-		float 	fSlow1 = (fConst2 / float(fslider1));
-		float 	fSlow2 = (0 - fSlow1);
+		float 	fSlow0 = float(fslider0);
+		float 	fSlow1 = (1 - fSlow0);
+		float 	fSlow2 = (float(fslider1) + fSlow0);
 		float 	fSlow3 = (0.01f * float(fslider2));
-		float 	fSlow4 = float(fslider3);
-		float 	fSlow5 = (fSlow4 + float(fslider4));
-		float 	fSlow6 = (1 - fSlow4);
+		float 	fSlow4 = (fConst1 / float(fslider3));
+		float 	fSlow5 = (0 - fSlow4);
+		float 	fSlow6 = (fConst2 * float(fslider4));
 		FAUSTFLOAT* input0 = input[0];
 		FAUSTFLOAT* output0 = output[0];
 		for (int i=0; i<count; i++) {
 			float fTemp0 = (float)input0[i];
-			float fTemp1 = ((int((fRec1[1] != 0.0f)))?((int(((fRec2[1] > 0.0f) & (fRec2[1] < 1.0f))))?fRec1[1]:0):((int(((fRec2[1] == 0.0f) & (fSlow0 != fRec3[1]))))?fSlow1:((int(((fRec2[1] == 1.0f) & (fSlow0 != fRec4[1]))))?fSlow2:0)));
-			fRec1[0] = fTemp1;
-			fRec2[0] = max(0.0f, min(1.0f, (fRec2[1] + fTemp1)));
-			fRec3[0] = ((int(((fRec2[1] >= 1.0f) & (fRec4[1] != fSlow0))))?fSlow0:fRec3[1]);
-			fRec4[0] = ((int(((fRec2[1] <= 0.0f) & (fRec3[1] != fSlow0))))?fSlow0:fRec4[1]);
-			float fTemp2 = ((fSlow3 * fRec0[1]) + (fSlow5 * fTemp0));
-			fVec0[IOTA&131071] = fTemp2;
+			float fTemp1 = ((fSlow3 * fRec0[1]) + (fSlow2 * fTemp0));
+			fVec0[IOTA&131071] = fTemp1;
+			float fTemp2 = ((int((fRec1[1] != 0.0f)))?((int(((fRec2[1] > 0.0f) & (fRec2[1] < 1.0f))))?fRec1[1]:0):((int(((fRec2[1] == 0.0f) & (fSlow6 != fRec3[1]))))?fSlow4:((int(((fRec2[1] == 1.0f) & (fSlow6 != fRec4[1]))))?fSlow5:0)));
+			fRec1[0] = fTemp2;
+			fRec2[0] = max(0.0f, min(1.0f, (fRec2[1] + fTemp2)));
+			fRec3[0] = ((int(((fRec2[1] >= 1.0f) & (fRec4[1] != fSlow6))))?fSlow6:fRec3[1]);
+			fRec4[0] = ((int(((fRec2[1] <= 0.0f) & (fRec3[1] != fSlow6))))?fSlow6:fRec4[1]);
 			fRec0[0] = (((1.0f - fRec2[0]) * fVec0[(IOTA-int((int(fRec3[0]) & 131071)))&131071]) + (fRec2[0] * fVec0[(IOTA-int((int(fRec4[0]) & 131071)))&131071]));
-			output0[i] = (FAUSTFLOAT)(fRec0[0] + (fSlow6 * fTemp0));
+			output0[i] = (FAUSTFLOAT)(fRec0[0] + (fSlow1 * fTemp0));
 			// post processing
 			fRec0[1] = fRec0[0];
-			IOTA = IOTA+1;
 			fRec4[1] = fRec4[0];
 			fRec3[1] = fRec3[0];
 			fRec2[1] = fRec2[0];
 			fRec1[1] = fRec1[0];
+			IOTA = IOTA+1;
 		}
 	}
 };

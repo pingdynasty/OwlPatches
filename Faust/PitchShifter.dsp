@@ -18,9 +18,9 @@ transpose (w, x, s, sig)  =
 	        };
 
 pitchshifter = vgroup("Pitch Shifter", transpose(
-						hslider("window (samples)[style:knob][OWL:PARAMETER_A]", 1000, 50, 10000, 1),
-						hslider("xfade (samples)[style:knob][OWL:PARAMETER_B]", 10, 1, 10000, 1),
-						hslider("shift (semitones)[style:knob][OWL:PARAMETER_C]", 0, -12, +12, 0.1)
+						hslider("Window[style:knob][OWL:PARAMETER_A]", 1000, 50, 10000, 1),
+						hslider("Crossfade[style:knob][OWL:PARAMETER_B]", 10, 1, 10000, 1),
+						hslider("Pitch Shift[style:knob][OWL:PARAMETER_C]", 0, -12, +12, 0.1)
 					  )
 			);
 

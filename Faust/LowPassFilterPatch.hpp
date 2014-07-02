@@ -329,9 +329,9 @@ typedef long double quad;
 
 class LowPassFilter : public dsp {
   private:
-	float 	fConst0;
 	FAUSTFLOAT 	fslider0;
 	FAUSTFLOAT 	fslider1;
+	float 	fConst0;
 	float 	fRec0[3];
   public:
 	static void metadata(Meta* m) 	{ 
@@ -358,9 +358,9 @@ class LowPassFilter : public dsp {
 	}
 	virtual void instanceInit(int samplingFreq) {
 		fSamplingFreq = samplingFreq;
+		fslider0 = 1.0f;
+		fslider1 = 1e+03f;
 		fConst0 = (6.283185307179586f / float(min(192000, max(1, fSamplingFreq))));
-		fslider0 = 1e+03f;
-		fslider1 = 1.0f;
 		for (int i=0; i<3; i++) fRec0[i] = 0;
 	}
 	virtual void init(int samplingFreq) {
@@ -369,29 +369,29 @@ class LowPassFilter : public dsp {
 	}
 	virtual void buildUserInterface(UI* interface) {
 		interface->openVerticalBox("LowPassFilter");
-		interface->declare(&fslider0, "OWL", "PARAMETER_B");
-		interface->declare(&fslider0, "style", "knob");
-		interface->addHorizontalSlider("Freq", &fslider0, 1e+03f, 1e+02f, 1e+04f, 1.0f);
-		interface->declare(&fslider1, "OWL", "PARAMETER_C");
+		interface->declare(&fslider1, "OWL", "PARAMETER_B");
 		interface->declare(&fslider1, "style", "knob");
-		interface->addHorizontalSlider("Q", &fslider1, 1.0f, 0.01f, 1e+02f, 0.01f);
+		interface->addHorizontalSlider("Freq", &fslider1, 1e+03f, 1e+02f, 1e+04f, 1.0f);
+		interface->declare(&fslider0, "OWL", "PARAMETER_C");
+		interface->declare(&fslider0, "style", "knob");
+		interface->addHorizontalSlider("Q", &fslider0, 1.0f, 0.01f, 1e+02f, 0.01f);
 		interface->closeBox();
 	}
 	virtual void compute (int count, FAUSTFLOAT** input, FAUSTFLOAT** output) {
-		float 	fSlow0 = (fConst0 * max((float)0, float(fslider0)));
-		float 	fSlow1 = cosf(fSlow0);
-		float 	fSlow2 = (0.5f * (sinf(fSlow0) / max(0.001f, float(fslider1))));
-		float 	fSlow3 = (1 + fSlow2);
-		float 	fSlow4 = ((1 - fSlow1) / fSlow3);
-		float 	fSlow5 = (1.0f / fSlow3);
-		float 	fSlow6 = (1 - fSlow2);
-		float 	fSlow7 = (0 - (2 * fSlow1));
+		float 	fSlow0 = (fConst0 * max((float)0, float(fslider1)));
+		float 	fSlow1 = (0.5f * (sinf(fSlow0) / max(0.001f, float(fslider0))));
+		float 	fSlow2 = (1 - fSlow1);
+		float 	fSlow3 = cosf(fSlow0);
+		float 	fSlow4 = (0 - (2 * fSlow3));
+		float 	fSlow5 = (1 + fSlow1);
+		float 	fSlow6 = (1.0f / fSlow5);
+		float 	fSlow7 = ((1 - fSlow3) / fSlow5);
 		FAUSTFLOAT* input0 = input[0];
 		FAUSTFLOAT* output0 = output[0];
 		for (int i=0; i<count; i++) {
 			float fTemp0 = (float)input0[i];
-			fRec0[0] = (fTemp0 - (fSlow5 * ((fSlow6 * fRec0[2]) + (fSlow7 * fRec0[1]))));
-			output0[i] = (FAUSTFLOAT)(fSlow4 * ((fRec0[1] + (0.5f * fRec0[0])) + (0.5f * fRec0[2])));
+			fRec0[0] = (fTemp0 - (fSlow6 * ((fSlow4 * fRec0[1]) + (fSlow2 * fRec0[2]))));
+			output0[i] = (FAUSTFLOAT)(fSlow7 * ((fRec0[1] + (0.5f * fRec0[0])) + (0.5f * fRec0[2])));
 			// post processing
 			fRec0[2] = fRec0[1]; fRec0[1] = fRec0[0];
 		}

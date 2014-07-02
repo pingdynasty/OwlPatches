@@ -340,13 +340,13 @@ class AutoWah : public dsp {
   private:
 	int 	iConst0;
 	float 	fConst1;
-	FAUSTFLOAT 	fslider0;
-	float 	fConst2;
 	float 	fRec2[2];
+	FAUSTFLOAT 	fslider0;
 	FAUSTFLOAT 	fslider1;
-	float 	fConst3;
 	float 	fRec1[2];
+	float 	fConst2;
 	float 	fRec3[2];
+	float 	fConst3;
 	float 	fRec4[2];
 	float 	fRec0[3];
   public:
@@ -391,14 +391,14 @@ class AutoWah : public dsp {
 	virtual void instanceInit(int samplingFreq) {
 		fSamplingFreq = samplingFreq;
 		iConst0 = min(192000, max(1, fSamplingFreq));
-		fConst1 = (1413.7166941154069f / float(iConst0));
-		fslider0 = 0.8f;
-		fConst2 = (0.25f / float(iConst0));
+		fConst1 = (0.25f / float(iConst0));
 		for (int i=0; i<2; i++) fRec2[i] = 0;
+		fslider0 = 0.8f;
 		fslider1 = 0.8f;
-		fConst3 = (2827.4333882308138f / float(iConst0));
 		for (int i=0; i<2; i++) fRec1[i] = 0;
+		fConst2 = (1413.7166941154069f / float(iConst0));
 		for (int i=0; i<2; i++) fRec3[i] = 0;
+		fConst3 = (2827.4333882308138f / float(iConst0));
 		for (int i=0; i<2; i++) fRec4[i] = 0;
 		for (int i=0; i<3; i++) fRec0[i] = 0;
 	}
@@ -408,10 +408,10 @@ class AutoWah : public dsp {
 	}
 	virtual void buildUserInterface(UI* interface) {
 		interface->openVerticalBox("AutoWah");
-		interface->declare(&fslider1, "OWL", "PARAMETER_B");
-		interface->addHorizontalSlider("high", &fslider1, 0.8f, 0.0f, 1.0f, 0.01f);
-		interface->declare(&fslider0, "OWL", "PARAMETER_A");
-		interface->addHorizontalSlider("low", &fslider0, 0.8f, 0.0f, 1.0f, 0.01f);
+		interface->declare(&fslider0, "OWL", "PARAMETER_B");
+		interface->addHorizontalSlider("High", &fslider0, 0.8f, 0.0f, 1.0f, 0.01f);
+		interface->declare(&fslider1, "OWL", "PARAMETER_A");
+		interface->addHorizontalSlider("Low", &fslider1, 0.8f, 0.0f, 1.0f, 0.01f);
 		interface->closeBox();
 	}
 	virtual void compute (int count, FAUSTFLOAT** input, FAUSTFLOAT** output) {
@@ -421,15 +421,15 @@ class AutoWah : public dsp {
 		FAUSTFLOAT* output0 = output[0];
 		for (int i=0; i<count; i++) {
 			float fTemp0 = (float)input0[i];
-			fRec2[0] = fmodf((fConst2 + fRec2[1]),2.0f);
+			fRec2[0] = fmodf((fConst1 + fRec2[1]),2.0f);
 			float fTemp1 = fabsf((fRec2[0] - 1.0f));
-			float fTemp2 = ((fSlow0 * fTemp1) + (fSlow1 * (1.0f - fTemp1)));
+			float fTemp2 = ((fSlow1 * fTemp1) + (fSlow0 * (1.0f - fTemp1)));
+			fRec1[0] = ((0.999f * fRec1[1]) + (0.0001000000000000001f * powf(4.0f,fTemp2)));
 			float fTemp3 = powf(2.0f,(2.3f * fTemp2));
-			float fTemp4 = (1 - (fConst1 * (fTemp3 / powf(2.0f,(1.0f + (2.0f * (0 - (fTemp2 - 1.0f))))))));
-			fRec1[0] = ((0.999f * fRec1[1]) + (0.0010000000000000009f * (0 - (2.0f * (fTemp4 * cosf((fConst3 * fTemp3)))))));
+			float fTemp4 = (1 - (fConst2 * (fTemp3 / powf(2.0f,(1.0f + (2.0f * (0 - (fTemp2 - 1.0f))))))));
 			fRec3[0] = ((0.999f * fRec3[1]) + (0.0010000000000000009f * faustpower<2>(fTemp4)));
-			fRec4[0] = ((0.999f * fRec4[1]) + (0.0001000000000000001f * powf(4.0f,fTemp2)));
-			fRec0[0] = (0 - (((fRec1[0] * fRec0[1]) + (fRec3[0] * fRec0[2])) - (fTemp0 * fRec4[0])));
+			fRec4[0] = ((0.999f * fRec4[1]) + (0.0010000000000000009f * (0 - (2.0f * (fTemp4 * cosf((fConst3 * fTemp3)))))));
+			fRec0[0] = (0 - (((fRec4[0] * fRec0[1]) + (fRec3[0] * fRec0[2])) - (fTemp0 * fRec1[0])));
 			output0[i] = (FAUSTFLOAT)(fRec0[0] - fRec0[1]);
 			// post processing
 			fRec0[2] = fRec0[1]; fRec0[1] = fRec0[0];

@@ -339,14 +339,14 @@ typedef long double quad;
 class StereoWah : public dsp {
   private:
 	FAUSTFLOAT 	fslider0;
+	float 	fRec1[2];
 	int 	iConst0;
 	float 	fConst1;
-	FAUSTFLOAT 	fslider1;
-	float 	fConst2;
-	float 	fRec1[2];
 	float 	fRec2[2];
+	float 	fConst2;
 	float 	fRec3[2];
 	float 	fRec0[3];
+	FAUSTFLOAT 	fslider1;
 	float 	fRec4[3];
   public:
 	static void metadata(Meta* m) 	{ 
@@ -384,15 +384,15 @@ class StereoWah : public dsp {
 	}
 	virtual void instanceInit(int samplingFreq) {
 		fSamplingFreq = samplingFreq;
-		fslider0 = 0.5f;
+		fslider0 = 0.8f;
+		for (int i=0; i<2; i++) fRec1[i] = 0;
 		iConst0 = min(192000, max(1, fSamplingFreq));
 		fConst1 = (1413.7166941154069f / float(iConst0));
-		fslider1 = 0.8f;
-		fConst2 = (2827.4333882308138f / float(iConst0));
-		for (int i=0; i<2; i++) fRec1[i] = 0;
 		for (int i=0; i<2; i++) fRec2[i] = 0;
+		fConst2 = (2827.4333882308138f / float(iConst0));
 		for (int i=0; i<2; i++) fRec3[i] = 0;
 		for (int i=0; i<3; i++) fRec0[i] = 0;
+		fslider1 = 0.5f;
 		for (int i=0; i<3; i++) fRec4[i] = 0;
 	}
 	virtual void init(int samplingFreq) {
@@ -401,21 +401,21 @@ class StereoWah : public dsp {
 	}
 	virtual void buildUserInterface(UI* interface) {
 		interface->openVerticalBox("StereoWah");
-		interface->declare(&fslider1, "OWL", "PARAMETER_A");
-		interface->addHorizontalSlider("Wah", &fslider1, 0.8f, 0.0f, 1.0f, 0.01f);
-		interface->declare(&fslider0, "OWL", "PARAMETER_B");
-		interface->addHorizontalSlider("dry wet", &fslider0, 0.5f, 0.0f, 1.0f, 0.01f);
+		interface->declare(&fslider1, "OWL", "PARAMETER_D");
+		interface->addHorizontalSlider("Dry/Wet", &fslider1, 0.5f, 0.0f, 1.0f, 0.01f);
+		interface->declare(&fslider0, "OWL", "PARAMETER_A");
+		interface->addHorizontalSlider("Wah", &fslider0, 0.8f, 0.0f, 1.0f, 0.01f);
 		interface->closeBox();
 	}
 	virtual void compute (int count, FAUSTFLOAT** input, FAUSTFLOAT** output) {
 		float 	fSlow0 = float(fslider0);
-		float 	fSlow1 = (1 - fSlow0);
-		float 	fSlow2 = float(fslider1);
-		float 	fSlow3 = powf(2.0f,(2.3f * fSlow2));
-		float 	fSlow4 = (1 - (fConst1 * (fSlow3 / powf(2.0f,(1.0f + (2.0f * (1.0f - fSlow2)))))));
-		float 	fSlow5 = (0.0010000000000000009f * (0 - (2.0f * (fSlow4 * cosf((fConst2 * fSlow3))))));
-		float 	fSlow6 = (0.0010000000000000009f * faustpower<2>(fSlow4));
-		float 	fSlow7 = (0.0001000000000000001f * powf(4.0f,fSlow2));
+		float 	fSlow1 = (0.0001000000000000001f * powf(4.0f,fSlow0));
+		float 	fSlow2 = powf(2.0f,(2.3f * fSlow0));
+		float 	fSlow3 = (1 - (fConst1 * (fSlow2 / powf(2.0f,(1.0f + (2.0f * (1.0f - fSlow0)))))));
+		float 	fSlow4 = (0.0010000000000000009f * faustpower<2>(fSlow3));
+		float 	fSlow5 = (0.0010000000000000009f * (0 - (2.0f * (fSlow3 * cosf((fConst2 * fSlow2))))));
+		float 	fSlow6 = float(fslider1);
+		float 	fSlow7 = (1 - fSlow6);
 		FAUSTFLOAT* input0 = input[0];
 		FAUSTFLOAT* input1 = input[1];
 		FAUSTFLOAT* output0 = output[0];
@@ -423,13 +423,13 @@ class StereoWah : public dsp {
 		for (int i=0; i<count; i++) {
 			float fTemp0 = (float)input0[i];
 			float fTemp1 = (float)input1[i];
-			fRec1[0] = (fSlow5 + (0.999f * fRec1[1]));
-			fRec2[0] = (fSlow6 + (0.999f * fRec2[1]));
-			fRec3[0] = ((0.999f * fRec3[1]) + fSlow7);
-			fRec0[0] = (0 - (((fRec1[0] * fRec0[1]) + (fRec2[0] * fRec0[2])) - (fTemp0 * fRec3[0])));
-			output0[i] = (FAUSTFLOAT)((fSlow1 * fTemp0) + (fSlow0 * (fRec0[0] - fRec0[1])));
-			fRec4[0] = (0 - (((fRec1[0] * fRec4[1]) + (fRec2[0] * fRec4[2])) - (fTemp1 * fRec3[0])));
-			output1[i] = (FAUSTFLOAT)((fSlow1 * fTemp1) + (fSlow0 * (fRec4[0] - fRec4[1])));
+			fRec1[0] = ((0.999f * fRec1[1]) + fSlow1);
+			fRec2[0] = (fSlow4 + (0.999f * fRec2[1]));
+			fRec3[0] = (fSlow5 + (0.999f * fRec3[1]));
+			fRec0[0] = (0 - (((fRec3[0] * fRec0[1]) + (fRec2[0] * fRec0[2])) - (fTemp0 * fRec1[0])));
+			output0[i] = (FAUSTFLOAT)((fSlow7 * fTemp0) + (fSlow6 * (fRec0[0] - fRec0[1])));
+			fRec4[0] = (0 - (((fRec3[0] * fRec4[1]) + (fRec2[0] * fRec4[2])) - (fTemp1 * fRec1[0])));
+			output1[i] = (FAUSTFLOAT)((fSlow7 * fTemp1) + (fSlow6 * (fRec4[0] - fRec4[1])));
 			// post processing
 			fRec4[2] = fRec4[1]; fRec4[1] = fRec4[0];
 			fRec0[2] = fRec0[1]; fRec0[1] = fRec0[0];

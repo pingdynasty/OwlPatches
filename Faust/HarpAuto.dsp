@@ -30,8 +30,8 @@ BPS = 360;	// general tempo (beat per sec)
 // 7 strings: 4697 ARM cycles
 process = _,(harpe(C,4,48) :> *(l)) :> _
 	with {
-		l = hslider("master[OWL:PARAMETER_A]",0, 0, 1, 0.01);
-		C = hslider("timbre[OWL:PARAMETER_C]",0, 0, 1, 0.01);
+		l = hslider("Master[OWL:PARAMETER_A]",0, 0, 1, 0.01);
+		C = hslider("Timbre[OWL:PARAMETER_C]",0, 0, 1, 0.01);
 	};
  
 
@@ -50,7 +50,7 @@ harpe(C,N,b) = 	hand <: par(i, N, position(i+1)
 				 	:> _,_
 	with {
 		att  = 4; 
-		hand = vgroup("loop%b", hslider("[1]note[OWL:PARAMETER_B]", 0, 0, N, 1) : int : automat(360, 15, 0.0));
+		hand = vgroup("loop%b", hslider("[1]Note[OWL:PARAMETER_B]", 0, 0, N, 1) : int : automat(360, 15, 0.0));
 		lvl  = 1;
 		pan(p) = _ <: *(sqrt(1-p)), *(sqrt(p));
 		position(a,x) = abs(x - a) < 0.5;

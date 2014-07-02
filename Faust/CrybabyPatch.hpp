@@ -338,12 +338,12 @@ typedef long double quad;
 
 class Crybaby : public dsp {
   private:
+	FAUSTFLOAT 	fslider0;
+	float 	fRec1[2];
 	int 	iConst0;
 	float 	fConst1;
-	FAUSTFLOAT 	fslider0;
-	float 	fConst2;
-	float 	fRec1[2];
 	float 	fRec2[2];
+	float 	fConst2;
 	float 	fRec3[2];
 	float 	fRec0[3];
   public:
@@ -382,12 +382,12 @@ class Crybaby : public dsp {
 	}
 	virtual void instanceInit(int samplingFreq) {
 		fSamplingFreq = samplingFreq;
+		fslider0 = 0.6f;
+		for (int i=0; i<2; i++) fRec1[i] = 0;
 		iConst0 = min(192000, max(1, fSamplingFreq));
 		fConst1 = (1413.7166941154069f / float(iConst0));
-		fslider0 = 0.6f;
-		fConst2 = (2827.4333882308138f / float(iConst0));
-		for (int i=0; i<2; i++) fRec1[i] = 0;
 		for (int i=0; i<2; i++) fRec2[i] = 0;
+		fConst2 = (2827.4333882308138f / float(iConst0));
 		for (int i=0; i<2; i++) fRec3[i] = 0;
 		for (int i=0; i<3; i++) fRec0[i] = 0;
 	}
@@ -404,19 +404,19 @@ class Crybaby : public dsp {
 	}
 	virtual void compute (int count, FAUSTFLOAT** input, FAUSTFLOAT** output) {
 		float 	fSlow0 = float(fslider0);
-		float 	fSlow1 = powf(2.0f,(2.3f * fSlow0));
-		float 	fSlow2 = (1 - (fConst1 * (fSlow1 / powf(2.0f,(1.0f + (2.0f * (1.0f - fSlow0)))))));
-		float 	fSlow3 = (0.0010000000000000009f * (0 - (2.0f * (fSlow2 * cosf((fConst2 * fSlow1))))));
-		float 	fSlow4 = (0.0010000000000000009f * faustpower<2>(fSlow2));
-		float 	fSlow5 = (0.0001000000000000001f * powf(4.0f,fSlow0));
+		float 	fSlow1 = (0.0001000000000000001f * powf(4.0f,fSlow0));
+		float 	fSlow2 = powf(2.0f,(2.3f * fSlow0));
+		float 	fSlow3 = (1 - (fConst1 * (fSlow2 / powf(2.0f,(1.0f + (2.0f * (1.0f - fSlow0)))))));
+		float 	fSlow4 = (0.0010000000000000009f * faustpower<2>(fSlow3));
+		float 	fSlow5 = (0.0010000000000000009f * (0 - (2.0f * (fSlow3 * cosf((fConst2 * fSlow2))))));
 		FAUSTFLOAT* input0 = input[0];
 		FAUSTFLOAT* output0 = output[0];
 		for (int i=0; i<count; i++) {
 			float fTemp0 = (float)input0[i];
-			fRec1[0] = (fSlow3 + (0.999f * fRec1[1]));
+			fRec1[0] = ((0.999f * fRec1[1]) + fSlow1);
 			fRec2[0] = (fSlow4 + (0.999f * fRec2[1]));
-			fRec3[0] = ((0.999f * fRec3[1]) + fSlow5);
-			fRec0[0] = (0 - (((fRec1[0] * fRec0[1]) + (fRec2[0] * fRec0[2])) - (fTemp0 * fRec3[0])));
+			fRec3[0] = (fSlow5 + (0.999f * fRec3[1]));
+			fRec0[0] = (0 - (((fRec3[0] * fRec0[1]) + (fRec2[0] * fRec0[2])) - (fTemp0 * fRec1[0])));
 			output0[i] = (FAUSTFLOAT)(fRec0[0] - fRec0[1]);
 			// post processing
 			fRec0[2] = fRec0[1]; fRec0[1] = fRec0[0];

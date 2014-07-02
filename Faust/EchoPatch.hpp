@@ -377,19 +377,19 @@ class Echo : public dsp {
 	virtual void buildUserInterface(UI* interface) {
 		interface->openVerticalBox("echo-simple");
 		interface->openVerticalBox("echo  1000");
-		interface->addHorizontalSlider("feedback", &fslider0, 0.0f, 0.0f, 1e+02f, 0.1f);
-		interface->addHorizontalSlider("millisecond", &fslider1, 0.0f, 0.0f, 1e+03f, 0.1f);
+		interface->addHorizontalSlider("feedback", &fslider1, 0.0f, 0.0f, 1e+02f, 0.1f);
+		interface->addHorizontalSlider("millisecond", &fslider0, 0.0f, 0.0f, 1e+03f, 0.1f);
 		interface->closeBox();
 		interface->closeBox();
 	}
 	virtual void compute (int count, FAUSTFLOAT** input, FAUSTFLOAT** output) {
-		float 	fSlow0 = (0.01f * float(fslider0));
-		int 	iSlow1 = int((1 + int((int((int((fConst0 * float(fslider1))) - 1)) & 65535))));
+		int 	iSlow0 = int((1 + int((int((int((fConst0 * float(fslider0))) - 1)) & 65535))));
+		float 	fSlow1 = (0.01f * float(fslider1));
 		FAUSTFLOAT* input0 = input[0];
 		FAUSTFLOAT* output0 = output[0];
 		for (int i=0; i<count; i++) {
 			float fTemp0 = (float)input0[i];
-			fRec0[IOTA&131071] = (fTemp0 + (fSlow0 * fRec0[(IOTA-iSlow1)&131071]));
+			fRec0[IOTA&131071] = (fTemp0 + (fSlow1 * fRec0[(IOTA-iSlow0)&131071]));
 			output0[i] = (FAUSTFLOAT)fRec0[(IOTA-0)&131071];
 			// post processing
 			IOTA = IOTA+1;

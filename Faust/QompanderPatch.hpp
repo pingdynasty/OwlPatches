@@ -345,10 +345,10 @@ class Qompander : public dsp {
   private:
 	float 	fVec0[2];
 	FAUSTFLOAT 	fslider0;
-	float 	fRec0[2];
+	float 	fRec1[2];
 	float 	fConst0;
 	FAUSTFLOAT 	fslider1;
-	float 	fRec2[2];
+	float 	fRec3[2];
 	float 	fRec7[3];
 	float 	fRec6[3];
 	float 	fRec5[3];
@@ -357,10 +357,10 @@ class Qompander : public dsp {
 	float 	fRec10[3];
 	float 	fRec9[3];
 	float 	fRec8[3];
+	float 	fRec2[2];
+	float 	fRec0[2];
 	FAUSTFLOAT 	fslider2;
 	float 	fRec12[2];
-	float 	fRec3[2];
-	float 	fRec1[2];
 	FAUSTFLOAT 	fslider3;
 	float 	fRec13[2];
   public:
@@ -408,11 +408,11 @@ class Qompander : public dsp {
 	virtual void instanceInit(int samplingFreq) {
 		fSamplingFreq = samplingFreq;
 		for (int i=0; i<2; i++) fVec0[i] = 0;
-		fslider0 = 3.0f;
-		for (int i=0; i<2; i++) fRec0[i] = 0;
+		fslider0 = 1.0f;
+		for (int i=0; i<2; i++) fRec1[i] = 0;
 		fConst0 = (1e+03f / float(min(192000, max(1, fSamplingFreq))));
-		fslider1 = 1.0f;
-		for (int i=0; i<2; i++) fRec2[i] = 0;
+		fslider1 = 2e+01f;
+		for (int i=0; i<2; i++) fRec3[i] = 0;
 		for (int i=0; i<3; i++) fRec7[i] = 0;
 		for (int i=0; i<3; i++) fRec6[i] = 0;
 		for (int i=0; i<3; i++) fRec5[i] = 0;
@@ -421,10 +421,10 @@ class Qompander : public dsp {
 		for (int i=0; i<3; i++) fRec10[i] = 0;
 		for (int i=0; i<3; i++) fRec9[i] = 0;
 		for (int i=0; i<3; i++) fRec8[i] = 0;
-		fslider2 = 2e+01f;
+		for (int i=0; i<2; i++) fRec2[i] = 0;
+		for (int i=0; i<2; i++) fRec0[i] = 0;
+		fslider2 = 3.0f;
 		for (int i=0; i<2; i++) fRec12[i] = 0;
-		for (int i=0; i<2; i++) fRec3[i] = 0;
-		for (int i=0; i<2; i++) fRec1[i] = 0;
 		fslider3 = -4e+01f;
 		for (int i=0; i<2; i++) fRec13[i] = 0;
 	}
@@ -436,26 +436,26 @@ class Qompander : public dsp {
 		interface->declare(0, "0", "");
 		interface->declare(0, "tooltip", "Reference: http://www.katjaas.nl/compander/compander.html");
 		interface->openVerticalBox("qompander");
-		interface->declare(&fslider0, "0", "");
-		interface->declare(&fslider0, "OWL", "PARAMETER_A");
-		interface->declare(&fslider0, "style", "knob");
-		interface->declare(&fslider0, "unit", ": 1");
-		interface->addHorizontalSlider("factor", &fslider0, 3.0f, 0.8f, 8.0f, 0.01f);
+		interface->declare(&fslider2, "0", "");
+		interface->declare(&fslider2, "OWL", "PARAMETER_A");
+		interface->declare(&fslider2, "style", "knob");
+		interface->declare(&fslider2, "unit", ": 1");
+		interface->addHorizontalSlider("Factor", &fslider2, 3.0f, 0.8f, 8.0f, 0.01f);
 		interface->declare(&fslider3, "1", "");
 		interface->declare(&fslider3, "OWL", "PARAMETER_B");
 		interface->declare(&fslider3, "style", "knob");
 		interface->declare(&fslider3, "unit", "dB");
-		interface->addHorizontalSlider("threshold", &fslider3, -4e+01f, -96.0f, -2e+01f, 0.01f);
-		interface->declare(&fslider1, "2", "");
-		interface->declare(&fslider1, "OWL", "PARAMETER_C");
+		interface->addHorizontalSlider("Threshold", &fslider3, -4e+01f, -96.0f, -2e+01f, 0.01f);
+		interface->declare(&fslider0, "2", "");
+		interface->declare(&fslider0, "OWL", "PARAMETER_C");
+		interface->declare(&fslider0, "style", "knob");
+		interface->declare(&fslider0, "unit", "ms");
+		interface->addHorizontalSlider("Attack", &fslider0, 1.0f, 1.0f, 2e+01f, 0.01f);
+		interface->declare(&fslider1, "3", "");
+		interface->declare(&fslider1, "OWL", "PARAMETER_D");
 		interface->declare(&fslider1, "style", "knob");
 		interface->declare(&fslider1, "unit", "ms");
-		interface->addHorizontalSlider("attack", &fslider1, 1.0f, 1.0f, 2e+01f, 0.01f);
-		interface->declare(&fslider2, "3", "");
-		interface->declare(&fslider2, "OWL", "PARAMETER_D");
-		interface->declare(&fslider2, "style", "knob");
-		interface->declare(&fslider2, "unit", "ms");
-		interface->addHorizontalSlider("release", &fslider2, 2e+01f, 2e+01f, 1e+03f, 0.01f);
+		interface->addHorizontalSlider("Release", &fslider1, 2e+01f, 2e+01f, 1e+03f, 0.01f);
 		interface->closeBox();
 	}
 	virtual void compute (int count, FAUSTFLOAT** input, FAUSTFLOAT** output) {
@@ -468,32 +468,32 @@ class Qompander : public dsp {
 		for (int i=0; i<count; i++) {
 			float fTemp0 = (float)input0[i];
 			fVec0[0] = fTemp0;
-			fRec0[0] = ((0.999f * fRec0[1]) + fSlow0);
-			fRec2[0] = (fSlow1 + (0.999f * fRec2[1]));
-			float fTemp1 = expf((0 - (fConst0 / fRec2[0])));
-			fRec7[0] = (fVec0[0] + (0.161758f * fRec7[2]));
-			fRec6[0] = (((0.161758f * fRec7[0]) + (0.733029f * fRec6[2])) - fRec7[2]);
-			fRec5[0] = (((0.733029f * fRec6[0]) + (0.94535f * fRec5[2])) - fRec6[2]);
-			fRec4[0] = (((0.94535f * fRec5[0]) + (0.990598f * fRec4[2])) - fRec5[2]);
-			float fTemp2 = ((0.990598f * fRec4[0]) - fRec4[2]);
-			fRec11[0] = (fVec0[1] + (0.479401f * fRec11[2]));
-			fRec10[0] = (((0.479401f * fRec11[0]) + (0.876218f * fRec10[2])) - fRec11[2]);
-			fRec9[0] = (((0.876218f * fRec10[0]) + (0.976599f * fRec9[2])) - fRec10[2]);
-			fRec8[0] = (((0.976599f * fRec9[0]) + (0.9975f * fRec8[2])) - fRec9[2]);
-			float fTemp3 = ((0.9975f * fRec8[0]) - fRec8[2]);
-			float fTemp4 = fabsf(min((float)100, max(1e-05f, sqrtf((faustpower<2>(fTemp2) + faustpower<2>(fTemp3))))));
-			fRec12[0] = (fSlow2 + (0.999f * fRec12[1]));
-			float fTemp5 = expf((0 - (fConst0 / fRec12[0])));
-			fRec3[0] = ((max(fTemp4, fRec3[1]) * fTemp5) + (fTemp4 * (1.0f - fTemp5)));
-			fRec1[0] = ((fRec1[1] * fTemp1) + (fRec3[0] * (1.0f - fTemp1)));
+			fRec1[0] = (fSlow0 + (0.999f * fRec1[1]));
+			float fTemp1 = expf((0 - (fConst0 / fRec1[0])));
+			fRec3[0] = (fSlow1 + (0.999f * fRec3[1]));
+			float fTemp2 = expf((0 - (fConst0 / fRec3[0])));
+			fRec7[0] = (fVec0[1] + (0.479401f * fRec7[2]));
+			fRec6[0] = (((0.479401f * fRec7[0]) + (0.876218f * fRec6[2])) - fRec7[2]);
+			fRec5[0] = (((0.876218f * fRec6[0]) + (0.976599f * fRec5[2])) - fRec6[2]);
+			fRec4[0] = (((0.976599f * fRec5[0]) + (0.9975f * fRec4[2])) - fRec5[2]);
+			float fTemp3 = ((0.9975f * fRec4[0]) - fRec4[2]);
+			fRec11[0] = (fVec0[0] + (0.161758f * fRec11[2]));
+			fRec10[0] = (((0.161758f * fRec11[0]) + (0.733029f * fRec10[2])) - fRec11[2]);
+			fRec9[0] = (((0.733029f * fRec10[0]) + (0.94535f * fRec9[2])) - fRec10[2]);
+			fRec8[0] = (((0.94535f * fRec9[0]) + (0.990598f * fRec8[2])) - fRec9[2]);
+			float fTemp4 = ((0.990598f * fRec8[0]) - fRec8[2]);
+			float fTemp5 = fabsf(min((float)100, max(1e-05f, sqrtf((faustpower<2>(fTemp4) + faustpower<2>(fTemp3))))));
+			fRec2[0] = ((max(fTemp5, fRec2[1]) * fTemp2) + (fTemp5 * (1.0f - fTemp2)));
+			fRec0[0] = ((fRec0[1] * fTemp1) + (fRec2[0] * (1.0f - fTemp1)));
+			fRec12[0] = ((0.999f * fRec12[1]) + fSlow2);
 			fRec13[0] = ((0.999f * fRec13[1]) + fSlow3);
 			float fTemp6 = powf(10,(0.05f * fRec13[0]));
-			output0[i] = (FAUSTFLOAT)(0.7071067811865476f * ((powf(min((float)1, max(1e-07f, sinf((1.5707963267948966f * (fRec0[0] * min((1.0f / fRec0[0]), fRec1[0])))))),(logf(fTemp6) / logf(sinf((1.5707963267948966f * (fRec0[0] * fTemp6)))))) * (fTemp2 + fTemp3)) / fRec1[0]));
+			output0[i] = (FAUSTFLOAT)(0.7071067811865476f * ((powf(min((float)1, max(1e-07f, sinf((1.5707963267948966f * (fRec12[0] * min((1.0f / fRec12[0]), fRec0[0])))))),(logf(fTemp6) / logf(sinf((1.5707963267948966f * (fRec12[0] * fTemp6)))))) * (fTemp4 + fTemp3)) / fRec0[0]));
 			// post processing
 			fRec13[1] = fRec13[0];
-			fRec1[1] = fRec1[0];
-			fRec3[1] = fRec3[0];
 			fRec12[1] = fRec12[0];
+			fRec0[1] = fRec0[0];
+			fRec2[1] = fRec2[0];
 			fRec8[2] = fRec8[1]; fRec8[1] = fRec8[0];
 			fRec9[2] = fRec9[1]; fRec9[1] = fRec9[0];
 			fRec10[2] = fRec10[1]; fRec10[1] = fRec10[0];
@@ -502,8 +502,8 @@ class Qompander : public dsp {
 			fRec5[2] = fRec5[1]; fRec5[1] = fRec5[0];
 			fRec6[2] = fRec6[1]; fRec6[1] = fRec6[0];
 			fRec7[2] = fRec7[1]; fRec7[1] = fRec7[0];
-			fRec2[1] = fRec2[0];
-			fRec0[1] = fRec0[0];
+			fRec3[1] = fRec3[0];
+			fRec1[1] = fRec1[0];
 			fVec0[1] = fVec0[0];
 		}
 	}

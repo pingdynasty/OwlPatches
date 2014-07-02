@@ -18,21 +18,21 @@ lfo = 0.25/SR : (+ , 2.0 : fmod) ~ _ : -(1.0) : abs ;
 
 // mono wah-wah based on crybaby
 wahwah = crybaby(wah) with {
-   lo = hslider("low[OWL:PARAMETER_A]",0.8,0,1,0.01);
-   hi = hslider("high[OWL:PARAMETER_B]",0.8,0,1,0.01);
+   lo = hslider("Low[OWL:PARAMETER_A]",0.8,0,1,0.01);
+   hi = hslider("High[OWL:PARAMETER_B]",0.8,0,1,0.01);
    wah = lo*lfo + hi*(1.0-lfo);
 };
 
 // add dry wet control
 stereodrywet (monofx) = _,_ <: *(1-dw), *(1-dw), monofx*dw, monofx*dw :> _,_
 	with {
-		dw = hslider("dry wet[OWL:PARAMETER_D]",0.5,0,1,0.01);
+		dw = hslider("Dry/Wet[OWL:PARAMETER_D]",0.5,0,1,0.01);
 	};
 	
 // add dry wet control
 monodrywet (monofx) = _ <: *(1-dw), monofx*dw :> _
 	with {
-		dw = hslider("dry wet[OWL:PARAMETER_D]",0.5,0,1,0.01);
+		dw = hslider("Dry/Wet[OWL:PARAMETER_D]",0.5,0,1,0.01);
 	};
 
 // process = stereodrywet(wahwah);

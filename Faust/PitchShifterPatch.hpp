@@ -366,8 +366,8 @@ class PitchShifter : public dsp {
 		fSamplingFreq = samplingFreq;
 		IOTA = 0;
 		for (int i=0; i<65536; i++) fVec0[i] = 0;
-		fslider0 = 1e+03f;
-		fslider1 = 0.0f;
+		fslider0 = 0.0f;
+		fslider1 = 1e+03f;
 		for (int i=0; i<2; i++) fRec0[i] = 0;
 		fslider2 = 1e+01f;
 	}
@@ -377,20 +377,20 @@ class PitchShifter : public dsp {
 	}
 	virtual void buildUserInterface(UI* interface) {
 		interface->openVerticalBox("Pitch Shifter");
-		interface->declare(&fslider1, "OWL", "PARAMETER_C");
-		interface->declare(&fslider1, "style", "knob");
-		interface->addHorizontalSlider("shift (semitones)", &fslider1, 0.0f, -12.0f, 12.0f, 0.1f);
-		interface->declare(&fslider0, "OWL", "PARAMETER_A");
-		interface->declare(&fslider0, "style", "knob");
-		interface->addHorizontalSlider("window (samples)", &fslider0, 1e+03f, 5e+01f, 1e+04f, 1.0f);
 		interface->declare(&fslider2, "OWL", "PARAMETER_B");
 		interface->declare(&fslider2, "style", "knob");
-		interface->addHorizontalSlider("xfade (samples)", &fslider2, 1e+01f, 1.0f, 1e+04f, 1.0f);
+		interface->addHorizontalSlider("Crossfade", &fslider2, 1e+01f, 1.0f, 1e+04f, 1.0f);
+		interface->declare(&fslider0, "OWL", "PARAMETER_C");
+		interface->declare(&fslider0, "style", "knob");
+		interface->addHorizontalSlider("Pitch Shift", &fslider0, 0.0f, -12.0f, 12.0f, 0.1f);
+		interface->declare(&fslider1, "OWL", "PARAMETER_A");
+		interface->declare(&fslider1, "style", "knob");
+		interface->addHorizontalSlider("Window", &fslider1, 1e+03f, 5e+01f, 1e+04f, 1.0f);
 		interface->closeBox();
 	}
 	virtual void compute (int count, FAUSTFLOAT** input, FAUSTFLOAT** output) {
-		float 	fSlow0 = float(fslider0);
-		float 	fSlow1 = ((1 + fSlow0) - powf(2,(0.08333333333333333f * float(fslider1))));
+		float 	fSlow0 = float(fslider1);
+		float 	fSlow1 = ((1 + fSlow0) - powf(2,(0.08333333333333333f * float(fslider0))));
 		float 	fSlow2 = (1.0f / float(fslider2));
 		float 	fSlow3 = (fSlow0 - 1);
 		FAUSTFLOAT* input0 = input[0];
@@ -399,12 +399,12 @@ class PitchShifter : public dsp {
 			float fTemp0 = (float)input0[i];
 			fVec0[IOTA&65535] = fTemp0;
 			fRec0[0] = fmodf((fRec0[1] + fSlow1),fSlow0);
-			int iTemp1 = int(fRec0[0]);
-			int iTemp2 = (1 + iTemp1);
-			float fTemp3 = min((fSlow2 * fRec0[0]), (float)1);
-			float fTemp4 = (fSlow0 + fRec0[0]);
-			int iTemp5 = int(fTemp4);
-			output0[i] = (FAUSTFLOAT)((((fVec0[(IOTA-int((iTemp1 & 65535)))&65535] * (iTemp2 - fRec0[0])) + ((fRec0[0] - iTemp1) * fVec0[(IOTA-int((int(iTemp2) & 65535)))&65535])) * fTemp3) + (((fVec0[(IOTA-int((iTemp5 & 65535)))&65535] * (0 - ((fRec0[0] + fSlow3) - iTemp5))) + ((fTemp4 - iTemp5) * fVec0[(IOTA-int((int((1 + iTemp5)) & 65535)))&65535])) * (1 - fTemp3)));
+			float fTemp1 = min((fSlow2 * fRec0[0]), (float)1);
+			float fTemp2 = (fSlow0 + fRec0[0]);
+			int iTemp3 = int(fTemp2);
+			int iTemp4 = int(fRec0[0]);
+			int iTemp5 = (1 + iTemp4);
+			output0[i] = (FAUSTFLOAT)((((fVec0[(IOTA-int((iTemp4 & 65535)))&65535] * (iTemp5 - fRec0[0])) + ((fRec0[0] - iTemp4) * fVec0[(IOTA-int((int(iTemp5) & 65535)))&65535])) * fTemp1) + (((fVec0[(IOTA-int((iTemp3 & 65535)))&65535] * (0 - ((fRec0[0] + fSlow3) - iTemp3))) + ((fTemp2 - iTemp3) * fVec0[(IOTA-int((int((1 + iTemp3)) & 65535)))&65535])) * (1 - fTemp1)));
 			// post processing
 			fRec0[1] = fRec0[0];
 			IOTA = IOTA+1;
