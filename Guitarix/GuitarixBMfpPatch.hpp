@@ -456,16 +456,16 @@ class GuitarixBMfp : public dsp {
 	}
 	virtual void buildUserInterface(UI* interface) {
 		interface->openVerticalBox("GuitarixBMfp");
-		interface->declare(&fslider3, "OWL", "PARAMETER_C");
+		interface->declare(&fslider3, "OWL", "PARAMETER_B");
 		interface->declare(&fslider3, "style", "knob");
 		interface->addVerticalSlider("Drive", &fslider3, 1.0f, -3.0f, 1e+02f, 1.0f);
 		interface->declare(&fslider0, "OWL", "PARAMETER_A");
 		interface->declare(&fslider0, "style", "knob");
 		interface->addVerticalSlider("Input", &fslider0, 0.0f, -24.0f, 12.0f, 0.1f);
-		interface->declare(&fslider1, "OWL", "PARAMETER_B");
+		interface->declare(&fslider1, "OWL", "PARAMETER_D");
 		interface->declare(&fslider1, "style", "knob");
 		interface->addVerticalSlider("Output", &fslider1, 1e+02f, 5e+01f, 1e+02f, 1.0f);
-		interface->declare(&fslider2, "OWL", "PARAMETER_D");
+		interface->declare(&fslider2, "OWL", "PARAMETER_C");
 		interface->declare(&fslider2, "style", "knob");
 		interface->addVerticalSlider("Tone", &fslider2, 0.5f, 0.0f, 1.0f, 0.01f);
 		interface->closeBox();
