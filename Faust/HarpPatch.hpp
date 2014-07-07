@@ -420,14 +420,14 @@ class Harp : public dsp {
 		interface->openVerticalBox("Harp");
 		interface->declare(&fslider2, "OWL", "PARAMETER_B");
 		interface->declare(&fslider2, "osc", "/1/fader3");
-		interface->addHorizontalSlider("attenuation", &fslider2, 0.005f, 0.0f, 0.01f, 0.001f);
+		interface->addHorizontalSlider("Attenuation", &fslider2, 0.005f, 0.0f, 0.01f, 0.001f);
 		interface->declare(&fslider0, "OWL", "PARAMETER_C");
 		interface->declare(&fslider0, "osc", "/accxyz/1 -10 10");
-		interface->addHorizontalSlider("hand", &fslider0, 0.0f, 0.0f, 1.0f, 0.01f);
+		interface->addHorizontalSlider("Hand", &fslider0, 0.0f, 0.0f, 1.0f, 0.01f);
 		interface->declare(&fslider1, "OWL", "PARAMETER_A");
 		interface->declare(&fslider1, "osc", "/accxyz/0 -10 10");
 		interface->declare(&fslider1, "unit", "f");
-		interface->addHorizontalSlider("level", &fslider1, 0.5f, 0.0f, 1.0f, 0.01f);
+		interface->addHorizontalSlider("Level", &fslider1, 0.5f, 0.0f, 1.0f, 0.01f);
 		interface->closeBox();
 	}
 	virtual void compute (int count, FAUSTFLOAT** input, FAUSTFLOAT** output) {
