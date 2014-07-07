@@ -32,8 +32,7 @@
 #include "StompBox.h"
 #include "string.h"
 
-#define reverb_buf_length 20480
-#define pi 3.14159265359f
+#define REVERSE_REVERB_BUF_LENGTH 20480
 
 class ReverseReverbPatch : public Patch 
 {
@@ -41,8 +40,7 @@ private:
 
 	int reverb_index, reverse_cnt, reverb_time;
 	char reverse_flag;
-//	float reverse_storage[reverb_buf_length], reverse_current[reverb_buf_length];
-	float reverb_buffer[reverb_buf_length];
+	float reverb_buffer[REVERSE_REVERB_BUF_LENGTH];
 
 public:
   ReverseReverbPatch()
@@ -64,7 +62,7 @@ public:
 
 	float reverb_scale = getParameterValue(PARAMETER_A);			//get reverb length from knob
 	if(reverb_scale<0.1) reverb_scale=0.1;							//apply lower limit to reverb length
-	reverb_time = round(reverb_scale*reverb_buf_length/2);			//apply scaling factor to the window size to obtain reverb_time (in samples)
+	reverb_time = round(reverb_scale*REVERSE_REVERB_BUF_LENGTH/2);			//apply scaling factor to the window size to obtain reverb_time (in samples)
 	int mod = reverb_time%size;		//ensure that reverb_time is an even multiple of audio buffer size
 	reverb_time -= mod;
 	if(reverse_cnt>reverb_time)	reverse_cnt = 0;	
@@ -82,12 +80,12 @@ public:
 		
 		for(int i=0; i<size; i++)
 		{		
-			reverb_buffer[reverb_buf_length-1-i-reverb_index*size] = reverb_buffer[i+reverb_index*size];	//load reverse into end of buffer
+			reverb_buffer[REVERSE_REVERB_BUF_LENGTH-1-i-reverb_index*size] = reverb_buffer[i+reverb_index*size];	//load reverse into end of buffer
 			reverb_buffer[i+reverb_index*size] = buf[i];	//load number of samples into the reverse buffer equal to size of audio buffer
 
 			if (reverse_flag == 1)
 			{
-				buf[i] = level*((1-wet)*buf[i]+wet*reverb_buffer[reverb_buf_length-1-reverse_cnt]*abs(reverse_cnt-reverb_time)*reverse_cnt/reverb_time/200);
+				buf[i] = level*((1-wet)*buf[i]+wet*reverb_buffer[REVERSE_REVERB_BUF_LENGTH-1-reverse_cnt]*abs(reverse_cnt-reverb_time)*reverse_cnt/reverb_time/200);
 				reverse_cnt++;
 				if(reverse_cnt==reverb_time)
 				{
