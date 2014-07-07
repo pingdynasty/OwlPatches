@@ -52,7 +52,6 @@ REGISTER_PATCH(StereoWahPatch, "Faust/StereoWah", 2, 2);
 REGISTER_PATCH(StereoEchoPatch, "Faust/StereoEcho", 2, 2);
 REGISTER_PATCH(LowPassFilterPatch, "Faust/Low Pass Filter", 1, 1);
 REGISTER_PATCH(LowShelfPatch, "Faust/Low Shelf Filter", 1, 1);
-//REGISTER_PATCH(HighShelfPatch, "Faust/High Shelf Filter", 1, 1);
 REGISTER_PATCH(PitchShifterPatch, "Faust/Pitch Shifter", 1, 1);
 
 REGISTER_PATCH(GuitarixCompressorPatch, "Guitarix/Compressor", 1, 1);
