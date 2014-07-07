@@ -21,7 +21,7 @@ REGISTER_PATCH(LeakyIntegratorPatch, "Leaky Integrator", 1, 1);
 REGISTER_PATCH(OctaveDownPatch, "Octave Pitch Shifter", 1, 1);
 REGISTER_PATCH(StereoMixerPatch, "Stereo Mixer", 2, 2);
 REGISTER_PATCH(VibroFlangePatch, "Vibro-Flange", 1, 1);
-REGISTER_PATCH(RingModulatorPatch, "Ring Modulator", 1, 1);
+REGISTER_PATCH(RingModulatorPatch, "Ring Modulator", 2, 2);
 REGISTER_PATCH(SynthPatch, "Synthesizer", 1, 1);
 REGISTER_PATCH(FourBandsEqPatch, "Four Band EQ", 1, 1);
 REGISTER_PATCH(BiasedDelayPatch, "Contest/BiasedDelay", 2, 2);
@@ -52,7 +52,7 @@ REGISTER_PATCH(StereoWahPatch, "Faust/StereoWah", 2, 2);
 REGISTER_PATCH(StereoEchoPatch, "Faust/StereoEcho", 2, 2);
 REGISTER_PATCH(LowPassFilterPatch, "Faust/Low Pass Filter", 1, 1);
 REGISTER_PATCH(LowShelfPatch, "Faust/Low Shelf Filter", 1, 1);
-REGISTER_PATCH(HighShelfPatch, "Faust/High Shelf Filter", 1, 1);
+//REGISTER_PATCH(HighShelfPatch, "Faust/High Shelf Filter", 1, 1);
 REGISTER_PATCH(PitchShifterPatch, "Faust/Pitch Shifter", 1, 1);
 
 REGISTER_PATCH(GuitarixCompressorPatch, "Guitarix/Compressor", 1, 1);
