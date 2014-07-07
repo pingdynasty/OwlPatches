@@ -120,7 +120,7 @@ public:
 			cross = true;
 		}
 		else {
-			freq=parameterB*mult * 9000;
+			freq = (1 - parameterB) * mult * 9000;
 		}
 		float EXP = getParameterValue(PARAMETER_E)*9000;
 		if(EXP>0.1) { // allow for the fact that it never goes to 0
@@ -146,8 +146,8 @@ public:
 				oscSampleX = oscX.getSample();
 				oscSampleY = oscY.getSample();
 			}
-			x[i] = x[i] * oneMinusMix + x[i] * oscSampleX *mix;
-			y[i] = y[i] * oneMinusMix + y[i] * oscSampleY *mix;
+			x[i] = x[i] * mix + x[i] * oscSampleX * oneMinusMix;
+			y[i] = y[i] * mix + y[i] * oscSampleY * oneMinusMix;
 		}
 	}
 };
