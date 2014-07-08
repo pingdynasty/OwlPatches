@@ -43,6 +43,7 @@
 #include "Faust/StereoWahPatch.hpp"
 #include "Faust/LowPassFilterPatch.hpp"
 #include "Faust/LowShelfPatch.hpp"
+#include "Faust/HighShelfPatch.hpp"
 #include "Faust/PitchShifterPatch.hpp"
 
 #include "Guitarix/GuitarixCompressorPatch.hpp"
