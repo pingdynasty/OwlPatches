@@ -28,7 +28,6 @@ REGISTER_PATCH(BiasedDelayPatch, "Contest/BiasedDelay", 2, 2);
 REGISTER_PATCH(little_blo_bleep, "Contest/blo bleep", 2, 2);
 REGISTER_PATCH(BiasPatch, "Contest/Bias", 2, 2);
 REGISTER_PATCH(BitH8rPatch, "Contest/BitH8r", 2, 2);
-REGISTER_PATCH(ConnyPatch, "Contest/ConnyPatch", 2, 2);
 REGISTER_PATCH(DualTremoloPatch, "Contest/DualTremolo", 2, 2);
 REGISTER_PATCH(MdaBandistoPatch, "MDA/Bandisto", 2, 2);
 REGISTER_PATCH(MdaStereoPatch, "MDA/Stereo", 2, 2);
@@ -69,6 +68,7 @@ REGISTER_PATCH(GuitarixBMfpPatch, "Guitarix/BigMuffFuzz", 1, 1);
 REGISTER_PATCH(GuitarixDistortion1Patch, "Guitarix/Distortion1", 1, 1);
 
 /* TO BE WORKED ON */
+// REGISTER_PATCH(ConnyPatch, "Contest/ConnyPatch", 2, 2);
 // REGISTER_PATCH(QompanderPatch, "Faust/Qompander", 1, 1); // 8851 ARM cycles
 // REGISTER_PATCH(AutoWahPatch, "Faust/AutoWah", 1, 1); // 4003 ARM cycles
 // REGISTER_PATCH(SimpleDriveDelayPatch, "Drive Delay", 1, 1);

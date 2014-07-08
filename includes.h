@@ -18,7 +18,6 @@
 #include "Contest/blo_bleep.hpp"
 #include "Contest/BiasPatch.hpp"
 #include "Contest/BitH8rPatch.hpp"
-#include "Contest/ConnyPatch.hpp"
 #include "Contest/DroneBox.hpp"
 #include "Contest/DualTremoloPatch.hpp"
 #include "mdaPorts/MdaBandistoPatch.cpp"
@@ -58,6 +57,7 @@
 #include "Guitarix/GuitarixBMfpPatch.hpp"
 #include "Guitarix/GuitarixDistortion1Patch.hpp"
 
+// #include "Contest/ConnyPatch.hpp"
 // #include "Faust/AutoWahPatch.hpp"
 // #include "Faust/QompanderPatch.hpp"
 // #include "SimpleDriveDelayPatch.hpp"
