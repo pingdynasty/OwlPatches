@@ -227,7 +227,8 @@ private:
   MoogLadder ladder; // Moog filter
 
   float getFrequency() {
-      float f = getParameterValue(PARAMETER_A) * getParameterValue(PARAMETER_E);
+    float expr = 1 - getParameterValue(PARAMETER_E);
+    float f = expr*getParameterValue(PARAMETER_A);
     // param_A = 0    <-> f=40 Hz;
     // param_A = 1    <-> f=20040 Hz;
       return 2*powf(10,3*f+1)+40;
