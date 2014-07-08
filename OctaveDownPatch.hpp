@@ -85,7 +85,6 @@ public:
     registerParameter(PARAMETER_A, "Dry");
     registerParameter(PARAMETER_B, "Octave 1");
     registerParameter(PARAMETER_C, "Octave 2");
-    registerParameter(PARAMETER_D, "");
   }
 
   void processAudio(AudioBuffer& buffer){

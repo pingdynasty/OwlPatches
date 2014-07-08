@@ -207,11 +207,11 @@ void MoogLadder::process(int numSamples, float *buffer, float w0, float res, flo
 class MoogPatch : public Patch {
 public:
   MoogPatch() {
-    registerParameter(PARAMETER_A, "Cutoff", "Cutoff");
-    registerParameter(PARAMETER_B, "Resonance", "Resonance");
-    registerParameter(PARAMETER_C, "Drive", "Drive");
-    registerParameter(PARAMETER_D, "Master", "Master");
-    registerParameter(PARAMETER_E, "Cutoff mod", "Cutoff mod");
+    registerParameter(PARAMETER_A, "Cutoff");
+    registerParameter(PARAMETER_B, "Resonance");
+    registerParameter(PARAMETER_C, "Drive");
+    registerParameter(PARAMETER_D, "Master");
+    registerParameter(PARAMETER_E, "Cutoff Modulation");
     ladder.setType(LPF);
     ladder.setMutiplexer();
     ladder.setCoeffs(0.f);

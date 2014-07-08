@@ -520,11 +520,11 @@ void JotReverb(reverbBlock* this_reverb, float* left_input, float* right_input)
 class JotReverbPatch : public Patch {
 public:
     JotReverbPatch(){
-        registerParameter(PARAMETER_A, "roomSize"); //  Reverb Time and Size of room
+        registerParameter(PARAMETER_A, "Room Size"); //  Reverb Time and Size of room
         oldParamA = 0.1;
-        registerParameter(PARAMETER_B, "RT"); //  preDelay between direct sound and reverb
-        registerParameter(PARAMETER_C, "cutoff"); //    Tone control of the reverberant part
-        registerParameter(PARAMETER_D, "dryWet"); //    dry/wet mixing
+        registerParameter(PARAMETER_B, "Pre-Delay"); //  preDelay between direct sound and reverb
+        registerParameter(PARAMETER_C, "Cutoff"); //    Tone control of the reverberant part
+        registerParameter(PARAMETER_D, "Dry/Wet"); //    dry/wet mixing
         theReverbBlock.bigDelayBuffer = createMemoryBuffer(1, BIG_DELAY_BUFFER_SIZE)->getSamples(0);
         reverbInitialize(&theReverbBlock);
         setParams();
