@@ -35,7 +35,6 @@ public:
   OverdrivePatch(){
     registerParameter(PARAMETER_A, "Drive");
     registerParameter(PARAMETER_B, "Offset");
-    registerParameter(PARAMETER_C, "");
     registerParameter(PARAMETER_D, "Gain");
     registerParameter(PARAMETER_E, "DrivePedal");
   }
