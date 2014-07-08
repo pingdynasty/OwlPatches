@@ -39,8 +39,9 @@ REGISTER_PATCH(DigitalMayhemPatch, "Digital Mayhem", 1, 1);
 REGISTER_PATCH(ReverseReverbPatch, "Reverse Reverb", 1, 1);
 REGISTER_PATCH(SimpleDistortionPatch, "Simple Distortion", 1, 1);
 REGISTER_PATCH(TremoloPatch, "Tremolo", 2, 2);
-REGISTER_PATCH(MoogPatch, "Moog Filter", 1, 1);
+REGISTER_PATCH(MoogPatch, "Moog Drive Filter", 1, 1);
 REGISTER_PATCH(KarplusStrongPatch, "Karplus Strong", 0, 2);
+REGISTER_PATCH(JotReverbPatch,"JotReverb", 2, 2);
 
 REGISTER_PATCH(FaustVerbPatch, "Faust/FreeVerb", 1, 1);
 REGISTER_PATCH(HarpPatch, "Faust/Harp", 0, 1);
@@ -69,7 +70,6 @@ REGISTER_PATCH(GuitarixDistortion1Patch, "Guitarix/Distortion1", 1, 1);
 /* TO BE WORKED ON */
 // REGISTER_PATCH(QompanderPatch, "Faust/Qompander", 1, 1); // 8851 ARM cycles
 // REGISTER_PATCH(AutoWahPatch, "Faust/AutoWah", 1, 1); // 4003 ARM cycles
-// REGISTER_PATCH(JotReverbPatch,"JotReverb", 2, 2);
 // REGISTER_PATCH(SimpleDriveDelayPatch, "Drive Delay", 1, 1);
 // REGISTER_PATCH(AutotalentPatch, "AutoTalent", 2, 2);
 // REGISTER_PATCH(EnvelopeFilterPatch, "Envelope Filter", 1, 1);

@@ -13,6 +13,7 @@
 #include "RingModulatorPatch.hpp"
 #include "SynthPatch.hpp"
 #include "FourBandsEqPatch.hpp"
+#include "JotReverbPatch.hpp"
 #include "Contest/BiasedDelayPatch.hpp"
 #include "Contest/blo_bleep.hpp"
 #include "Contest/BiasPatch.hpp"
@@ -58,7 +59,6 @@
 
 // #include "Faust/AutoWahPatch.hpp"
 // #include "Faust/QompanderPatch.hpp"
-// #include "JotReverbPatch.hpp" // bug fix to be done re. new firmware
 // #include "SimpleDriveDelayPatch.hpp"
 // #include "Autotalent/AutotalentPatch.hpp"
 // #include "TemplatePatch.hpp"

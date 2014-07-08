@@ -59,7 +59,7 @@ public:
     fType type ;
     void setType(fType t) ;
     void setCoeffs(float w0) ; // for LPF, HPF
-    void process(int numSamples, float* buffer, float w0, float res, float drive) ;
+    void process(int numSamples, float* buffer, float w0, float res, float drive, float masterGain) ;
     float processLadder(float input,float x1, float y1);
     void setMutiplexer();
     float nonLinear(float x); // tanh approx
@@ -69,6 +69,7 @@ private:
     float a1, b0, b1 ; // one pole section coeffs
     float pw0; // previous w0
     float pres; // previous res
+    float pmasterGain; // previous master Gain
     float in1, out1, out2, out3, out4;
     float comp;
 };
@@ -86,6 +87,7 @@ MoogLadder::MoogLadder(){
     E = 0;
     pres=0;
     pw0=0.f;
+    pmasterGain=0.f;
 }
 
 MoogLadder::~MoogLadder(){
@@ -150,17 +152,19 @@ float MoogLadder::nonLinear(float x){
         return x * ( 27 + x*x ) / ( 27 + 9*x*x );
 }
 
-void MoogLadder::process(int numSamples, float *buffer, float w0, float res, float drive){
+void MoogLadder::process(int numSamples, float *buffer, float w0, float res, float drive, float masterGain){
     int N = numSamples-1;
     float w0i;
     float resi;
+    float masterGaini;
     float a,b,c,d,e,output;
     
     for (int i=0;i<numSamples;i++){
-        // compute perSample w0 and res
+        // compute perSample w0, res, gain
         if (N>0){
             w0i = (pw0*(N-i)+i*w0)/N;
             resi =(pres*(N-i)+i*res)/N;
+            masterGaini=(pmasterGain*(N-i)+i*masterGain)/N;
         }
         else {
             w0i = w0;
@@ -180,7 +184,7 @@ void MoogLadder::process(int numSamples, float *buffer, float w0, float res, flo
         
         // Multiplexer
         output = A*a + B*b + C*c + D*d + E*e ;
-        buffer[i] = output / powf(drive,0.3f);
+        buffer[i] = masterGaini * output / powf(drive,0.3f);
         // state variables update
         in1=a;
         out1=b;
@@ -192,6 +196,7 @@ void MoogLadder::process(int numSamples, float *buffer, float w0, float res, flo
     // state variables update 2
     pw0=w0;
     pres=res;
+    pmasterGain=masterGain;
     
 }
 
@@ -205,6 +210,8 @@ public:
     registerParameter(PARAMETER_A, "Cutoff", "Cutoff");
     registerParameter(PARAMETER_B, "Resonance", "Resonance");
     registerParameter(PARAMETER_C, "Drive", "Drive");
+    registerParameter(PARAMETER_D, "Master", "Master");
+    registerParameter(PARAMETER_E, "Cutoff mod", "Cutoff mod");
     ladder.setType(LPF);
     ladder.setMutiplexer();
     ladder.setCoeffs(0.f);
@@ -213,14 +220,14 @@ public:
   void processAudio(AudioBuffer &buffer){
     float wn = 2*M_PI*getFrequency()/getSampleRate();
     float* buf = buffer.getSamples(0);
-    ladder.process(buffer.getSize(), buf, wn, getQ(), getDrive());
+    ladder.process(buffer.getSize(), buf, wn, getQ(), getDrive(), getMasterGain());
   }
     
 private:
   MoogLadder ladder; // Moog filter
 
   float getFrequency() {
-      float f = getParameterValue(PARAMETER_A);
+      float f = getParameterValue(PARAMETER_A) * getParameterValue(PARAMETER_E);
     // param_A = 0    <-> f=40 Hz;
     // param_A = 1    <-> f=20040 Hz;
       return 2*powf(10,3*f+1)+40;
@@ -235,6 +242,10 @@ private:
     
   float getDrive(){
     return 1+80*getParameterValue(PARAMETER_C)*getParameterValue(PARAMETER_C);
+  }
+    
+  float getMasterGain(){
+    return getParameterValue(PARAMETER_D)*1.5;
   }
 };
 
