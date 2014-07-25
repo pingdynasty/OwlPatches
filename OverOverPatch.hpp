@@ -19,8 +19,7 @@
  
  */
 
-/* created by the OWL team 2013 */
-
+/* created by Giulio Moro for the OWL team 2014 */
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 
@@ -29,7 +28,7 @@
 #define __OverOverPatch_hpp__
 
 #include "StompBox.h"
-#include "dri50.h"
+#include "OverOverPatchWave.h"
 #define OS_uLength 4 //length of the upsampling filter
 #define OS_dLength 4 //length of the downsampling filter
 #define OS_L 4 //oversampling factor
@@ -54,7 +53,7 @@ public:
     float drive = expr*getParameterValue(PARAMETER_A);     // get input drive value
     float offset = getParameterValue(PARAMETER_B); 	   // get offset value
     float gain = getParameterValue(PARAMETER_D);           // get output gain value
-	bool  os= getParameterValue(PARAMETER_C)> 0.5;           // get output gain value
+    bool  os = getParameterValue(PARAMETER_C)> 0.5;
     offset /= 10.f;
     drive += 0.03f;
     drive *= 40.f;

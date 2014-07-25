@@ -41,6 +41,7 @@ REGISTER_PATCH(TremoloPatch, "Tremolo", 2, 2);
 REGISTER_PATCH(MoogPatch, "Moog Drive Filter", 1, 1);
 REGISTER_PATCH(KarplusStrongPatch, "Karplus Strong", 0, 2);
 REGISTER_PATCH(JotReverbPatch,"JotReverb", 2, 2);
+REGISTER_PATCH(OverOverPatch,"OverOverdrive", 2, 2);
 
 REGISTER_PATCH(FaustVerbPatch, "Faust/FreeVerb", 1, 1);
 REGISTER_PATCH(HarpPatch, "Faust/Harp", 0, 1);
