@@ -32,6 +32,8 @@
 #include "SimpleDistortionPatch.hpp"
 #include "MoogPatch.hpp"
 #include "KarplusStrongPatch.hpp"
+#include "GhostNotePatch.hpp"
+
 #include "Faust/FaustVerbPatch.hpp"
 #include "Faust/HarpPatch.hpp"
 #include "Faust/HarpAutoPatch.hpp"
