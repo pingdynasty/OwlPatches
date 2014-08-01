@@ -8,8 +8,9 @@
 */
 
 REGISTER_PATCH(DroneBoxPatch, "Contest/DroneBox", 1, 1);
-REGISTER_PATCH(FreeVerbPatch, "FreeVerb", 1, 1);
+REGISTER_PATCH(PatchSelectorPatch, "Patch Selector", 0, 0);
 
+REGISTER_PATCH(FreeVerbPatch, "FreeVerb", 1, 1);
 REGISTER_PATCH(SimpleDelayPatch, "Simple Delay", 1, 1);
 REGISTER_PATCH(GainPatch, "Gain", 2, 2);
 REGISTER_PATCH(ParametricEqPatch, "Parametric EQ", 1, 1);
