@@ -42,8 +42,9 @@ public:
   {
     registerParameter(PARAMETER_A, "Gain");
     registerParameter(PARAMETER_B, "Window");
-    registerParameter(PARAMETER_C, "Freq");
+    registerParameter(PARAMETER_C, "Frequency");
     registerParameter(PARAMETER_D, "Wet");
+    registerParameter(PARAMETER_E, "Freq Mod");
 	
 	window_index = 0;
 	prev_samp = 0;
@@ -55,14 +56,14 @@ public:
   void processAudio(AudioBuffer &buffer)
   {
 	int size = buffer.getSize();
-
+	float expr = 1 - getParameterValue(PARAMETER_E);
 	float window_size_factor = getParameterValue(PARAMETER_B);     //
 	unsigned int window_size = round(window_size_factor*8192);
 	window_size += size;	//window size should never equal 0
 	if(window_size%size != 0) window_size -= window_size%size; //make sure window size is integer multiple of buffer size
 	window_size += size;	//window size should never equal 0
 	float gain = getParameterValue(PARAMETER_A);
-    float freq_factor = getParameterValue(PARAMETER_C);
+	float freq_factor = expr*getParameterValue(PARAMETER_C);
 	freq_factor += 0.01;
 	float wet = getParameterValue(PARAMETER_D);
 
