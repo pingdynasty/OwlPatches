@@ -51,7 +51,6 @@ public:
     count = registry.getNumberOfPatches();
     registerParameter(PARAMETER_A, "Bank");
     registerParameter(PARAMETER_B, "Patch");
-    registerParameter(PARAMETER_D, "Mode");
   }
 
   void processAudio(AudioBuffer &buffer){
@@ -67,10 +66,6 @@ public:
       settings.patch_red = patch;
     else if(slot == GREEN)
       settings.patch_green = patch;
-    int mode = getParameterValue(PARAMETER_D) * 3 + 1;
-    if(mode > PATCHMODE_PARALLEL)
-      mode = PATCHMODE_PARALLEL;
-    settings.patch_mode = (PatchMode)mode;
   }
 };
 
