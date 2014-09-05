@@ -34,6 +34,7 @@ class CompressorPatch : public Patch {
 public:
     int samplerate = (float)getSampleRate();
     float yL_prev[2];
+    float compressorGain;
 //    float *compressorGain;
     
     CompressorPatch()
@@ -45,14 +46,15 @@ public:
     }
     void processAudio(AudioBuffer &buffer)
     {
-        float compressorGain;
-        float threshold =  -60 + (getParameterValue(PARAMETER_A) * 60);
-        float b = 10*getParameterValue(PARAMETER_B);
-        float ratio = 1 + b * b;
-        float attack = 0.1 + (getParameterValue(PARAMETER_C)*100);
-        float release = 0.1 + (getParameterValue(PARAMETER_D)*100);
+//        float threshold =  -60 + (getParameterValue(PARAMETER_A) * 60);
+        float threshold =  60*(getParameterValue(PARAMETER_A)-1);
+        float ratio = 1/(1 + (10*getParameterValue(PARAMETER_B)) * (10*getParameterValue(PARAMETER_B)));
+        float attack = 0.2 + (getParameterValue(PARAMETER_C)*100);
+        float release = 0.5 + (getParameterValue(PARAMETER_D)*100);
         float alphaAttack = expf(-1/(0.001 * samplerate * attack));
         float alphaRelease= expf(-1/(0.001 * samplerate * release));
+        float makeupGain = (1*ratio-1) * threshold * 0.5; // Auto Gain Calculation
+        float kneeWidth = 2.5;
         
         for(int channel = 0; channel < buffer.getChannels(); channel++)
         {
@@ -60,19 +62,16 @@ public:
             float* singleChannel = buffer.getSamples(channel);
             for(int i=0; i<size; i++)
             {
-                compressorGain = compressor(singleChannel[i], channel, threshold, ratio, alphaAttack, alphaRelease);
+                compressorGain = compressor(singleChannel[i], channel, threshold, ratio, alphaAttack, alphaRelease, makeupGain, kneeWidth);
                 singleChannel[i] *= compressorGain;
             }
         }
     }
     
-    float compressor(float sample, int channel, float threshold, float ratio, float attack, float release)
+    float compressor(float sample, int channel, float threshold, float ratio, float attack, float release, float makeupGain, float kneeWidth)
     {
-//        if(release < attack)
-//            release = attack;
         float x_g, x_l, y_g, y_l, c;
-        float kneeWidth = 5;
-        float makeupGain = (1/ratio-1) * threshold / 2; // Auto Gain Calculation
+        
         
         //Level detection- estimate level using peak detector
         if (fabs(sample) < 0.000001)
@@ -82,9 +81,9 @@ public:
         
         // Apply second order interpolation soft knee
         if ((2* fabs(x_g-threshold)) <= kneeWidth)
-            y_g = x_g + (1/ratio -1) * powf(x_g-threshold+kneeWidth/2,2) / (2*kneeWidth);
+            y_g = x_g + (1*ratio -1) * ((x_g-threshold+kneeWidth)*(x_g-threshold+kneeWidth)) / (4*kneeWidth);
         else if ((2*(x_g-threshold)) > kneeWidth)
-            y_g = threshold + (x_g - threshold) / ratio;
+            y_g = threshold + (x_g - threshold) * ratio;
         else
             y_g = x_g;
         
@@ -95,7 +94,7 @@ public:
             y_l = attack * yL_prev[channel] + (1 - attack ) * x_l;
         else
             y_l = release * yL_prev[channel] + (1 - release) * x_l;
-        c = powf(10,(makeupGain - y_l)/20);
+        c = powf(10,(makeupGain - y_l)*0.05);
         yL_prev[channel] = y_l;
         return c;
     }
