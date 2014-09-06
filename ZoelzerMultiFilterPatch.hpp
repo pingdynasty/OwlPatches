@@ -171,10 +171,10 @@ public:
   }
   void processAudio(AudioBuffer &buffer){
     int mode = getParameterValue(PARAMETER_A)*ZOELZER_MODES;
-    float omega = 2*M_PI*getParameterValue(PARAMETER_B)/getSampleRate();
-    float k = tan(omega/2);
-    float q = getParameterValue(PARAMETER_C); // Resonance
-    float v = getParameterValue(PARAMETER_D); // Gain
+    float omega = (M_PI/2 - 0.01)*getParameterValue(PARAMETER_B) + 0.00001; // Frequency
+    float k = tan(omega);
+    float q = getParameterValue(PARAMETER_C) * 10 + 0.1; // Resonance
+    float v = getParameterValue(PARAMETER_D)*30 + 1; // Gain
     switch(mode){
     case ZOELZER_LOWPASS_FILTER_MODE:
       filter.b0 = k*k;
@@ -250,11 +250,9 @@ public:
       break;
     }
     int size = buffer.getSize();
-    for(int ch=0; ch<buffer.getChannels(); ++ch){
-      float* samples = buffer.getSamples(ch);
-      for(int i=0; i<size; ++i)
-	samples[i] = filter.compute(samples[i]);
-    }
+    float* samples = buffer.getSamples(0);
+    for(int i=0; i<size; ++i)
+      samples[i] = filter.compute(samples[i]);
   }
 };
 
