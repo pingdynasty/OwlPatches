@@ -48,7 +48,8 @@ public:
     {
 //        float threshold =  -60 + (getParameterValue(PARAMETER_A) * 60);
         float threshold =  60*(getParameterValue(PARAMETER_A)-1);
-        float ratio = 1/(1 + (10*getParameterValue(PARAMETER_B)) * (10*getParameterValue(PARAMETER_B)));
+        float b = getParameterValue(PARAMETER_B);
+        float ratio = 1/(1 + (10*b) * (10*b));
         float attack = 0.2 + (getParameterValue(PARAMETER_C)*100);
         float release = 0.5 + (getParameterValue(PARAMETER_D)*100);
         float alphaAttack = expf(-1/(0.001 * samplerate * attack));
@@ -77,11 +78,12 @@ public:
         if (fabs(sample) < 0.000001)
             x_g =-120;
         else
-            x_g = 20*log10(fabs(sample));
+            x_g = 20*log10f(fabs(sample));
         
         // Apply second order interpolation soft knee
-        if ((2* fabs(x_g-threshold)) <= kneeWidth)
-            y_g = x_g + (1*ratio -1) * ((x_g-threshold+kneeWidth)*(x_g-threshold+kneeWidth)) / (4*kneeWidth);
+        if ((float)(2* fabs(x_g-threshold)) <= kneeWidth)
+//            y_g = x_g + (1*ratio -1) * ((x_g-threshold+kneeWidth)*(x_g-threshold+kneeWidth)) / (4*kneeWidth);     // Second Order Interpolation
+            y_g = threshold - kneeWidth*0.5 + (x_g-threshold+kneeWidth*0.5)*(1+ratio)*0.5;                          // Linear Interpolation
         else if ((2*(x_g-threshold)) > kneeWidth)
             y_g = threshold + (x_g - threshold) * ratio;
         else

@@ -27,8 +27,8 @@
 //#include "PsycheFilter.hpp"
 //#include "ChorusPatch.hpp"
 //#include "Tremolo.hpp"
-
-#include "PlateReverbPatch.hpp"
+//#include "PlateReverbPatch.hpp"
+#include "PlateVerbPatch.hpp"
 #include "CompressorPatch.hpp"
 
 // #include "JotReverbPatch.hpp" // bug fix to be done re. new firmware
