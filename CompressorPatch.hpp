@@ -33,9 +33,9 @@
 class CompressorPatch : public Patch {
 public:
     int samplerate = (float)getSampleRate();
-    float yL_prev[2];
+    float yL_prev;
     float compressorGain;
-//    float *compressorGain;
+    //    float *compressorGain;
     
     CompressorPatch()
     {
@@ -46,7 +46,7 @@ public:
     }
     void processAudio(AudioBuffer &buffer)
     {
-//        float threshold =  -60 + (getParameterValue(PARAMETER_A) * 60);
+        //        float threshold =  -60 + (getParameterValue(PARAMETER_A) * 60);
         float threshold =  60*(getParameterValue(PARAMETER_A)-1);
         float b = getParameterValue(PARAMETER_B);
         float ratio = 1/(1 + (10*b) * (10*b));
@@ -57,19 +57,20 @@ public:
         float makeupGain = (1*ratio-1) * threshold * 0.5; // Auto Gain Calculation
         float kneeWidth = 2.5;
         
-        for(int channel = 0; channel < buffer.getChannels(); channel++)
+        float* Left = buffer.getSamples(0);
+        float* Right = buffer.getSamples(1);
+        
+        int size = buffer.getSize();
+        for(int i=0; i<size; i++)
         {
-            int size = buffer.getSize();
-            float* singleChannel = buffer.getSamples(channel);
-            for(int i=0; i<size; i++)
-            {
-                compressorGain = compressor(singleChannel[i], channel, threshold, ratio, alphaAttack, alphaRelease, makeupGain, kneeWidth);
-                singleChannel[i] *= compressorGain;
-            }
+            float sample = Left[i]+Right[i];
+            compressorGain = compressor(sample, threshold, ratio, alphaAttack, alphaRelease, makeupGain, kneeWidth);
+            Left[i] *= compressorGain;
+            Right[i] *= compressorGain;
         }
     }
     
-    float compressor(float sample, int channel, float threshold, float ratio, float attack, float release, float makeupGain, float kneeWidth)
+    float compressor(float sample, float threshold, float ratio, float attack, float release, float makeupGain, float kneeWidth)
     {
         float x_g, x_l, y_g, y_l, c;
         
@@ -82,7 +83,7 @@ public:
         
         // Apply second order interpolation soft knee
         if ((float)(2* fabs(x_g-threshold)) <= kneeWidth)
-//            y_g = x_g + (1*ratio -1) * ((x_g-threshold+kneeWidth)*(x_g-threshold+kneeWidth)) / (4*kneeWidth);     // Second Order Interpolation
+            //            y_g = x_g + (1*ratio -1) * ((x_g-threshold+kneeWidth)*(x_g-threshold+kneeWidth)) / (4*kneeWidth);     // Quadratic Interpolation
             y_g = threshold - kneeWidth*0.5 + (x_g-threshold+kneeWidth*0.5)*(1+ratio)*0.5;                          // Linear Interpolation
         else if ((2*(x_g-threshold)) > kneeWidth)
             y_g = threshold + (x_g - threshold) * ratio;
@@ -92,12 +93,12 @@ public:
         x_l = x_g - y_g;
         
         //Ballistics- smoothing of the gain
-        if (x_l > yL_prev[channel])
-            y_l = attack * yL_prev[channel] + (1 - attack ) * x_l;
+        if (x_l > yL_prev)
+            y_l = attack * yL_prev + (1 - attack ) * x_l;
         else
-            y_l = release * yL_prev[channel] + (1 - release) * x_l;
+            y_l = release * yL_prev + (1 - release) * x_l;
         c = powf(10,(makeupGain - y_l)*0.05);
-        yL_prev[channel] = y_l;
+        yL_prev = y_l;
         return c;
     }
 };

@@ -147,24 +147,6 @@ const float initialwet		= 1/scalewet;
 const float initialdry		= 0;
 const int	stereospread	= 23;
 
-// These values assume 44.1KHz sample rate
-// they will probably be OK for 48KHz sample rate
-// but would need scaling for 96KHz (or other) sample rates.
-// The values were obtained by listening tests.
-//const int combtuningL1		= 1116;
-//const int combtuningL2		= 1188;
-//const int combtuningL3		= 1277;
-//const int combtuningL4		= 1356;
-//const int combtuningL5		= 1422;
-////const int combtuningL6		= 1491;
-////const int combtuningL7		= 1557;
-////const int combtuningL8		= 1617;
-//const int allpasstuningL1	= 556;
-//const int allpasstuningL2	= 441;
-//const int allpasstuningL3	= 341;
-//const int allpasstuningL4	= 225;
-//const int allpasstuningL5	= 650;
-//const int allpasstuningL6	= 150;
 const int combtuningL1	 = 266;
 const int combtuningL2	 = 2974;
 const int combtuningL3	 = 1913;
@@ -196,8 +178,6 @@ public:
         combL[3].setbuffer(bufcombL4,combtuningL4);
         combL[4].setbuffer(bufcombL5,combtuningL5);
         combL[5].setbuffer(bufcombL6,combtuningL6);
-//        combL[6].setbuffer(bufcombL7,combtuningL7);
-//        combL[7].setbuffer(bufcombL8,combtuningL8);
         allpassL[0].setbuffer(bufallpassL1,allpasstuningL1);
         allpassL[1].setbuffer(bufallpassL2,allpasstuningL2);
         allpassL[2].setbuffer(bufallpassL3,allpasstuningL3);
@@ -227,13 +207,9 @@ public:
 		
         
         for (int i=0;i<numcombs;i++)
-        {
             combL[i].mute();
-        }
         for (int i=0;i<numallpasses1+numallpasses2;i++)
-        {
             allpassL[i].mute();
-        }
     }
     
     
@@ -242,10 +218,7 @@ public:
     {
         roomsize = (value*scaleroom) + offsetroom;
         for(int i=0; i<numcombs; i++)
-        {
             combL[i].setfeedback(roomsize);
-            
-        }
     }
     
     
@@ -254,9 +227,7 @@ public:
     {
         damp = value*scaledamp;
         for(int i=0; i<numcombs; i++)
-        {
             combL[i].setdamp(damp);
-        }
     }
     
 	
@@ -333,21 +304,15 @@ public:
             
             // Feed through allpasses in series
             for(int i=0; i<numallpasses1; i++)
-            {
                 outL = allpassL[i].process(outL);
-            }
 			
             // Accumulate comb filters in parallel
             for(int i=0; i<numcombs; i++)
-            {
                 outL += combL[i].process(input);
-            }
 			
             // Feed through allpasses in series
             for(int i=0; i<numallpasses2; i++)
-            {
                 outL = allpassL[numallpasses1+i].process(outL);
-            }
 			
             // Calculate output MIXING with anything already there
             *inputL = outL*wet + *inputL*dry;
