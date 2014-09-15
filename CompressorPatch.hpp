@@ -63,7 +63,7 @@ public:
         int size = buffer.getSize();
         for(int i=0; i<size; i++)
         {
-            float sample = Left[i]+Right[i];
+            float sample = (Left[i]+Right[i])*0.5 ;
             compressorGain = compressor(sample, threshold, ratio, alphaAttack, alphaRelease, makeupGain, kneeWidth);
             Left[i] *= compressorGain;
             Right[i] *= compressorGain;
