@@ -60,6 +60,11 @@ public:
   void process(float* input, float* output, int size){
     arm_biquad_cascade_df1_f32(&df1, input, output, size);
   }
+  /* process a single sample and return the result */
+  float process(float input){
+    float output;
+    arm_biquad_cascade_df1_f32(&df1, &input, &output, 1);    
+  }
 };
 
 #endif // __BiquadFilter_h__
