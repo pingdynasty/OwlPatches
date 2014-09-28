@@ -40,98 +40,93 @@ public:
     float gain = getParameterValue(PARAMETER_D);
     float V = abs(gain-0.5)*60 + 1; // Gain
     float norm;
-    float a0, a1, a2, b1, b2;
+    /* coeffs[b0, b1, b2, a1, a2] */
     switch(mode){
     case ZOELZER_LOWPASS_FILTER_MODE:
       norm = 1 / (1 + K / Q + K * K);
-      a0 = K * K * norm;
-      a1 = 2 * a0;
-      a2 = a0;
-      b1 = 2 * (K * K - 1) * norm;
-      b2 = (1 - K / Q + K * K) * norm;
+      coeffs[0] = K * K * norm;
+      coeffs[1] = 2 * coeffs[0];
+      coeffs[2] = coeffs[0];
+      coeffs[3] = 2 * (K * K - 1) * norm;
+      coeffs[4] = (1 - K / Q + K * K) * norm;
       break;
     case ZOELZER_HIGHPASS_FILTER_MODE:
       norm = 1 / (1 + K / Q + K * K);
-      a0 = 1 * norm;
-      a1 = -2 * a0;
-      a2 = a0;
-      b1 = 2 * (K * K - 1) * norm;
-      b2 = (1 - K / Q + K * K) * norm;
+      coeffs[0] = 1 * norm;
+      coeffs[1] = -2 * coeffs[0];
+      coeffs[2] = coeffs[0];
+      coeffs[3] = 2 * (K * K - 1) * norm;
+      coeffs[4] = (1 - K / Q + K * K) * norm;
       break;      
     case ZOELZER_BANDPASS_FILTER_MODE:
       norm = 1 / (1 + K / Q + K * K);
-      a0 = K / Q * norm;
-      a1 = 0;
-      a2 = -a0;
-      b1 = 2 * (K * K - 1) * norm;
-      b2 = (1 - K / Q + K * K) * norm;
+      coeffs[0] = K / Q * norm;
+      coeffs[1] = 0;
+      coeffs[2] = -coeffs[0];
+      coeffs[3] = 2 * (K * K - 1) * norm;
+      coeffs[4] = (1 - K / Q + K * K) * norm;
       break;
     case ZOELZER_NOTCH_FILTER_MODE:
       norm = 1 / (1 + K / Q + K * K);
-      a0 = (1 + K * K) * norm;
-      a1 = 2 * (K * K - 1) * norm;
-      a2 = a0;
-      b1 = a1;
-      b2 = (1 - K / Q + K * K) * norm;
+      coeffs[0] = (1 + K * K) * norm;
+      coeffs[1] = 2 * (K * K - 1) * norm;
+      coeffs[2] = coeffs[0];
+      coeffs[3] = coeffs[1];
+      coeffs[4] = (1 - K / Q + K * K) * norm;
       break;
     case ZOELZER_PEAK_FILTER_MODE:
       if (gain >= 0.5) {
 	norm = 1 / (1 + 1/Q * K + K * K);
-	a0 = (1 + V/Q * K + K * K) * norm;
-	a1 = 2 * (K * K - 1) * norm;
-	a2 = (1 - V/Q * K + K * K) * norm;
-	b1 = a1;
-	b2 = (1 - 1/Q * K + K * K) * norm;
+	coeffs[0] = (1 + V/Q * K + K * K) * norm;
+	coeffs[1] = 2 * (K * K - 1) * norm;
+	coeffs[2] = (1 - V/Q * K + K * K) * norm;
+	coeffs[3] = coeffs[1];
+	coeffs[4] = (1 - 1/Q * K + K * K) * norm;
       }
       else {
 	norm = 1 / (1 + V/Q * K + K * K);
-	a0 = (1 + 1/Q * K + K * K) * norm;
-	a1 = 2 * (K * K - 1) * norm;
-	a2 = (1 - 1/Q * K + K * K) * norm;
-	b1 = a1;
-	b2 = (1 - V/Q * K + K * K) * norm;
+	coeffs[0] = (1 + 1/Q * K + K * K) * norm;
+	coeffs[1] = 2 * (K * K - 1) * norm;
+	coeffs[2] = (1 - 1/Q * K + K * K) * norm;
+	coeffs[3] = coeffs[1];
+	coeffs[4] = (1 - V/Q * K + K * K) * norm;
       }
       break;
     case ZOELZER_LOWSHELF_FILTER_MODE:
       if (gain >= 0.5) {
 	norm = 1 / (1 + M_SQRT2 * K + K * K);
-	a0 = (1 + sqrt(2*V) * K + V * K * K) * norm;
-	a1 = 2 * (V * K * K - 1) * norm;
-	a2 = (1 - sqrt(2*V) * K + V * K * K) * norm;
-	b1 = 2 * (K * K - 1) * norm;
-	b2 = (1 - M_SQRT2 * K + K * K) * norm;
+	coeffs[0] = (1 + sqrt(2*V) * K + V * K * K) * norm;
+	coeffs[1] = 2 * (V * K * K - 1) * norm;
+	coeffs[2] = (1 - sqrt(2*V) * K + V * K * K) * norm;
+	coeffs[3] = 2 * (K * K - 1) * norm;
+	coeffs[4] = (1 - M_SQRT2 * K + K * K) * norm;
       } else {
 	norm = 1 / (1 + sqrt(2*V) * K + V * K * K);
-	a0 = (1 + M_SQRT2 * K + K * K) * norm;
-	a1 = 2 * (K * K - 1) * norm;
-	a2 = (1 - M_SQRT2 * K + K * K) * norm;
-	b1 = 2 * (V * K * K - 1) * norm;
-	b2 = (1 - sqrt(2*V) * K + V * K * K) * norm;
+	coeffs[0] = (1 + M_SQRT2 * K + K * K) * norm;
+	coeffs[1] = 2 * (K * K - 1) * norm;
+	coeffs[2] = (1 - M_SQRT2 * K + K * K) * norm;
+	coeffs[3] = 2 * (V * K * K - 1) * norm;
+	coeffs[4] = (1 - sqrt(2*V) * K + V * K * K) * norm;
       }
       break;
     case ZOELZER_HIGHSHELF_FILTER_MODE:
       if (gain >= 0.5) {
 	norm = 1 / (1 + M_SQRT2 * K + K * K);
-	a0 = (V + sqrt(2*V) * K + K * K) * norm;
-	a1 = 2 * (K * K - V) * norm;
-	a2 = (V - sqrt(2*V) * K + K * K) * norm;
-	b1 = 2 * (K * K - 1) * norm;
-	b2 = (1 - M_SQRT2 * K + K * K) * norm;
+	coeffs[0] = (V + sqrt(2*V) * K + K * K) * norm;
+	coeffs[1] = 2 * (K * K - V) * norm;
+	coeffs[2] = (V - sqrt(2*V) * K + K * K) * norm;
+	coeffs[3] = 2 * (K * K - 1) * norm;
+	coeffs[4] = (1 - M_SQRT2 * K + K * K) * norm;
       } else {
 	norm = 1 / (V + sqrt(2*V) * K + K * K);
-	a0 = (1 + M_SQRT2 * K + K * K) * norm;
-	a1 = 2 * (K * K - 1) * norm;
-	a2 = (1 - M_SQRT2 * K + K * K) * norm;
-	b1 = 2 * (K * K - V) * norm;
-	b2 = (V - sqrt(2*V) * K + K * K) * norm;
+	coeffs[0] = (1 + M_SQRT2 * K + K * K) * norm;
+	coeffs[1] = 2 * (K * K - 1) * norm;
+	coeffs[2] = (1 - M_SQRT2 * K + K * K) * norm;
+	coeffs[3] = 2 * (K * K - V) * norm;
+	coeffs[4] = (V - sqrt(2*V) * K + K * K) * norm;
       }
       break;
     }
-    coeffs[0] = a0;
-    coeffs[1] = a1;
-    coeffs[2] = a2;
-    coeffs[3] = b1;
-    coeffs[4] = b2;
     filter.setCoefficents(coeffs);
     int size = buffer.getSize();
     float* samples = buffer.getSamples(0);
