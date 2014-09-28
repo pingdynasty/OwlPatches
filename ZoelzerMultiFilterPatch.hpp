@@ -23,14 +23,16 @@ References : Udo Zoelzer: Digital Audio Signal Processing (John Wiley & Sons, IS
 
 class ZoelzerMultiFilterPatch : public Patch {
 private:
+  BiquadFilter previous;
   BiquadFilter filter;
-  float coeffs[5];
+  float coeffs[5] = {0,0,0,0,0};
 public:
   ZoelzerMultiFilterPatch(){
     registerParameter(PARAMETER_A, "Mode");
     registerParameter(PARAMETER_B, "Frequency");
     registerParameter(PARAMETER_C, "Resonance");
     registerParameter(PARAMETER_D, "Gain");
+    previous.setCoefficents(coeffs);
   }
   void processAudio(AudioBuffer &buffer){
     int mode = getParameterValue(PARAMETER_A)*ZOELZER_MODES;
@@ -127,12 +129,17 @@ public:
       }
       break;
     }
-    filter.setCoefficents(coeffs);
     int size = buffer.getSize();
     float* samples = buffer.getSamples(0);
+    float buf[size];
+    previous.process(samples, buf, size);
+    previous.setCoefficents(coeffs);
+    filter.setCoefficents(coeffs);
     filter.process(samples, size);
-//     for(int i=0; i<size; ++i)
-//       samples[i] = filter.compute(samples[i]);
+    for(int i=0; i<size; ++i){
+      float xfade = (float)i/(float)size;
+      samples[i] = buf[i]*(1.0f-xfade) + samples[i]*xfade;
+    }
   }
 };
 
