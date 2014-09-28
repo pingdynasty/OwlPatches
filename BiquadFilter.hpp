@@ -17,16 +17,16 @@ private:
    *     {x[n-1], x[n-2], y[n-1], y[n-2]}   
    * </pre>   
    * The 4 state variables for stage 1 are first, then the 4 state variables for stage 2, and so on.   
-   * The state array has a total length of <code>4*numStages</code> values.   
+   * The state array has a total length of <code>4*stages</code> values.   
    * The state variables are updated after each block of data is processed; the coefficients are untouched.   
    */
   float* state;
-  int stages;
 protected:
-  void init(int s){
-    stages = s;
-    coefficients = NULL;
+  void init(int stages){
     state = (float*)malloc(stages*4*sizeof(float));
+    coefficients = (float*)malloc(stages*5*sizeof(float));
+    // note: init also clears the state buffer
+    arm_biquad_cascade_df1_init_f32(&df1, stages, coefficients, state);
   }
 public:
   BiquadFilter() {
@@ -37,6 +37,7 @@ public:
   }
   ~BiquadFilter(){
     free(state);
+    free(coefficients);
   }
   /*
    * The coefficients are stored in the array <code>pCoeffs</code> in the following order:
@@ -48,9 +49,7 @@ public:
    * and so on.  The <code>coeffs</code> array must contain a total of <code>5*stages</code> values.   
    */
   void setCoefficents(float* coeffs){
-    coefficients = coeffs;
-    // note: this also clears the state buffer
-    arm_biquad_cascade_df1_init_f32(&df1, stages, coefficients, state);
+    memcpy(coefficients, coeffs, 5);
   }
   /* perform in-place processing */
   void process(float* buf, int size){
@@ -63,7 +62,8 @@ public:
   /* process a single sample and return the result */
   float process(float input){
     float output;
-    arm_biquad_cascade_df1_f32(&df1, &input, &output, 1);    
+    arm_biquad_cascade_df1_f32(&df1, &input, &output, 1);
+    return output;
   }
 };
 
