@@ -1,3 +1,11 @@
+#include "OliLarkin/BlipperPatch.hpp"
+#include "OliLarkin/DroneBoxPatch.hpp"
+#include "OliLarkin/DualFreqShifterPatch.hpp"
+#include "OliLarkin/DualPitchShifterPatch.hpp"
+#include "OliLarkin/ThruZeroFlangerPatch.hpp"
+#include "OliLarkin/WeirdPhaserPatch.hpp"
+#include "OliLarkin/XFMPatch.hpp"
+
 #include "GainPatch.hpp"
 #include "SimpleDelayPatch.hpp"
 #include "ParametricEqPatch.hpp"
