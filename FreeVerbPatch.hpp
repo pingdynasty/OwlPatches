@@ -216,7 +216,7 @@ public:
         float outL,input;
         
         float* inputL = buffer.getSamples(0);
-        int numsamples = buffer.getSize();t
+        int numsamples = buffer.getSize();
         while(numsamples-- > 0)
         {
             outL = 0;
