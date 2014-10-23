@@ -47,26 +47,47 @@ public:
     void processAudio(AudioBuffer &buffer)
     {
         //        float threshold =  -60 + (getParameterValue(PARAMETER_A) * 60);
-        float threshold =  60*(getParameterValue(PARAMETER_A)-1);
+        float a = getParameterValue(PARAMETER_A);
         float b = getParameterValue(PARAMETER_B);
-        float ratio = 1/(1 + (10*b) * (10*b));
-        float attack = 0.2 + (getParameterValue(PARAMETER_C)*100);
-        float release = 0.5 + (getParameterValue(PARAMETER_D)*100);
+        if(b > a)
+        {
+            a = 0.5*b;
+        }
+        float threshold =  40*(a-1);
+        float ratio = 1/(1 + (5*b) * (5*b));
+        float attack = 2 + (getParameterValue(PARAMETER_C)*100);
+        float release = 2 + (getParameterValue(PARAMETER_D)*300);
+        if(attack < release)
+        {
+            release = attack;
+        }
         float alphaAttack = expf(-1/(0.001 * samplerate * attack));
         float alphaRelease= expf(-1/(0.001 * samplerate * release));
         float makeupGain = (1*ratio-1) * threshold * 0.5; // Auto Gain Calculation
         float kneeWidth = 2.5;
+        float numChan = buffer.getChannels();
+        float monoScale = 1/numChan;
+        float** sampBuf;
+        float sample;
         
-        float* Left = buffer.getSamples(0);
-        float* Right = buffer.getSamples(1);
+        for(int c = 0; c < numChan; c++)
+        {
+            sampBuf[c] = buffer.getSamples(c);
+        }
         
         int size = buffer.getSize();
         for(int i=0; i<size; i++)
         {
-            float sample = (Left[i]+Right[i])*0.5 ;
+            sample = 0;
+            for(int c = 0; c < numChan; c++)
+            {
+                sample += sampBuf[c][i]*monoScale;
+            }
             compressorGain = compressor(sample, threshold, ratio, alphaAttack, alphaRelease, makeupGain, kneeWidth);
-            Left[i] *= compressorGain;
-            Right[i] *= compressorGain;
+            for(int c = 0; c < numChan; c++)
+            {
+                sampBuf[c][i] *= compressorGain;
+            }
         }
     }
     
