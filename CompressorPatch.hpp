@@ -35,6 +35,8 @@ public:
     int samplerate = (float)getSampleRate();
     float yL_prev;
     float compressorGain;
+    float* sampBuf[2];
+    
     //    float *compressorGain;
     
     CompressorPatch()
@@ -43,6 +45,7 @@ public:
         registerParameter(PARAMETER_B, "Ratio");
         registerParameter(PARAMETER_C, "Attack");
         registerParameter(PARAMETER_D, "Release");
+//        sampBuf = createMemoryBuffer(1, <#int samples#>)
     }
     void processAudio(AudioBuffer &buffer)
     {
@@ -65,9 +68,8 @@ public:
         float alphaRelease= expf(-1/(0.001 * samplerate * release));
         float makeupGain = (1*ratio-1) * threshold * 0.5; // Auto Gain Calculation
         float kneeWidth = 2.5;
-        float numChan = buffer.getChannels();
+        float numChan = min(buffer.getChannels(), 2);
         float monoScale = 1/numChan;
-        float** sampBuf;
         float sample;
         
         for(int c = 0; c < numChan; c++)
