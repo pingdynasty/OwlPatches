@@ -17,9 +17,11 @@
  You should have received a copy of the GNU General Public License
  along with this program.  If not, see <http://www.gnu.org/licenses/>.
  
- */
-
-/* created by the OWL team 2013 */
+ 
+ Simple Delay with a Tone setting similar to the Big Muff Tone stage.
+ Created by the OWL team 2014 
+ 
+*/
 
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -31,19 +33,20 @@
 
 #include "StompBox.h"
 #include "CircularBuffer.hpp"
+#include <math.h>
 
 #define REQUEST_BUFFER_SIZE 32768
 
 class ToneBiquad {
 
 public:
-    toneBiquad() {}
-    ~toneBiquad() {}
-    void initStateVariables(){
-        x1=0.f;
-        x2=0.f;
-        y1=0.f;
-        y2=0.f;
+    ToneBiquad() {}
+    ~ToneBiquad() {}
+    void init(){
+        x1 = 0.f;
+        x2 = 0.f;
+        y1 = 0.f;
+        y2 = 0.f;
     }
     void updateStateCoeffs(){
         for (int i=0; i<3; i++) {
@@ -51,27 +54,36 @@ public:
             pb[i]=b[i];
         }
     }
-    void setCoeffs(float tone) {
+    void setCoeffs(float fc, float fs) {
         // Compute the filters coefficients a[i] and b[i]
-        // TBD
-
+        float w = 2*M_PI*fc/fs;
+        float C = cosf(w);
+        float alpha = sin(w)/1.414f; // Q Butterworth
+        
+        // LPF 2nd order
+        b[0] = (1-C)/2;
+        b[1] = 1-C;
+        b[2] = b[0];
+        
+        a[0] = 1+alpha;
+        a[1] = -2*C;
+        a[2] = 1-alpha;
     }
     float processSample(float input, int numSamples,int i){
-        
+        // process 1 sample at a time, with linear parameter interpolation between start and end of block
         float a1, a2, b0, b1, b2;
         a1 = a[1]/a[0]*i+pa[1]/pa[0]*(numSamples-i);
         a2 = a[2]/a[0]*i+pa[2]/pa[0]*(numSamples-i);
         b0 = b[0]/a[0]*i+pb[0]/pa[0]*(numSamples-i);
         b1 = b[1]/a[0]*i+pb[1]/pa[0]*(numSamples-i);
         b2 = b[2]/a[0]*i+pb[2]/pa[0]*(numSamples-i);
-        
-        output = (b0*input+b1*x1+b2*x2-a1*y1-a2*y2)/numSample ;
-        
+        float output = (b0*input+b1*x1+b2*x2-a1*y1-a2*y2)/numSamples ;
         // store values for biquad state
         x2 = x1;
         x1 = input;
         y2 = y1;
         y1 = output;
+        return output;
     }
 private:
     float a[3] ; // ai coefficients
@@ -89,24 +101,26 @@ private:
     ToneBiquad filter;
 
 public:
-    SimpleDelayPatch() : delay(0)
+    LpfDelayPatch() : delay(0)
     {
         registerParameter(PARAMETER_A, "Delay");
         registerParameter(PARAMETER_B, "Feedback");
-        registerParameter(PARAMETER_C, "Tone");
+        registerParameter(PARAMETER_C, "Cutoff");
         registerParameter(PARAMETER_D, "Dry/Wet");
         AudioBuffer* buffer = createMemoryBuffer(1, REQUEST_BUFFER_SIZE);
         delayBuffer.initialise(buffer->getSamples(0), buffer->getSize());
-        filter.setCoeffs(getParameterValue(PARAMETER_C)); // Tone
-        filter.initStateVariables();
+        filter.init();
+        filter.setCoeffs(getParameterValue(PARAMETER_C), getSampleRate()); // Tone
+        filter.updateStateCoeffs();
     }
     void processAudio(AudioBuffer &buffer)
     {
-        float delayTime, feedback, dryWet;
+        float delayTime, feedback, dryWet, fc;
         delayTime = getParameterValue(PARAMETER_A);
         feedback  = getParameterValue(PARAMETER_B);
+        fc = 2*powf(10,3*getParameterValue(PARAMETER_C)+1)+40;
+        filter.setCoeffs(fc, getSampleRate());
         dryWet    = getParameterValue(PARAMETER_D);
-        filter.setCoeffs(getParameterValue(PARAMETER_C)); // Tone
         
         int32_t newDelay;
         newDelay = delayTime * (delayBuffer.getSize()-1);
@@ -115,7 +129,8 @@ public:
         int size = buffer.getSize();
         for (int n = 0; n < size; n++)
         {
-            x[n] = (delayBuffer.read(delay)*(size-1-n) + delayBuffer.read(newDelay)*n)*dryWet/size + (1.f - 0.75*dryWet) * x[n];  // crossfade for wet/dry balance
+            // crossfade for wet/dry balance
+            x[n] = (delayBuffer.read(delay)*(size-1-n) + delayBuffer.read(newDelay)*n)*1.05*dryWet/size + (1.f - dryWet) * x[n];
             // Add filtering on a per sample basis
             delayBuffer.write(feedback * filter.processSample(x[n],size,n) );
         }
