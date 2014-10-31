@@ -7,16 +7,16 @@
  The first two registered patches are the default green and red patches in compiled the firmware.
 */
 
-REGISTER_PATCH(DroneBoxSPatch, "OL/DroneBox", 2, 2);
-//REGISTER_PATCH(DroneBoxPatch, "Contest/DroneBox", 1, 1);
-REGISTER_PATCH(PatchSelectorPatch, "Patch Selector", 0, 0);
-
-REGISTER_PATCH(BlipperPatch, "OL/Blipper", 2, 2);
-REGISTER_PATCH(DualFreqShifterPatch, "OL/DualFreqShifter", 2, 2);
-REGISTER_PATCH(DualPitchShifterPatch, "OL/DualPitchShifter", 2, 2);
-REGISTER_PATCH(ThruZeroFlangerPatch, "OL/ThruZeroFlanger", 2, 2);
-REGISTER_PATCH(WeirdPhaserPatch, "OL/WeirdPhaser", 2, 2);
-REGISTER_PATCH(XFMPatch, "OL/XFMPatch", 2, 2);
+//REGISTER_PATCH(DroneBoxSPatch, "OL/DroneBox", 2, 2);
+////REGISTER_PATCH(DroneBoxPatch, "Contest/DroneBox", 1, 1);
+//REGISTER_PATCH(PatchSelectorPatch, "Patch Selector", 0, 0);
+//
+//REGISTER_PATCH(BlipperPatch, "OL/Blipper", 2, 2);
+//REGISTER_PATCH(DualFreqShifterPatch, "OL/DualFreqShifter", 2, 2);
+//REGISTER_PATCH(DualPitchShifterPatch, "OL/DualPitchShifter", 2, 2);
+//REGISTER_PATCH(ThruZeroFlangerPatch, "OL/ThruZeroFlanger", 2, 2);
+//REGISTER_PATCH(WeirdPhaserPatch, "OL/WeirdPhaser", 2, 2);
+//REGISTER_PATCH(XFMPatch, "OL/XFMPatch", 2, 2);
 
 REGISTER_PATCH(FreeVerbPatch, "FreeVerb", 1, 1);
 REGISTER_PATCH(SimpleDelayPatch, "Simple Delay", 1, 1);
@@ -48,34 +48,34 @@ REGISTER_PATCH(ReverseReverbPatch, "Reverse Reverb", 1, 1);
 REGISTER_PATCH(SimpleDistortionPatch, "Simple Distortion", 1, 1);
 REGISTER_PATCH(TremoloPatch, "Tremolo", 2, 2);
 REGISTER_PATCH(MoogPatch, "Moog Drive Filter", 1, 1);
-REGISTER_PATCH(KarplusStrongPatch, "Karplus Strong", 0, 2);
+//REGISTER_PATCH(KarplusStrongPatch, "Karplus Strong", 0, 2);
 REGISTER_PATCH(JotReverbPatch,"JotReverb", 2, 2);
 REGISTER_PATCH(GhostNotePatch,"GhostNote", 1, 1);
 
-REGISTER_PATCH(FaustVerbPatch, "Faust/FreeVerb", 1, 1);
-REGISTER_PATCH(HarpPatch, "Faust/Harp", 0, 1);
-REGISTER_PATCH(HarpAutoPatch, "Faust/AutoHarp", 0, 1);
-REGISTER_PATCH(SmoothDelayPatch, "Faust/SmoothDelay", 1, 1);
-REGISTER_PATCH(EchoPatch, "Faust/1 Sec Echo", 1, 1);
-REGISTER_PATCH(CrybabyPatch, "Faust/Crybaby", 1, 1);
-REGISTER_PATCH(StereoWahPatch, "Faust/StereoWah", 2, 2);
-REGISTER_PATCH(StereoEchoPatch, "Faust/StereoEcho", 2, 2);
-REGISTER_PATCH(LowPassFilterPatch, "Faust/Low Pass Filter", 1, 1);
-REGISTER_PATCH(LowShelfPatch, "Faust/Low Shelf Filter", 1, 1);
-REGISTER_PATCH(HighShelfPatch, "Faust/High Shelf Filter", 1, 1);
-REGISTER_PATCH(PitchShifterPatch, "Faust/Pitch Shifter", 1, 1);
-
-REGISTER_PATCH(GuitarixCompressorPatch, "Guitarix/Compressor", 1, 1);
-REGISTER_PATCH(GuitarixPhaserPatch, "Guitarix/Phaser", 2, 2);
-REGISTER_PATCH(GuitarixMoogPatch, "Guitarix/Moog Filter", 1, 1);
-REGISTER_PATCH(GuitarixOverdrivePatch, "Guitarix/Overdrive", 1, 1);
-REGISTER_PATCH(GuitarixPhaserMonoPatch, "Guitarix/PhaserMono", 1, 1);
-REGISTER_PATCH(GuitarixOscTubePatch, "Guitarix/OscTube", 1, 1);
-REGISTER_PATCH(GuitarixFlangerGXPatch, "Guitarix/FlangerGX", 1, 1);
-REGISTER_PATCH(GuitarixDunwahPatch, "Guitarix/Dunwah", 1, 1);
-REGISTER_PATCH(GuitarixTonePatch, "Guitarix/Tone", 1, 1);
-REGISTER_PATCH(GuitarixBMfpPatch, "Guitarix/BigMuffFuzz", 1, 1);
-REGISTER_PATCH(GuitarixDistortion1Patch, "Guitarix/Distortion1", 1, 1);
+//REGISTER_PATCH(FaustVerbPatch, "Faust/FreeVerb", 1, 1);
+//REGISTER_PATCH(HarpPatch, "Faust/Harp", 0, 1);
+//REGISTER_PATCH(HarpAutoPatch, "Faust/AutoHarp", 0, 1);
+//REGISTER_PATCH(SmoothDelayPatch, "Faust/SmoothDelay", 1, 1);
+//REGISTER_PATCH(EchoPatch, "Faust/1 Sec Echo", 1, 1);
+//REGISTER_PATCH(CrybabyPatch, "Faust/Crybaby", 1, 1);
+//REGISTER_PATCH(StereoWahPatch, "Faust/StereoWah", 2, 2);
+//REGISTER_PATCH(StereoEchoPatch, "Faust/StereoEcho", 2, 2);
+//REGISTER_PATCH(LowPassFilterPatch, "Faust/Low Pass Filter", 1, 1);
+//REGISTER_PATCH(LowShelfPatch, "Faust/Low Shelf Filter", 1, 1);
+//REGISTER_PATCH(HighShelfPatch, "Faust/High Shelf Filter", 1, 1);
+//REGISTER_PATCH(PitchShifterPatch, "Faust/Pitch Shifter", 1, 1);
+//
+//REGISTER_PATCH(GuitarixCompressorPatch, "Guitarix/Compressor", 1, 1);
+//REGISTER_PATCH(GuitarixPhaserPatch, "Guitarix/Phaser", 2, 2);
+//REGISTER_PATCH(GuitarixMoogPatch, "Guitarix/Moog Filter", 1, 1);
+//REGISTER_PATCH(GuitarixOverdrivePatch, "Guitarix/Overdrive", 1, 1);
+//REGISTER_PATCH(GuitarixPhaserMonoPatch, "Guitarix/PhaserMono", 1, 1);
+//REGISTER_PATCH(GuitarixOscTubePatch, "Guitarix/OscTube", 1, 1);
+//REGISTER_PATCH(GuitarixFlangerGXPatch, "Guitarix/FlangerGX", 1, 1);
+//REGISTER_PATCH(GuitarixDunwahPatch, "Guitarix/Dunwah", 1, 1);
+//REGISTER_PATCH(GuitarixTonePatch, "Guitarix/Tone", 1, 1);
+//REGISTER_PATCH(GuitarixBMfpPatch, "Guitarix/BigMuffFuzz", 1, 1);
+//REGISTER_PATCH(GuitarixDistortion1Patch, "Guitarix/Distortion1", 1, 1);
 
 /* TO BE WORKED ON */
 // REGISTER_PATCH(ConnyPatch, "Contest/ConnyPatch", 2, 2);
@@ -88,7 +88,7 @@ REGISTER_PATCH(GuitarixDistortion1Patch, "Guitarix/Distortion1", 1, 1);
 // REGISTER_PATCH(JumpDelay, "Contest/JumpDelay", 0, 0);
 // REGISTER_PATCH(SampleJitterPatch, "Contest/SampleJitter", 0, 0);
 // REGISTER_PATCH(SirenPatch, "Contest/Siren", 0, 0);
-// REGISTER_PATCH(LpfDelayPatch, "Low Pass Filtered Delay", 1, 1);
+REGISTER_PATCH(LpfDelayPatch, "Filtered Delay", 1, 1);
 // REGISTER_PATCH(LpfDelayPhaserPatch, "Low Pass Filtered Delay with Phaser", 1, 1);
 // REGISTER_PATCH(WaveshaperPatch, "Waveshaper", 2, 2);
 // REGISTER_PATCH(TestTonePatch, "Test Tone", 0, 0);
