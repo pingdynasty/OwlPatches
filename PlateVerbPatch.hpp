@@ -17,64 +17,39 @@
  You should have received a copy of the GNU General Public License
  along with this program.  If not, see <http://www.gnu.org/licenses/>.
  
+ 
+ Modified from the Freeverb patch for OWL, by Dave Moffat, the OWL team 2014
  */
 
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 
 #pragma once
-
-#include "StompBox.h"
-
-/**     ___           ___           ___                         ___           ___
- *     /__/\         /  /\         /  /\         _____         /  /\         /__/|
- *    |  |::\       /  /::\       /  /::|       /  /::\       /  /::\       |  |:|
- *    |  |:|:\     /  /:/\:\     /  /:/:|      /  /:/\:\     /  /:/\:\      |  |:|
- *  __|__|:|\:\   /  /:/~/::\   /  /:/|:|__   /  /:/~/::\   /  /:/  \:\   __|__|:|
- * /__/::::| \:\ /__/:/ /:/\:\ /__/:/ |:| /\ /__/:/ /:/\:| /__/:/ \__\:\ /__/::::\____
- * \  \:\~~\__\/ \  \:\/:/__\/ \__\/  |:|/:/ \  \:\/:/~/:/ \  \:\ /  /:/    ~\~~\::::/
- *  \  \:\        \  \::/          |  |:/:/   \  \::/ /:/   \  \:\  /:/      |~~|:|~~
- *   \  \:\        \  \:\          |  |::/     \  \:\/:/     \  \:\/:/       |  |:|
- *    \  \:\        \  \:\         |  |:/       \  \::/       \  \::/        |  |:|
- *     \__\/         \__\/         |__|/         \__\/         \__\/         |__|/
- *
- *  Description: FreeVerb for the Owl
- // Written by Jezar at Dreampoint, June 2000
- // http://www.dreampoint.co.uk
- // This code is public domain
- *
- *  FreeVerbPatch.hpp, created by Marek Bereza on 25/06/2013.
- */
-
-//#define undenormalise(sample) if(((*(unsigned int*)&sample)&0x7f800000)==0) sample=0.0f
 #include "ReverbHeader.h"
+#include "StompBox.h"
 #define undenormalise(sample) (sample)
 
-const int	numcombs		= 8;
-const int	numallpasses	= 4;
+const int	plate_numcombs		= 6;
+const int	plate_numallpasses1	= 4;
+const int	plate_numallpasses2	= 2;
 
-const int combtuningL1		= 1116;
-const int combtuningL2		= 1188;
-const int combtuningL3		= 1277;
-const int combtuningL4		= 1356;
-const int combtuningL5		= 1422;
-const int combtuningL6		= 1491;
-const int combtuningL7		= 1557;
-const int combtuningL8		= 1617;
-const int allpasstuningL1	= 556;
-const int allpasstuningL2	= 441;
-const int allpasstuningL3	= 341;
-const int allpasstuningL4	= 225;
+const int plate_combtuningL1	 = 266;
+const int plate_combtuningL2	 = 2974;
+const int plate_combtuningL3	 = 1913;
+const int plate_combtuningL4	 = 1996;
+const int plate_combtuningL5	 = 1990;
+const int plate_combtuningL6	 = 187;
 
+const int plate_allpasstuningL1	= 142;
+const int plate_allpasstuningL2	= 107;
+const int plate_allpasstuningL3	= 379;
+const int plate_allpasstuningL4	= 277;
+const int plate_allpasstuningL5	= 1800;
+const int plate_allpasstuningL6	= 2656;
 
-// These values assume 44.1KHz sample rate
-// they will probably be OK for 48KHz sample rate
-// but would need scaling for 96KHz (or other) sample rates.
-// The values were obtained by listening tests.
-
-class FreeVerbPatch : public Patch {
+class PlateVerbPatch : public Patch {
 public:
-    FreeVerbPatch(){
+    PlateVerbPatch(){
         gain = fixedgain;
         registerParameter(PARAMETER_A, "Mix");
         registerParameter(PARAMETER_B, "Room Size");
@@ -82,24 +57,27 @@ public:
         registerParameter(PARAMETER_D, "");
         
         // Tie the components to their buffers
-        combL[0].setbuffer(bufcombL1,combtuningL1);
-        combL[1].setbuffer(bufcombL2,combtuningL2);
-        combL[2].setbuffer(bufcombL3,combtuningL3);
-        combL[3].setbuffer(bufcombL4,combtuningL4);
-        combL[4].setbuffer(bufcombL5,combtuningL5);
-        combL[5].setbuffer(bufcombL6,combtuningL6);
-        combL[6].setbuffer(bufcombL7,combtuningL7);
-        combL[7].setbuffer(bufcombL8,combtuningL8);
-        allpassL[0].setbuffer(bufallpassL1,allpasstuningL1);
-        allpassL[1].setbuffer(bufallpassL2,allpasstuningL2);
-        allpassL[2].setbuffer(bufallpassL3,allpasstuningL3);
-        allpassL[3].setbuffer(bufallpassL4,allpasstuningL4);
+        combL[0].setbuffer(bufcombL1,plate_combtuningL1);
+        combL[1].setbuffer(bufcombL2,plate_combtuningL2);
+        combL[2].setbuffer(bufcombL3,plate_combtuningL3);
+        combL[3].setbuffer(bufcombL4,plate_combtuningL4);
+        combL[4].setbuffer(bufcombL5,plate_combtuningL5);
+        combL[5].setbuffer(bufcombL6,plate_combtuningL6);
+        allpassL[0].setbuffer(bufallpassL1,plate_allpasstuningL1);
+        allpassL[1].setbuffer(bufallpassL2,plate_allpasstuningL2);
+        allpassL[2].setbuffer(bufallpassL3,plate_allpasstuningL3);
+        allpassL[3].setbuffer(bufallpassL4,plate_allpasstuningL4);
+        allpassL[4].setbuffer(bufallpassL5,plate_allpasstuningL5);
+        allpassL[5].setbuffer(bufallpassL6,plate_allpasstuningL6);
         
         // Set default values
         allpassL[0].setfeedback(0.5f);
         allpassL[1].setfeedback(0.5f);
         allpassL[2].setfeedback(0.5f);
         allpassL[3].setfeedback(0.5f);
+        allpassL[4].setfeedback(0.5f);
+        allpassL[5].setfeedback(0.5f);
+        
         setwet(initialwet);
         setroomsize(initialroom);
         setdry(initialdry);
@@ -109,19 +87,12 @@ public:
         mute();
     }
     
-    
     void mute()
     {
-		
-        
-        for (int i=0;i<numcombs;i++)
-        {
+        for (int i=0;i<plate_numcombs;i++)
             combL[i].mute();
-        }
-        for (int i=0;i<numallpasses;i++)
-        {
+        for (int i=0;i<plate_numallpasses1+plate_numallpasses2;i++)
             allpassL[i].mute();
-        }
     }
     
     
@@ -129,46 +100,33 @@ public:
     void setroomsize(float value)
     {
         roomsize = (value*scaleroom) + offsetroom;
-        for(int i=0; i<numcombs; i++)
-        {
+        for(int i=0; i<plate_numcombs; i++)
             combL[i].setfeedback(roomsize);
-            
-        }
     }
-    
-    
     
     void setdamp(float value)
     {
         damp = value*scaledamp;
-        for(int i=0; i<numcombs; i++)
-        {
+        for(int i=0; i<plate_numcombs; i++)
             combL[i].setdamp(damp);
-        }
     }
-    
-	
     
     void setwet(float value)
     {
         wet = value*scalewet;
     }
-    
-	
+
     
     void setdry(float value)
     {
         dry = value*scaledry;
     }
+
     
-	
-    
-    void	update()
-    {
+    void	update() {
         // Recalculate internal values after parameter change
         //    int i;
     }
-    
     
     float	gain;
     float	roomsize;
@@ -182,27 +140,27 @@ public:
     // with its subsequent error-checking messiness
     
     // Comb filters
-    comb	combL[numcombs];
+    comb	combL[plate_numcombs];
     
     // Allpass filters
-    allpass	allpassL[numallpasses];
+    allpass	allpassL[plate_numallpasses1+plate_numallpasses2];
     
     // Buffers for the combs
-    float	bufcombL1[combtuningL1];
-    float	bufcombL2[combtuningL2];
-    float	bufcombL3[combtuningL3];
-    float	bufcombL4[combtuningL4];
-    float	bufcombL5[combtuningL5];
-    float	bufcombL6[combtuningL6];
-    float	bufcombL7[combtuningL7];
-    float	bufcombL8[combtuningL8];
+    float	bufcombL1[plate_combtuningL1];
+    float	bufcombL2[plate_combtuningL2];
+    float	bufcombL3[plate_combtuningL3];
+    float	bufcombL4[plate_combtuningL4];
+    float	bufcombL5[plate_combtuningL5];
+    float	bufcombL6[plate_combtuningL6];
+    
     
     // Buffers for the allpasses
-    float	bufallpassL1[allpasstuningL1];
-    float	bufallpassL2[allpasstuningL2];
-    float	bufallpassL3[allpasstuningL3];
-    float	bufallpassL4[allpasstuningL4];
-    
+    float	bufallpassL1[plate_allpasstuningL1];
+    float	bufallpassL2[plate_allpasstuningL2];
+    float	bufallpassL3[plate_allpasstuningL3];
+    float	bufallpassL4[plate_allpasstuningL4];
+    float	bufallpassL5[plate_allpasstuningL5];
+    float	bufallpassL6[plate_allpasstuningL6];
     
     void processAudio(AudioBuffer& buffer){
         float _mix = getParameterValue(PARAMETER_A);
@@ -221,18 +179,18 @@ public:
         {
             outL = 0;
             input = (*inputL) * gain;
+            
+            // Feed through allpasses in series
+            for(int i=0; i<plate_numallpasses1; i++)
+                outL = allpassL[i].process(outL);
 			
             // Accumulate comb filters in parallel
-            for(int i=0; i<numcombs; i++)
-            {
+            for(int i=0; i<plate_numcombs; i++)
                 outL += combL[i].process(input);
-            }
 			
             // Feed through allpasses in series
-            for(int i=0; i<numallpasses; i++)
-            {
-                outL = allpassL[i].process(outL);
-            }
+            for(int i=0; i<plate_numallpasses2; i++)
+                outL = allpassL[plate_numallpasses1+i].process(outL);
 			
             // Calculate output MIXING with anything already there
             *inputL = outL*wet + *inputL*dry;
