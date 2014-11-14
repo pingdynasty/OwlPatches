@@ -37,8 +37,9 @@ class SimpleDelayPatch : public Patch {
 private:
   CircularBuffer delayBuffer;
   int delay;
+  float alpha, dryWet;
 public:
-  SimpleDelayPatch() : delay(0)
+  SimpleDelayPatch() : delay(0), alpha(0.04), dryWet(0.f)
   {
     registerParameter(PARAMETER_A, "Delay");
     registerParameter(PARAMETER_B, "Feedback");
@@ -49,20 +50,20 @@ public:
   }
   void processAudio(AudioBuffer &buffer)
   {
-    float delayTime, feedback, dryWet;
-    delayTime = getParameterValue(PARAMETER_A);
+    float delayTime, feedback, dly;
+    delayTime = 0.05+0.95*getParameterValue(PARAMETER_A);
     feedback  = getParameterValue(PARAMETER_B);
-    dryWet    = getParameterValue(PARAMETER_D);
-    
     int32_t newDelay;
-    newDelay = delayTime * (delayBuffer.getSize()-1);
+    newDelay = alpha*delayTime*(delayBuffer.getSize()-1) + (1-alpha)*delay; // Smoothing
+    dryWet = alpha*getParameterValue(PARAMETER_D) + (1-alpha)*dryWet;       // Smoothing
       
     float* x = buffer.getSamples(0);
     int size = buffer.getSize();
     for (int n = 0; n < size; n++)
     {
-      x[n] = (delayBuffer.read(delay)*(size-1-n) + delayBuffer.read(newDelay)*n)*dryWet/size + (1.f - 0.75*dryWet) * x[n];  // crossfade for wet/dry balance
-      delayBuffer.write(feedback * x[n]);
+      dly = (delayBuffer.read(delay)*(size-1-n) + delayBuffer.read(newDelay)*n)/size;
+      delayBuffer.write(feedback * dly + x[n]);
+      x[n] = dly*dryWet + (1.f - dryWet) * x[n];  // dry/wet
     }
     delay=newDelay;
   }
