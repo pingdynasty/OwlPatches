@@ -73,7 +73,7 @@ public:
         if ( v < 0.f ) v = 0.f;
         if ( v > 1.f ) v = 1.f;
         
-        v = (v * 0.4) + 0.4; //scaling 'crush' value for OWL pedal
+        v = (v * 0.4) + 0.4; //scaling 'crush' value
         
         m = 1 + (1 << ((int) (((1-v)*15))) );
         
