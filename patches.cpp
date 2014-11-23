@@ -13,12 +13,12 @@ REGISTER_PATCH(DroneBoxPatch, "OL/DroneBox", 2, 2);
 REGISTER_PATCH(FreeVerbPatch, "FreeVerb", 1, 1);
 
 REGISTER_PATCH(BlipperPatch, "OL/Blipper", 2, 2);
-REGISTER_PATCH(DualFreqShifterPatch, "OL/DualFreqShifter", 2, 2);
-REGISTER_PATCH(StereoFreqShifterPatch, "OL/StereoFreqShifter", 2, 2);
-REGISTER_PATCH(DualPitchShifterPatch, "OL/DualPitchShifter", 2, 2);
-REGISTER_PATCH(ThruZeroFlangerPatch, "OL/ThruZeroFlanger", 2, 2);
-//REGISTER_PATCH(WeirdPhaserPatch, "OL/WeirdPhaser", 2, 2);
-REGISTER_PATCH(XFMPatch, "OL/XFMOsc", 2, 2);
+REGISTER_PATCH(DualFreqShifterPatch, "OL/Dual Frequency Shifter", 2, 2);
+REGISTER_PATCH(StereoFreqShifterPatch, "OL/Stereo Frequency Shifter", 2, 2);
+REGISTER_PATCH(DualPitchShifterPatch, "OL/Dual Pitch Shifter", 2, 2);
+REGISTER_PATCH(ThruZeroFlangerPatch, "OL/Thru Zero Flanger", 2, 2);
+//REGISTER_PATCH(WeirdPhaserPatch, "OL/Weird Phaser", 2, 2);
+REGISTER_PATCH(XFMPatch, "OL/XFM Oscillator", 2, 2);
 
 REGISTER_PATCH(SimpleDelayPatch, "Simple Delay", 1, 1);
 REGISTER_PATCH(GainPatch, "Gain", 2, 2);
