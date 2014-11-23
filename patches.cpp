@@ -18,7 +18,7 @@ REGISTER_PATCH(StereoFreqShifterPatch, "OL/StereoFreqShifter", 2, 2);
 REGISTER_PATCH(DualPitchShifterPatch, "OL/DualPitchShifter", 2, 2);
 REGISTER_PATCH(ThruZeroFlangerPatch, "OL/ThruZeroFlanger", 2, 2);
 //REGISTER_PATCH(WeirdPhaserPatch, "OL/WeirdPhaser", 2, 2);
-REGISTER_PATCH(XFMPatch, "OL/XFMPatch", 2, 2);
+REGISTER_PATCH(XFMPatch, "OL/XFMOsc", 2, 2);
 
 REGISTER_PATCH(SimpleDelayPatch, "Simple Delay", 1, 1);
 REGISTER_PATCH(GainPatch, "Gain", 2, 2);
