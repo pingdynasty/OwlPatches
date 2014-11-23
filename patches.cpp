@@ -7,16 +7,17 @@
  The first two registered patches are the default green and red patches in compiled the firmware.
 */
 
-REGISTER_PATCH(DroneBoxSPatch, "OL/DroneBox", 2, 2);
+REGISTER_PATCH(DroneBoxPatch, "OL/DroneBox", 2, 2);
 //REGISTER_PATCH(DroneBoxPatch, "Contest/DroneBox", 1, 1);
 //REGISTER_PATCH(PatchSelectorPatch, "Patch Selector", 0, 0);
 REGISTER_PATCH(FreeVerbPatch, "FreeVerb", 1, 1);
 
 REGISTER_PATCH(BlipperPatch, "OL/Blipper", 2, 2);
 REGISTER_PATCH(DualFreqShifterPatch, "OL/DualFreqShifter", 2, 2);
+REGISTER_PATCH(StereoFreqShifterPatch, "OL/StereoFreqShifter", 2, 2);
 REGISTER_PATCH(DualPitchShifterPatch, "OL/DualPitchShifter", 2, 2);
 REGISTER_PATCH(ThruZeroFlangerPatch, "OL/ThruZeroFlanger", 2, 2);
-REGISTER_PATCH(WeirdPhaserPatch, "OL/WeirdPhaser", 2, 2);
+//REGISTER_PATCH(WeirdPhaserPatch, "OL/WeirdPhaser", 2, 2);
 REGISTER_PATCH(XFMPatch, "OL/XFMPatch", 2, 2);
 
 REGISTER_PATCH(SimpleDelayPatch, "Simple Delay", 1, 1);
