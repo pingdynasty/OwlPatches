@@ -4,7 +4,7 @@
 #include "OliLarkin/DualFreqShifterPatch.hpp"
 #include "OliLarkin/DualPitchShifterPatch.hpp"
 #include "OliLarkin/ThruZeroFlangerPatch.hpp"
-//#include "OliLarkin/WeirdPhaserPatch.hpp"
+#include "OliLarkin/WeirdPhaserPatch.hpp"
 #include "OliLarkin/XFMPatch.hpp"
 
 #include "GainPatch.hpp"

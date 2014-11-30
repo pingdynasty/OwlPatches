@@ -17,7 +17,7 @@ REGISTER_PATCH(DualFreqShifterPatch, "OL/Dual Frequency Shifter", 2, 2);
 REGISTER_PATCH(StereoFreqShifterPatch, "OL/Stereo Frequency Shifter", 2, 2);
 REGISTER_PATCH(DualPitchShifterPatch, "OL/Dual Pitch Shifter", 2, 2);
 REGISTER_PATCH(ThruZeroFlangerPatch, "OL/Thru Zero Flanger", 2, 2);
-//REGISTER_PATCH(WeirdPhaserPatch, "OL/Weird Phaser", 2, 2);
+REGISTER_PATCH(WeirdPhaserPatch, "OL/Weird Phaser", 2, 2);
 REGISTER_PATCH(XFMPatch, "OL/XFM Oscillator", 2, 2);
 
 REGISTER_PATCH(SimpleDelayPatch, "Simple Delay", 1, 1);
