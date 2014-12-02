@@ -7,7 +7,7 @@
  The first two registered patches are the default green and red patches in compiled the firmware.
 */
 
-REGISTER_PATCH(DroneBoxPatch, "OL/DroneBox", 2, 2);
+REGISTER_PATCH(DroneBoxSPatch, "OL/DroneBox", 2, 2);
 //REGISTER_PATCH(DroneBoxPatch, "Contest/DroneBox", 1, 1);
 //REGISTER_PATCH(PatchSelectorPatch, "Patch Selector", 0, 0);
 REGISTER_PATCH(FreeVerbPatch, "FreeVerb", 1, 1);
