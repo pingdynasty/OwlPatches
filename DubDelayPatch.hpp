@@ -72,15 +72,15 @@ public:
     }
     void processAudio(AudioBuffer &buffer) {
         fs = getSampleRate();
-        float delayTime, feedback, tone, wet;
+        float delayTime, feedback, tone, wet, _delayTime;
 
-        delayTime = getParameterValue(PARAMETER_A);
+        _delayTime = getParameterValue(PARAMETER_A);
         feedback = 2*getParameterValue(PARAMETER_B);
         tone = getParameterValue(PARAMETER_C);
         wet = getParameterValue(PARAMETER_D);
         tf.setTone(tone);
 
-        
+        delayTime = 0.01*_delayTime + 0.99*delayTime;
         float* buf = buffer.getSamples(0);
         for (int i = 0 ; i < buffer.getSize(); i++) {
             buf[i] = dist(buf[i]*2);

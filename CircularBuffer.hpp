@@ -53,6 +53,14 @@ public:
   inline float read(int index){
     return buffer[(writeIndex + (~index)) & (size-1)];
   }
+  inline float readInterp(float index){
+      // Perform Linear Interpolation
+      int p = floor(index);
+      float sw = index-p;
+      float s1 = buffer[(writeIndex + (~p)) & (size-1)];
+      float s2 = buffer[(writeIndex + (~(p+1))) & (size-1)];
+    return (s1*(1-sw) + s2*sw);
+  }
   inline float head(){
     return buffer[(writeIndex - 1) & (size-1)];
   }
