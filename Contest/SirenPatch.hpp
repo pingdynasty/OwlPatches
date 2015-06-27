@@ -18,17 +18,17 @@
 //
 //*****************************************************************************
 
-#ifndef __SirenPatch_hpp__
-#define __SirenPatch_hpp__
+#ifndef __OriginalSirenPatch_hpp__
+#define __OriginalSirenPatch_hpp__
 
 #include <math.h>       /* fabs, floor, etc... */
 #include "StompBox.h"
 
 const float MY_FLOAT_THRESHOLD = 0.00001; // under this value all numbers are set to 0 (gives a -100dB SNR)
-static const int Nchannels = 32;                    // number of internal channels
-const int primes[Nchannels] = {503,577,641,701,769,839,911,983,1049,1109,1193,1277,1321,1429,1487,1559,1619,1699,1783,1871,1949,2017,2089,2161,2267,2339,2393,2473,2579,2663,2713,2791}; // prime numbers for ReverbFDN delay lines
-static const float Nchannels_SQRT = 5.65685425;            // sqrt of number of channels
-const int sirenDelayBufferSize = 51754; // total sum of prime numbers
+
+
+
+
 
 /*********************************************************
  * Class Sawtooth
@@ -187,10 +187,6 @@ public:
     {
         this->_mode=mode;
     }
-
-  void setBuffer(AudioBuffer* buffer){
-    freqHzBuffer = buffer->getSamples(0);
-  }    
     
 private:
     // PARAMETERS
@@ -204,7 +200,7 @@ private:
     Sawtooth _sawtooth_fm;
     DCcutFilter _DCcutFilter1;
     DCcutFilter _DCcutFilter2;
-    float* freqHzBuffer;
+    
 };
 
 FMSynth::FMSynth(float f0, float fm, float fs) : _sawtooth_f0(f0,fs,0.5) , _sawtooth_fm(fm,fs)
@@ -216,9 +212,11 @@ FMSynth::FMSynth(float f0, float fm, float fs) : _sawtooth_f0(f0,fs,0.5) , _sawt
 }
 
 void FMSynth::processReplacing(float *outputBuffer, int bufferSize)
-{    
+{
+    float freqHzBuffer[bufferSize]; // buffer to store modulation frequency
+    
     // compute modulation frequency (LFO)
-    this->_sawtooth_fm.processReplacing(freqHzBuffer, bufferSize);
+    this->_sawtooth_fm.processReplacing(freqHzBuffer,bufferSize);
     
     // REPLACE SAWTOOTH LFO BY A SINUSOIDAL LFO
     for (int i_samp=0; i_samp<bufferSize; i_samp++)
@@ -273,7 +271,7 @@ class DelayLine
 {    
 public:
     DelayLine(); // the default constructor builds a DelayLine of size=1 sample
-  DelayLine(int size, float* buffer);
+    DelayLine(int size);
     
     // process_tick : feed the delay line with one input sample
     float process_tick(float input);
@@ -294,12 +292,11 @@ DelayLine::DelayLine()
     this->_indRead = 0;
     this->_size = 1; // set size to 1 (no delay)
     this->_indWrite = 0;
-    static float noDelayBuffer[1];
-    this->_circbuffer = noDelayBuffer; // delay line of size 1 (no delay)
+    this->_circbuffer = new float[1]; // delay line of size 1 (no delay)
     this->_circbuffer[0] = 0.; // set the unique circbuffer sample to 0.
 }
 
-DelayLine::DelayLine(int size, float* buffer)
+DelayLine::DelayLine(int size)
 {
     this->_indRead = 0;
     
@@ -313,7 +310,7 @@ DelayLine::DelayLine(int size, float* buffer)
         this->_size = size;
     }
     this->_indWrite = this->_size-1;
-    this->_circbuffer = buffer;
+    this->_circbuffer = new float[this->_size];
     memset(this->_circbuffer,0,this->_size*sizeof(float)); // set the circbuffer samples to 0.
 }
 
@@ -370,9 +367,9 @@ public:
         else
         {
             // set feedback gains appropriately
-            for (int i_chan=0; i_chan<Nchannels; i_chan++)
+            for (int i_chan=0; i_chan<this->Nchannels; i_chan++)
             {
-                this->_feedbackGains[i_chan] = 1./Nchannels_SQRT * pow(10., -3. * primes[i_chan] / (tr60*this->_fs));
+                this->_feedbackGains[i_chan] = 1./this->Nchannels_SQRT * fastpowf(10., -3. * this->primes[i_chan] / (tr60*this->_fs));
             }
         }
     }
@@ -389,18 +386,7 @@ public:
     
     // process method for ReverbFDN
     void processReplacing(float *inputBuffer, float *outputBuffer, int bufferSize);
-
-  void setBuffer(AudioBuffer* buffer){
-    // init of the Nchannels delay lines
-    float* delayBuffer = buffer->getSamples(0);
-    for (int i_chan=0; i_chan<Nchannels; i_chan++)
-    {
-      this->_delayLines[i_chan] = DelayLine(primes[i_chan], delayBuffer);
-      this->_dl[i_chan] = 0.;
-      delayBuffer += primes[i_chan];
-    }
-  }
-
+    
 private:
     // PARAMETERS
     float _fs;      // sampling frequency
@@ -408,7 +394,10 @@ private:
     float _drywet;  // dry/wet balance (0<->100% wet ; 1<->100% dry)
     
     // INTERNAL THINGS
-    static const int Nchannels_log2 = 5;                       // log2 of number of channels (for hadamard)
+    static const int Nchannels = 32;                    // number of internal channels
+    const int Nchannels_log2 = 5;                       // log2 of number of channels (for hadamard)
+    const float Nchannels_SQRT = 5.65685425;            // sqrt of number of channels
+    const int primes[Nchannels] = {503,577,641,701,769,839,911,983,1049,1109,1193,1277,1321,1429,1487,1559,1619,1699,1783,1871,1949,2017,2089,2161,2267,2339,2393,2473,2579,2663,2713,2791}; // prime numbers for ReverbFDN delay lines
     DelayLine _delayLines[Nchannels];    // Nchannels delay lines
     float _dl[Nchannels];                // outputs of delay lines
     float _feedbackGains[Nchannels];     // feedback gains of delay lines
@@ -420,6 +409,13 @@ ReverbFDN::ReverbFDN(float fs, float tr60, float drywet)
     this->_fs = fs;
     this->setDryWet(drywet);
     this->setTR60(tr60);
+    
+    // init of the Nchannels delay lines
+    for (int i_chan=0; i_chan<this->Nchannels; i_chan++)
+    {
+        this->_delayLines[i_chan] = DelayLine(this->primes[i_chan]);
+        this->_dl[i_chan] = 0.;
+    }
 }
 
 void ReverbFDN::processReplacing(float *inputBuffer, float *outputBuffer, int bufferSize)
@@ -436,20 +432,20 @@ void ReverbFDN::processReplacing(float *inputBuffer, float *outputBuffer, int bu
         outputBuffer[i_samp] = 0.;
         
         // get outputs from all delay lines and sum to the mono output
-        for (int i_delayLine = 0 ; i_delayLine<Nchannels ; i_delayLine++)
+        for (int i_delayLine = 0 ; i_delayLine<this->Nchannels ; i_delayLine++)
         {
             this->_dl[i_delayLine] = this->_delayLines[i_delayLine].process_tick(this->_feedbackGains[i_delayLine]*(this->_dl[i_delayLine]+input));
             outputBuffer[i_samp] += this->_dl[i_delayLine];
         }
         
         // divide by Nchannels_SQRT to rescale the sum and apply dry/wet balance
-        outputBuffer[i_samp] *= (1-this->_drywet)/Nchannels_SQRT;
+        outputBuffer[i_samp] *= (1-this->_drywet)/this->Nchannels_SQRT;
         outputBuffer[i_samp] += input * this->_drywet;
         
         // hadamard matrixing and feedback loop (replacing delayLines inputs)
-        for (int i=0 ; i < Nchannels_log2 ; ++i)
+        for (int i=0 ; i < this->Nchannels_log2 ; ++i)
         {
-            for (int j=0 ; j < (1 << Nchannels_log2) ; j += 1 << (i+1))
+            for (int j=0 ; j < (1 << this->Nchannels_log2) ; j += 1 << (i+1))
             {
                 temp1_long = (1<<i);
                 for (int k=0 ; k < temp1_long ; ++k)
@@ -511,10 +507,6 @@ public:
         this->_reverbFDN.setTR60(tr60);
     }
 
-  void setBuffers(AudioBuffer* freqHzBuffer, AudioBuffer* delayBuffer){
-    _FMSynth.setBuffer(freqHzBuffer);
-    _reverbFDN.setBuffer(delayBuffer);
-  }
 private:
     float _fs;
     FMSynth _FMSynth;
@@ -531,7 +523,7 @@ Siren::Siren(float fs) : _FMSynth(0., 0., fs) , _reverbFDN(fs, 0., 0.5)
 void Siren::processReplacing(float *outputBuffer, int bufferSize)
 {
     this->_FMSynth.processReplacing(outputBuffer, bufferSize);
-    this->_reverbFDN.processReplacing(outputBuffer, outputBuffer, bufferSize);
+    // this->_reverbFDN.processReplacing(outputBuffer, outputBuffer, bufferSize);
 }
 
 
@@ -546,20 +538,17 @@ void Siren::processReplacing(float *outputBuffer, int bufferSize)
  * Parameters :
  *      none
  **********************************************************/
-class SirenPatch : public Patch
+class OriginalSirenPatch : public Patch
 {    
 public:
-    SirenPatch() : _Siren(getSampleRate()) {
+    OriginalSirenPatch() : _Siren(getSampleRate()) {
       registerParameter(PARAMETER_A, "f0");
       registerParameter(PARAMETER_B, "fm");
       registerParameter(PARAMETER_C, "mode");
-      registerParameter(PARAMETER_D, "tr60");
-
-      this->_Siren.setBuffers(createMemoryBuffer(1, getBlockSize()), 
-			      createMemoryBuffer(1, sirenDelayBufferSize));
+      registerParameter(PARAMETER_D, "gain");
     }
     
-    void processAudio(AudioBuffer &buffer) 
+    void processAudio(AudioBuffer &buffer)
     {
         int bufferSize = buffer.getSize();
         
@@ -568,10 +557,13 @@ public:
         this->_Siren.setFm(this->getFm());
         this->_Siren.setFMSynthMode(this->getMode());
         this->_Siren.setTR60(this->getTR60());
-        
+	float gain = getParameterValue(PARAMETER_D);
+
         // process samples
         float* buf = buffer.getSamples(0);
-        this->_Siren.processReplacing(buf, bufferSize);        
+        this->_Siren.processReplacing(buf, bufferSize);
+	for(int i=0; i<bufferSize; ++i)
+	  buf[i] *= gain;        
     }
     
 private:
@@ -581,6 +573,7 @@ private:
     // param_A=[0;1] <-> f0=[0;500]
     float getF0()
     {
+        
         float f0 = 500 * getParameterValue(PARAMETER_A);
         return f0;
     }
