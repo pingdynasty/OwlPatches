@@ -153,10 +153,9 @@ float MoogLadder::nonLinear(float x){
 }
 
 void MoogLadder::process(int numSamples, float *buffer, float w0, float res, float drive, float masterGain){
-    int N = numSamples-1;
     float w0i;
     float resi;
-	float powBlock;
+    float powBlock;
     float masterGaini;
     float a,b,c,d,e,output;
 	
