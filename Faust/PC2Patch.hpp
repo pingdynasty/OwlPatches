@@ -1,4 +1,8 @@
 //-----------------------------------------------------
+// name: "Boss PC-2"
+// author: "Oli Larkin (contact@olilarkin.co.uk)"
+// copyright: "Oliver Larkin"
+// version: "0.1"
 //
 // Code generated with Faust 0.9.67 (http://faust.grame.fr)
 //-----------------------------------------------------
@@ -49,8 +53,8 @@ template <> 	 inline int faustpower<1>(int x)            { return x; }
  ************************************************************************
  ************************************************************************/
 
-#ifndef __StereoWahPatch_h__
-#define __StereoWahPatch_h__
+#ifndef __PC2Patch_h__
+#define __PC2Patch_h__
 
 #include "StompBox.h"
 #include <cstddef>
@@ -327,39 +331,43 @@ class OwlUI : public UI
 typedef long double quad;
 
 #ifndef FAUSTCLASS 
-#define FAUSTCLASS StereoWah
+#define FAUSTCLASS PC2
 #endif
 
-class StereoWah : public dsp {
+class PC2 : public dsp {
   private:
-	FAUSTFLOAT 	fslider0;
-	float 	fRec1[2];
+	int 	iVec0[2];
 	int 	iConst0;
 	float 	fConst1;
-	float 	fRec2[2];
 	float 	fConst2;
-	float 	fRec3[2];
-	float 	fRec0[3];
+	FAUSTFLOAT 	fslider0;
+	float 	fConst3;
+	float 	fRec1[2];
 	FAUSTFLOAT 	fslider1;
-	float 	fRec4[3];
+	float 	fRec0[2];
+	FAUSTFLOAT 	fslider2;
+	float 	fConst4;
+	float 	fConst5;
+	float 	fRec2[2];
+	FAUSTFLOAT 	fslider3;
+	float 	fConst6;
+	float 	fConst7;
+	float 	fRec3[2];
+	float 	fRec5[2];
+	float 	fVec1[2];
+	int 	IOTA;
+	float 	fVec2[4096];
+	float 	fConst8;
+	float 	fRec4[2];
+	float 	fConst9;
   public:
 	static void metadata(Meta* m) 	{ 
-		m->declare("effect.lib/name", "Faust Audio Effect Library");
-		m->declare("effect.lib/author", "Julius O. Smith (jos at ccrma.stanford.edu)");
-		m->declare("effect.lib/copyright", "Julius O. Smith III");
-		m->declare("effect.lib/version", "1.33");
-		m->declare("effect.lib/license", "STK-4.3");
-		m->declare("effect.lib/exciter_name", "Harmonic Exciter");
-		m->declare("effect.lib/exciter_author", "Priyanka Shekar (pshekar@ccrma.stanford.edu)");
-		m->declare("effect.lib/exciter_copyright", "Copyright (c) 2013 Priyanka Shekar");
-		m->declare("effect.lib/exciter_version", "1.0");
-		m->declare("effect.lib/exciter_license", "MIT License (MIT)");
-		m->declare("filter.lib/name", "Faust Filter Library");
-		m->declare("filter.lib/author", "Julius O. Smith (jos at ccrma.stanford.edu)");
-		m->declare("filter.lib/copyright", "Julius O. Smith III");
-		m->declare("filter.lib/version", "1.29");
-		m->declare("filter.lib/license", "STK-4.3");
-		m->declare("filter.lib/reference", "https://ccrma.stanford.edu/~jos/filters/");
+		m->declare("name", "Boss PC-2");
+		m->declare("description", "Boss PC-2 emulator");
+		m->declare("author", "Oli Larkin (contact@olilarkin.co.uk)");
+		m->declare("copyright", "Oliver Larkin");
+		m->declare("version", "0.1");
+		m->declare("licence", "GPL");
 		m->declare("music.lib/name", "Music Library");
 		m->declare("music.lib/author", "GRAME");
 		m->declare("music.lib/copyright", "GRAME");
@@ -370,6 +378,27 @@ class StereoWah : public dsp {
 		m->declare("math.lib/copyright", "GRAME");
 		m->declare("math.lib/version", "1.0");
 		m->declare("math.lib/license", "LGPL with exception");
+		m->declare("oscillator.lib/name", "Faust Oscillator Library");
+		m->declare("oscillator.lib/author", "Julius O. Smith (jos at ccrma.stanford.edu)");
+		m->declare("oscillator.lib/copyright", "Julius O. Smith III");
+		m->declare("oscillator.lib/version", "1.11");
+		m->declare("oscillator.lib/license", "STK-4.3");
+		m->declare("filter.lib/name", "Faust Filter Library");
+		m->declare("filter.lib/author", "Julius O. Smith (jos at ccrma.stanford.edu)");
+		m->declare("filter.lib/copyright", "Julius O. Smith III");
+		m->declare("filter.lib/version", "1.29");
+		m->declare("filter.lib/license", "STK-4.3");
+		m->declare("filter.lib/reference", "https://ccrma.stanford.edu/~jos/filters/");
+		m->declare("effect.lib/name", "Faust Audio Effect Library");
+		m->declare("effect.lib/author", "Julius O. Smith (jos at ccrma.stanford.edu)");
+		m->declare("effect.lib/copyright", "Julius O. Smith III");
+		m->declare("effect.lib/version", "1.33");
+		m->declare("effect.lib/license", "STK-4.3");
+		m->declare("effect.lib/exciter_name", "Harmonic Exciter");
+		m->declare("effect.lib/exciter_author", "Priyanka Shekar (pshekar@ccrma.stanford.edu)");
+		m->declare("effect.lib/exciter_copyright", "Copyright (c) 2013 Priyanka Shekar");
+		m->declare("effect.lib/exciter_version", "1.0");
+		m->declare("effect.lib/exciter_license", "MIT License (MIT)");
 	}
 
 	virtual int getNumInputs() 	{ return 2; }
@@ -378,38 +407,58 @@ class StereoWah : public dsp {
 	}
 	virtual void instanceInit(int samplingFreq) {
 		fSamplingFreq = samplingFreq;
-		fslider0 = 0.8f;
-		for (int i=0; i<2; i++) fRec1[i] = 0;
+		for (int i=0; i<2; i++) iVec0[i] = 0;
 		iConst0 = min(192000, max(1, fSamplingFreq));
-		fConst1 = (1413.7166941154069f / float(iConst0));
+		fConst1 = float(iConst0);
+		fConst2 = (1.0f / fConst1);
+		fslider0 = 2e+01f;
+		fConst3 = (1.0f / float(iConst0));
+		for (int i=0; i<2; i++) fRec1[i] = 0;
+		fslider1 = 1.0f;
+		for (int i=0; i<2; i++) fRec0[i] = 0;
+		fslider2 = 24.0f;
+		fConst4 = expf((0 - (2e+02f / float(iConst0))));
+		fConst5 = (1.0f - fConst4);
 		for (int i=0; i<2; i++) fRec2[i] = 0;
-		fConst2 = (2827.4333882308138f / float(iConst0));
+		fslider3 = 6e+01f;
+		fConst6 = expf((0 - (1e+02f / float(iConst0))));
+		fConst7 = (1.0f - fConst6);
 		for (int i=0; i<2; i++) fRec3[i] = 0;
-		for (int i=0; i<3; i++) fRec0[i] = 0;
-		fslider1 = 0.5f;
-		for (int i=0; i<3; i++) fRec4[i] = 0;
+		for (int i=0; i<2; i++) fRec5[i] = 0;
+		for (int i=0; i<2; i++) fVec1[i] = 0;
+		IOTA = 0;
+		for (int i=0; i<4096; i++) fVec2[i] = 0;
+		fConst8 = (0.5f * fConst1);
+		for (int i=0; i<2; i++) fRec4[i] = 0;
+		fConst9 = (1.76e+03f / float(iConst0));
 	}
 	virtual void init(int samplingFreq) {
 		classInit(samplingFreq);
 		instanceInit(samplingFreq);
 	}
 	virtual void buildUserInterface(UI* interface) {
-		interface->openVerticalBox("StereoWah");
-		interface->declare(&fslider1, "OWL", "PARAMETER_D");
-		interface->addHorizontalSlider("Dry/Wet", &fslider1, 0.5f, 0.0f, 1.0f, 0.01f);
-		interface->declare(&fslider0, "OWL", "PARAMETER_A");
-		interface->addHorizontalSlider("Wah", &fslider0, 0.8f, 0.0f, 1.0f, 0.01f);
+		interface->openVerticalBox("PC2");
+		interface->declare(&fslider1, "OWL", "PARAMETER_C");
+		interface->declare(&fslider1, "unit", "ms");
+		interface->addHorizontalSlider("Attack", &fslider1, 1.0f, 0.0f, 1e+03f, 1.0f);
+		interface->declare(&fslider3, "OWL", "PARAMETER_A");
+		interface->declare(&fslider3, "unit", "semitones");
+		interface->addHorizontalSlider("BasePitch", &fslider3, 6e+01f, 24.0f, 96.0f, 0.01f);
+		interface->declare(&fslider2, "OWL", "PARAMETER_B");
+		interface->declare(&fslider2, "unit", "semitones");
+		interface->addHorizontalSlider("PitchMod", &fslider2, 24.0f, -64.0f, 64.0f, 1.0f);
+		interface->declare(&fslider0, "OWL", "PARAMETER_D");
+		interface->declare(&fslider0, "unit", "ms");
+		interface->addHorizontalSlider("Release", &fslider0, 2e+01f, 0.0f, 1e+03f, 1.0f);
 		interface->closeBox();
 	}
 	virtual void compute (int count, FAUSTFLOAT** input, FAUSTFLOAT** output) {
-		float 	fSlow0 = float(fslider0);
-		float 	fSlow1 = (0.0001000000000000001f * powf(4.0f,fSlow0));
-		float 	fSlow2 = powf(2.0f,(2.3f * fSlow0));
-		float 	fSlow3 = (1 - (fConst1 * (fSlow2 / powf(2.0f,(1.0f + (2.0f * (1.0f - fSlow0)))))));
-		float 	fSlow4 = (0.0010000000000000009f * faustpower<2>(fSlow3));
-		float 	fSlow5 = (0.0010000000000000009f * (0 - (2.0f * (fSlow3 * cosf((fConst2 * fSlow2))))));
-		float 	fSlow6 = float(fslider1);
-		float 	fSlow7 = (1 - fSlow6);
+		float 	fSlow0 = expf((0 - (fConst3 / max(fConst2, (0.001f * float(fslider0))))));
+		float 	fSlow1 = (1.0f - fSlow0);
+		float 	fSlow2 = expf((0 - (fConst3 / max(fConst2, (0.001f * float(fslider1))))));
+		float 	fSlow3 = (1.0f - fSlow2);
+		float 	fSlow4 = (fConst5 * float(fslider2));
+		float 	fSlow5 = (fConst7 * float(fslider3));
 		FAUSTFLOAT* input0 = input[0];
 		FAUSTFLOAT* input1 = input[1];
 		FAUSTFLOAT* output0 = output[0];
@@ -417,19 +466,36 @@ class StereoWah : public dsp {
 		for (int i=0; i<count; i++) {
 			float fTemp0 = (float)input0[i];
 			float fTemp1 = (float)input1[i];
-			fRec1[0] = ((0.999f * fRec1[1]) + fSlow1);
-			fRec2[0] = (fSlow4 + (0.999f * fRec2[1]));
-			fRec3[0] = (fSlow5 + (0.999f * fRec3[1]));
-			fRec0[0] = (0 - (((fRec3[0] * fRec0[1]) + (fRec2[0] * fRec0[2])) - (fTemp0 * fRec1[0])));
-			output0[i] = (FAUSTFLOAT)((fSlow7 * fTemp0) + (fSlow6 * (fRec0[0] - fRec0[1])));
-			fRec4[0] = (0 - (((fRec3[0] * fRec4[1]) + (fRec2[0] * fRec4[2])) - (fTemp1 * fRec1[0])));
-			output1[i] = (FAUSTFLOAT)((fSlow7 * fTemp1) + (fSlow6 * (fRec4[0] - fRec4[1])));
+			float fTemp2 = fabsf(fTemp0);
+			iVec0[0] = 1;
+			fRec1[0] = ((fSlow0 * max(fTemp2, fRec1[1])) + (fSlow1 * fTemp2));
+			fRec0[0] = ((fSlow2 * fRec0[1]) + (fSlow3 * fRec1[0]));
+			fRec2[0] = ((fConst4 * fRec2[1]) + fSlow4);
+			fRec3[0] = ((fConst6 * fRec3[1]) + fSlow5);
+			float fTemp3 = powf(2.0f,(0.08333333333333333f * ((fRec3[0] + (fRec2[0] * fRec0[0])) - 69.0f)));
+			float fTemp4 = max((4.4e+02f * fTemp3), 23.44894968246214f);
+			float fTemp5 = float(fTemp4);
+			fRec5[0] = fmodf((fRec5[1] + (fConst2 * fTemp5)),1);
+			float fTemp6 = faustpower<2>(((2 * fRec5[0]) - 1));
+			fVec1[0] = fTemp6;
+			float fTemp7 = ((iVec0[1] * (fVec1[0] - fVec1[1])) / fTemp5);
+			fVec2[IOTA&4095] = fTemp7;
+			float fTemp8 = max((float)0, min((float)2047, (fConst8 / fTemp4)));
+			int iTemp9 = int(fTemp8);
+			int iTemp10 = (1 + iTemp9);
+			fRec4[0] = ((0.999f * fRec4[1]) + (fConst1 * (((0.25f * fVec2[IOTA&4095]) - (0.25f * (fVec2[(IOTA-iTemp9)&4095] * (iTemp10 - fTemp8)))) - (0.25f * ((fTemp8 - iTemp9) * fVec2[(IOTA-int(iTemp10))&4095])))));
+			output0[i] = (FAUSTFLOAT)(fConst9 * ((fRec0[0] * fRec4[0]) * fTemp3));
+			output1[i] = (FAUSTFLOAT)fTemp1;
 			// post processing
-			fRec4[2] = fRec4[1]; fRec4[1] = fRec4[0];
-			fRec0[2] = fRec0[1]; fRec0[1] = fRec0[0];
+			fRec4[1] = fRec4[0];
+			IOTA = IOTA+1;
+			fVec1[1] = fVec1[0];
+			fRec5[1] = fRec5[0];
 			fRec3[1] = fRec3[0];
 			fRec2[1] = fRec2[0];
+			fRec0[1] = fRec0[0];
 			fRec1[1] = fRec1[0];
+			iVec0[1] = iVec0[0];
 		}
 	}
 };
@@ -444,18 +510,18 @@ class StereoWah : public dsp {
 
 /**************************************************************************************
 
-	StereoWahPatch : an OWL patch that calls Faust generated DSP code
+	PC2Patch : an OWL patch that calls Faust generated DSP code
 	
 ***************************************************************************************/
 
-class StereoWahPatch : public Patch
+class PC2Patch : public Patch
 {
-    StereoWah   fDSP;
+    PC2   fDSP;
     OwlUI	fUI;
     
 public:
 
-    StereoWahPatch() : fUI(this)
+    PC2Patch() : fUI(this)
     {
         fDSP.init(int(getSampleRate()));		// Init Faust code with the OWL sampling rate
         fDSP.buildUserInterface(&fUI);			// Maps owl parameters and faust widgets 
@@ -490,7 +556,7 @@ public:
 
 };
 
-#endif // __StereoWahPatch_h__
+#endif // __PC2Patch_h__
 
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////

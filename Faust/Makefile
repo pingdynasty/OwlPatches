@@ -15,5 +15,5 @@ svg: $(SVG_OBJS)
 #	open $@/process.svg
 
 clean:
-	rm $(CPP_OBJS)
-	rm -r $(SVG_OBJS)
+	rm -f $(CPP_OBJS)
+	rm -r -f $(SVG_OBJS)

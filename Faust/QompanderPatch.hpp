@@ -58,12 +58,6 @@ template <> 	 inline int faustpower<1>(int x)            { return x; }
 #define __QompanderPatch_h__
 
 #include "StompBox.h"
-#include "owlcontrol.h"
-#include "ApplicationSettings.h"
-#include "CodecController.h"
-#include "PatchProcessor.h"
-#include "PatchController.h"
-#include "device.h"
 #include <cstddef>
 #include <string.h>
 #include <strings.h>
@@ -225,7 +219,7 @@ struct Meta
 class OwlWidget
 {
   protected:
-	PatchProcessor* 	fProcessor;		// needed to register and read owl parameters
+	Patch* 	fPatch;		// needed to register and read owl parameters
 	PatchParameterId	fParameter;		// OWL parameter code : PARAMETER_A,...
 	FAUSTFLOAT* 		fZone;			// Faust widget zone
 	const char*			fLabel;			// Faust widget label 
@@ -234,13 +228,13 @@ class OwlWidget
 	
   public:
 	OwlWidget() :
-		fProcessor(0), fParameter(PARAMETER_A), fZone(0), fLabel(""), fMin(0), fSpan(1) {}
+		fPatch(0), fParameter(PARAMETER_A), fZone(0), fLabel(""), fMin(0), fSpan(1) {}
 	OwlWidget(const OwlWidget& w) :
-		fProcessor(w.fProcessor), fParameter(w.fParameter), fZone(w.fZone), fLabel(w.fLabel), fMin(w.fMin), fSpan(w.fSpan) {}
-	OwlWidget(PatchProcessor* pp, PatchParameterId param, FAUSTFLOAT* z, const char* l, float lo, float hi) :
-		fProcessor(pp), fParameter(param), fZone(z), fLabel(l), fMin(lo), fSpan(hi-lo) {}
-	void bind() 	{ fProcessor->registerParameter(fParameter, fLabel); }
-	void update()	{ *fZone = fMin + fSpan*fProcessor->getParameterValue(fParameter); }
+		fPatch(w.fPatch), fParameter(w.fParameter), fZone(w.fZone), fLabel(w.fLabel), fMin(w.fMin), fSpan(w.fSpan) {}
+	OwlWidget(Patch* pp, PatchParameterId param, FAUSTFLOAT* z, const char* l, float lo, float hi) :
+		fPatch(pp), fParameter(param), fZone(z), fLabel(l), fMin(lo), fSpan(hi-lo) {}
+	void bind() 	{ fPatch->registerParameter(fParameter, fLabel); }
+	void update()	{ *fZone = fMin + fSpan*fPatch->getParameterValue(fParameter); }
 	
 };
 
@@ -256,11 +250,11 @@ class OwlWidget
 ***************************************************************************************/
 
 // The maximun number of mappings between owl parameters and faust widgets 
-#define MAXOWLWIDGETS 64
+#define MAXOWLWIDGETS 8
 
 class OwlUI : public UI
 {
-	PatchProcessor* 	fProcessor;
+	Patch* 	fPatch;
 	PatchParameterId	fParameter;					// current parameter ID, value PARAMETER_F means not set
 	int					fIndex;						// number of OwlWidgets collected so far
 	OwlWidget			fTable[MAXOWLWIDGETS];		// kind of static list of OwlWidgets
@@ -268,7 +262,7 @@ class OwlUI : public UI
 	// check if the widget is an Owl parameter and, if so, add the corresponding OwlWidget
 	void addOwlWidget(const char* label, FAUSTFLOAT* zone, FAUSTFLOAT lo, FAUSTFLOAT hi) {
 		if ((fParameter >= PARAMETER_A) && (fParameter <= PARAMETER_E) && (fIndex < MAXOWLWIDGETS)) {
-			fTable[fIndex] = OwlWidget(fProcessor, fParameter, zone, label, lo, hi);
+			fTable[fIndex] = OwlWidget(fPatch, fParameter, zone, label, lo, hi);
 			fTable[fIndex].bind();
 			fIndex++;
 		}
@@ -282,7 +276,7 @@ class OwlUI : public UI
 
  public:
 
-	OwlUI(PatchProcessor* pp) : fProcessor(pp), fParameter(PARAMETER_F), fIndex(0) {}
+	OwlUI(Patch* pp) : fPatch(pp), fParameter(PARAMETER_F), fIndex(0) {}
 	
 	virtual ~OwlUI() {}
 	
@@ -530,7 +524,7 @@ class QompanderPatch : public Patch
     
 public:
 
-    QompanderPatch() : fUI(patches.getCurrentPatchProcessor())
+    QompanderPatch() : fUI(this)
     {
         fDSP.init(int(getSampleRate()));		// Init Faust code with the OWL sampling rate
         fDSP.buildUserInterface(&fUI);			// Maps owl parameters and faust widgets 
