@@ -219,7 +219,7 @@ public:
     float* bufL = buffer.getSamples(0);
     float* bufR = buffer.getSamples(1);
     eqL.process(numSamples, bufL);
-    eqR.process(numSamples, bufL);
+    eqR.process(numSamples, bufR);
   }
     
 private:
