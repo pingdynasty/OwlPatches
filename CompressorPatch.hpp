@@ -28,7 +28,6 @@
 #define __CompressorPatch_hpp__
 
 #include "StompBox.h"
-#define REQUEST_BUFFER_SIZE 32768
 
 class CompressorPatch : public Patch {
 public:
