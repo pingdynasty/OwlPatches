@@ -31,7 +31,7 @@
 #include "StompBox.h"
 #include "CircularBuffer.hpp"
 
-#define REQUEST_BUFFER_SIZE 32768
+#define SIMPLE_DELAY_REQUEST_BUFFER_SIZE 1024*192
 
 class SimpleDelayPatch : public Patch {
 private:
@@ -45,7 +45,7 @@ public:
     registerParameter(PARAMETER_B, "Feedback");
     registerParameter(PARAMETER_C, "");
     registerParameter(PARAMETER_D, "Dry/Wet");
-    AudioBuffer* buffer = createMemoryBuffer(1, REQUEST_BUFFER_SIZE);
+    AudioBuffer* buffer = createMemoryBuffer(1, SIMPLE_DELAY_REQUEST_BUFFER_SIZE);
     delayBuffer.initialise(buffer->getSamples(0), buffer->getSize());
   }
   void processAudio(AudioBuffer &buffer)
