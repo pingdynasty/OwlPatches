@@ -4,7 +4,7 @@
 #include "StompBox.h"
 #include "CircularBuffer.hpp"
 
-#define REQUEST_BUFFER_SIZE 32768
+#define CHORUS_PATCH_REQUEST_BUFFER_SIZE 32768
 
 class ChorusPatch : public Patch {
 private:
@@ -25,7 +25,7 @@ public:
       registerParameter(PARAMETER_D, "VOICES");
       
     
-    AudioBuffer* buffer = createMemoryBuffer(1, REQUEST_BUFFER_SIZE);
+    AudioBuffer* buffer = createMemoryBuffer(1, CHORUS_PATCH_REQUEST_BUFFER_SIZE);
     delayBuffer.initialise(buffer->getSamples(0), buffer->getSize());
       angle = 0.f;
       maxDelay =  0.05 * delayBuffer.getSize();// 50ms, anything more and it will be a noticeable echo
