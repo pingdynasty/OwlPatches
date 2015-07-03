@@ -1,6 +1,6 @@
 
-#ifndef __reverbHeader_h__
-#define __reverbHeader_h__
+#ifndef __ReverbHeader_h__
+#define __ReverbHeader_h__
 
 
 class comb {
