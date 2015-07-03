@@ -531,7 +531,7 @@ Siren::Siren(float fs) : _FMSynth(0., 0., fs) , _reverbFDN(fs, 0., 0.5)
 void Siren::processReplacing(float *outputBuffer, int bufferSize)
 {
     this->_FMSynth.processReplacing(outputBuffer, bufferSize);
-    this->_reverbFDN.processReplacing(outputBuffer, outputBuffer, bufferSize);
+//    this->_reverbFDN.processReplacing(outputBuffer, outputBuffer, bufferSize);
 }
 
 
@@ -553,7 +553,7 @@ public:
       registerParameter(PARAMETER_A, "f0");
       registerParameter(PARAMETER_B, "fm");
       registerParameter(PARAMETER_C, "mode");
-      registerParameter(PARAMETER_D, "tr60");
+      registerParameter(PARAMETER_D, "gain");
 
       this->_Siren.setBuffers(createMemoryBuffer(1, getBlockSize()), 
 			      createMemoryBuffer(1, sirenDelayBufferSize));
@@ -567,11 +567,14 @@ public:
         this->_Siren.setF0(this->getF0());
         this->_Siren.setFm(this->getFm());
         this->_Siren.setFMSynthMode(this->getMode());
-        this->_Siren.setTR60(this->getTR60());
+        // this->_Siren.setTR60(this->getTR60());
+	float gain = getParameterValue(PARAMETER_D);
         
         // process samples
         float* buf = buffer.getSamples(0);
         this->_Siren.processReplacing(buf, bufferSize);        
+	for(int i=0; i<bufferSize; ++i)
+		buf[i] *= gain;
     }
     
 private:
