@@ -35,7 +35,7 @@
 #include "CircularBuffer.hpp"
 #include <math.h>
 
-#define REQUEST_BUFFER_SIZE 32768
+#define LPF_DELAY_PATCH_REQUEST_BUFFER_SIZE 32768
 
 class ToneBiquad {
 
@@ -109,7 +109,7 @@ public:
         registerParameter(PARAMETER_C, "Cutoff");
         registerParameter(PARAMETER_D, "Dry/Wet");
         registerParameter(PARAMETER_E, "Cutoff Modulation");
-        AudioBuffer* buffer = createMemoryBuffer(1, REQUEST_BUFFER_SIZE);
+        AudioBuffer* buffer = createMemoryBuffer(1, LPF_DELAY_PATCH_REQUEST_BUFFER_SIZE);
         delayBuffer.initialise(buffer->getSamples(0), buffer->getSize());
         filter.init();
         filter.setCoeffs(getParameterValue(PARAMETER_C), getSampleRate()); // Tone
