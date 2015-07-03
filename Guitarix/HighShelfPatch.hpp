@@ -1,20 +1,9 @@
 //-----------------------------------------------------
-// name: "Moog Filter"
-// license: "BSD"
 //
 // Code generated with Faust 0.9.67 (http://faust.grame.fr)
 //-----------------------------------------------------
 /* link with  */
 #include <math.h>
-#ifndef FAUSTPOWER
-#define FAUSTPOWER
-#include <cmath>
-template <int N> inline float faustpower(float x)          { return powf(x,N); } 
-template <int N> inline double faustpower(double x)        { return pow(x,N); }
-template <int N> inline int faustpower(int x)              { return faustpower<N/2>(x) * faustpower<N-N/2>(x); } 
-template <> 	 inline int faustpower<0>(int x)            { return 1; }
-template <> 	 inline int faustpower<1>(int x)            { return x; }
-#endif
 /************************************************************************
 
 	IMPORTANT NOTE : this file contains two clearly delimited sections :
@@ -51,8 +40,8 @@ template <> 	 inline int faustpower<1>(int x)            { return x; }
  ************************************************************************
  ************************************************************************/
 
-#ifndef __GuitarixMoogPatch_h__
-#define __GuitarixMoogPatch_h__
+#ifndef __HighShelfPatch_h__
+#define __HighShelfPatch_h__
 
 #include "StompBox.h"
 #include <cstddef>
@@ -329,51 +318,37 @@ class OwlUI : public UI
 typedef long double quad;
 
 #ifndef FAUSTCLASS 
-#define FAUSTCLASS GuitarixMoog
+#define FAUSTCLASS HighShelf
 #endif
 
-class GuitarixMoog : public dsp {
+class HighShelf : public dsp {
   private:
 	int 	iVec0[2];
-	FAUSTFLOAT 	fslider0;
+	int 	iConst0;
+	float 	fConst1;
+	float 	fConst2;
+	float 	fConst3;
+	float 	fConst4;
+	float 	fConst5;
+	float 	fConst6;
+	float 	fConst7;
+	float 	fConst8;
+	float 	fConst9;
 	float 	fRec1[2];
-	float 	fConst0;
-	float 	fRec6[2];
-	FAUSTFLOAT 	fslider1;
-	float 	fRec5[2];
-	float 	fRec4[2];
-	float 	fRec3[2];
-	float 	fRec2[2];
-	float 	fRec0[2];
-	float 	fRec11[2];
-	float 	fRec10[2];
-	float 	fRec9[2];
-	float 	fRec8[2];
-	float 	fRec7[2];
+	float 	fRec0[3];
+	float 	fConst10;
+	float 	fConst11;
+	float 	fConst12;
   public:
 	static void metadata(Meta* m) 	{ 
-		m->declare("id", "moog");
-		m->declare("name", "Moog Filter");
-		m->declare("category", "Tone control");
-		m->declare("license", "BSD");
-		m->declare("effect.lib/name", "Faust Audio Effect Library");
-		m->declare("effect.lib/author", "Julius O. Smith (jos at ccrma.stanford.edu)");
-		m->declare("effect.lib/copyright", "Julius O. Smith III");
-		m->declare("effect.lib/version", "1.33");
-		m->declare("effect.lib/license", "STK-4.3");
-		m->declare("effect.lib/exciter_name", "Harmonic Exciter");
-		m->declare("effect.lib/exciter_author", "Priyanka Shekar (pshekar@ccrma.stanford.edu)");
-		m->declare("effect.lib/exciter_copyright", "Copyright (c) 2013 Priyanka Shekar");
-		m->declare("effect.lib/exciter_version", "1.0");
-		m->declare("effect.lib/exciter_license", "MIT License (MIT)");
-		m->declare("filter.lib/name", "Faust Filter Library");
-		m->declare("filter.lib/author", "Julius O. Smith (jos at ccrma.stanford.edu)");
-		m->declare("filter.lib/copyright", "Julius O. Smith III");
-		m->declare("filter.lib/version", "1.29");
-		m->declare("filter.lib/license", "STK-4.3");
-		m->declare("filter.lib/reference", "https://ccrma.stanford.edu/~jos/filters/");
-		m->declare("music.lib/name", "Music Library");
+		m->declare("id", "HighShelf");
+		m->declare("maxmsp.lib/name", "MaxMSP compatibility Library");
+		m->declare("maxmsp.lib/author", "GRAME");
+		m->declare("maxmsp.lib/copyright", "GRAME");
+		m->declare("maxmsp.lib/version", "1.1");
+		m->declare("maxmsp.lib/license", "LGPL");
 		m->declare("music.lib/author", "GRAME");
+		m->declare("music.lib/name", "Music Library");
 		m->declare("music.lib/copyright", "GRAME");
 		m->declare("music.lib/version", "1.0");
 		m->declare("music.lib/license", "LGPL with exception");
@@ -382,85 +357,56 @@ class GuitarixMoog : public dsp {
 		m->declare("math.lib/copyright", "GRAME");
 		m->declare("math.lib/version", "1.0");
 		m->declare("math.lib/license", "LGPL with exception");
+		m->declare("filter.lib/name", "Faust Filter Library");
+		m->declare("filter.lib/author", "Julius O. Smith (jos at ccrma.stanford.edu)");
+		m->declare("filter.lib/copyright", "Julius O. Smith III");
+		m->declare("filter.lib/version", "1.29");
+		m->declare("filter.lib/license", "STK-4.3");
+		m->declare("filter.lib/reference", "https://ccrma.stanford.edu/~jos/filters/");
 	}
 
-	virtual int getNumInputs() 	{ return 2; }
-	virtual int getNumOutputs() 	{ return 2; }
+	virtual int getNumInputs() 	{ return 1; }
+	virtual int getNumOutputs() 	{ return 1; }
 	static void classInit(int samplingFreq) {
 	}
 	virtual void instanceInit(int samplingFreq) {
 		fSamplingFreq = samplingFreq;
 		for (int i=0; i<2; i++) iVec0[i] = 0;
-		fslider0 = 3e+03f;
+		iConst0 = min(192000, max(1, fSamplingFreq));
+		fConst1 = (6.283185307179586f * (max((float)0, ((0.5f * iConst0) - 1e+02f)) / float(iConst0)));
+		fConst2 = cosf(fConst1);
+		fConst3 = (1.316227766016838f * fConst2);
+		fConst4 = (2 * (0 - (0.683772233983162f + fConst3)));
+		fConst5 = (0.005623413251903491f * sinf(fConst1));
+		fConst6 = (0.683772233983162f * fConst2);
+		fConst7 = ((1.316227766016838f + fConst6) - fConst5);
+		fConst8 = (fConst6 + fConst5);
+		fConst9 = (1.0f / (1.316227766016838f + fConst8));
 		for (int i=0; i<2; i++) fRec1[i] = 0;
-		fConst0 = (6.283185307179586f / float(min(192000, max(1, fSamplingFreq))));
-		for (int i=0; i<2; i++) fRec6[i] = 0;
-		fslider1 = 1.0f;
-		for (int i=0; i<2; i++) fRec5[i] = 0;
-		for (int i=0; i<2; i++) fRec4[i] = 0;
-		for (int i=0; i<2; i++) fRec3[i] = 0;
-		for (int i=0; i<2; i++) fRec2[i] = 0;
-		for (int i=0; i<2; i++) fRec0[i] = 0;
-		for (int i=0; i<2; i++) fRec11[i] = 0;
-		for (int i=0; i<2; i++) fRec10[i] = 0;
-		for (int i=0; i<2; i++) fRec9[i] = 0;
-		for (int i=0; i<2; i++) fRec8[i] = 0;
-		for (int i=0; i<2; i++) fRec7[i] = 0;
+		for (int i=0; i<3; i++) fRec0[i] = 0;
+		fConst10 = (0.31622776601683794f * (1.316227766016838f - fConst8));
+		fConst11 = (0.31622776601683794f * ((1.316227766016838f + fConst5) - fConst6));
+		fConst12 = (0 - (0.6324555320336759f * (fConst3 - 0.683772233983162f)));
 	}
 	virtual void init(int samplingFreq) {
 		classInit(samplingFreq);
 		instanceInit(samplingFreq);
 	}
 	virtual void buildUserInterface(UI* interface) {
-		interface->openVerticalBox("GuitarixMoog");
-		interface->declare(&fslider0, "OWL", "PARAMETER_A");
-		interface->declare(&fslider0, "style", "knob");
-		interface->addHorizontalSlider("Freq", &fslider0, 3e+03f, 4.4e+02f, 6e+03f, 1e+01f);
-		interface->declare(&fslider1, "OWL", "PARAMETER_B");
-		interface->declare(&fslider1, "style", "knob");
-		interface->addHorizontalSlider("Q", &fslider1, 1.0f, 0.0f, 4.0f, 0.1f);
+		interface->openVerticalBox("HighShelf");
 		interface->closeBox();
 	}
 	virtual void compute (int count, FAUSTFLOAT** input, FAUSTFLOAT** output) {
-		float 	fSlow0 = (0.0010000000000000009f * float(fslider0));
-		float 	fSlow1 = (0 - float(fslider1));
 		FAUSTFLOAT* input0 = input[0];
-		FAUSTFLOAT* input1 = input[1];
 		FAUSTFLOAT* output0 = output[0];
-		FAUSTFLOAT* output1 = output[1];
 		for (int i=0; i<count; i++) {
 			float fTemp0 = (float)input0[i];
-			float fTemp1 = (float)input1[i];
 			iVec0[0] = 1;
-			fRec1[0] = (fSlow0 + (0.999f * fRec1[1]));
-			float fTemp2 = (fConst0 * fRec1[0]);
-			float fTemp3 = faustpower<4>(fTemp2);
-			float fTemp4 = (1.0f - fTemp2);
-			fRec6[0] = ((1e-20f * (1 - iVec0[1])) - fRec6[1]);
-			fRec5[0] = ((fSlow1 * fRec0[1]) + ((fTemp0 + fRec6[0]) + (fTemp4 * fRec5[1])));
-			fRec4[0] = (fRec5[0] + (fTemp4 * fRec4[1]));
-			fRec3[0] = (fRec4[0] + (fTemp4 * fRec3[1]));
-			fRec2[0] = (fRec3[0] + (fRec2[1] * fTemp4));
-			fRec0[0] = (fRec2[0] * fTemp3);
-			output0[i] = (FAUSTFLOAT)fRec0[0];
-			fRec11[0] = ((fSlow1 * fRec7[1]) + ((fTemp1 + fRec6[0]) + (fTemp4 * fRec11[1])));
-			fRec10[0] = (fRec11[0] + (fTemp4 * fRec10[1]));
-			fRec9[0] = (fRec10[0] + (fTemp4 * fRec9[1]));
-			fRec8[0] = (fRec9[0] + (fTemp4 * fRec8[1]));
-			fRec7[0] = (fRec8[0] * fTemp3);
-			output1[i] = (FAUSTFLOAT)fRec7[0];
+			fRec1[0] = ((1e-20f * (1 - iVec0[1])) - fRec1[1]);
+			fRec0[0] = ((fTemp0 + fRec1[0]) - (fConst9 * ((fConst7 * fRec0[2]) + (fConst4 * fRec0[1]))));
+			output0[i] = (FAUSTFLOAT)(fConst9 * (((fConst12 * fRec0[1]) + (fConst11 * fRec0[0])) + (fConst10 * fRec0[2])));
 			// post processing
-			fRec7[1] = fRec7[0];
-			fRec8[1] = fRec8[0];
-			fRec9[1] = fRec9[0];
-			fRec10[1] = fRec10[0];
-			fRec11[1] = fRec11[0];
-			fRec0[1] = fRec0[0];
-			fRec2[1] = fRec2[0];
-			fRec3[1] = fRec3[0];
-			fRec4[1] = fRec4[0];
-			fRec5[1] = fRec5[0];
-			fRec6[1] = fRec6[0];
+			fRec0[2] = fRec0[1]; fRec0[1] = fRec0[0];
 			fRec1[1] = fRec1[0];
 			iVec0[1] = iVec0[0];
 		}
@@ -477,18 +423,18 @@ class GuitarixMoog : public dsp {
 
 /**************************************************************************************
 
-	GuitarixMoogPatch : an OWL patch that calls Faust generated DSP code
+	HighShelfPatch : an OWL patch that calls Faust generated DSP code
 	
 ***************************************************************************************/
 
-class GuitarixMoogPatch : public Patch
+class HighShelfPatch : public Patch
 {
-    GuitarixMoog   fDSP;
+    HighShelf   fDSP;
     OwlUI	fUI;
     
 public:
 
-    GuitarixMoogPatch() : fUI(this)
+    HighShelfPatch() : fUI(this)
     {
         fDSP.init(int(getSampleRate()));		// Init Faust code with the OWL sampling rate
         fDSP.buildUserInterface(&fUI);			// Maps owl parameters and faust widgets 
@@ -523,7 +469,7 @@ public:
 
 };
 
-#endif // __GuitarixMoogPatch_h__
+#endif // __HighShelfPatch_h__
 
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////
