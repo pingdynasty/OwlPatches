@@ -5,12 +5,13 @@
  * Implemented using CMSIS DSP Library
  * Each cascaded stage implements a second order filter
  */
+template<int STAGES>
 class BiquadFilter {
 private:
   arm_biquad_casd_df1_inst_f32 df1;
-  float* coefficients;
+  float coefficients[STAGES*5];
   /*
-   * The <code>pState</code> is a pointer to state array.   
+   * The <code>state</code> is a pointer to state array.   
    * Each Biquad stage has 4 state variables <code>x[n-1], x[n-2], y[n-1],</code> and <code>y[n-2]</code>.   
    * The state variables are arranged in the <code>pState</code> array as:   
    * <pre>   
@@ -20,24 +21,24 @@ private:
    * The state array has a total length of <code>4*stages</code> values.   
    * The state variables are updated after each block of data is processed; the coefficients are untouched.   
    */
-  float* state;
+  float state[STAGES*4];
 protected:
-  void init(int stages){
-    state = (float*)malloc(stages*4*sizeof(float));
-    coefficients = (float*)malloc(stages*5*sizeof(float));
+  void init(){
+    // state = (float*)malloc(stages*4*sizeof(float));
+    // coefficients = (float*)malloc(stages*5*sizeof(float));
     // note: init also clears the state buffer
-    arm_biquad_cascade_df1_init_f32(&df1, stages, coefficients, state);
+    arm_biquad_cascade_df1_init_f32(&df1, STAGES, coefficients, state);
   }
 public:
   BiquadFilter() {
-    init(1);
+    init();
   }
-  BiquadFilter(int stages) {
-    init(stages);
+  BiquadFilter() {
+    init();
   }
   ~BiquadFilter(){
-    free(state);
-    free(coefficients);
+    // free(state);
+    // free(coefficients);
   }
   /*
    * The coefficients are stored in the array <code>pCoeffs</code> in the following order:

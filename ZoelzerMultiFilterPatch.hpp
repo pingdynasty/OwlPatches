@@ -23,8 +23,8 @@ References : Udo Zoelzer: Digital Audio Signal Processing (John Wiley & Sons, IS
 
 class ZoelzerMultiFilterPatch : public Patch {
 private:
-  BiquadFilter previous;
-  BiquadFilter filter;
+  BiquadFilter<1> previous;
+  BiquadFilter<1> filter;
   float coeffs[5] = {0,0,0,0,0};
 public:
   ZoelzerMultiFilterPatch(){
