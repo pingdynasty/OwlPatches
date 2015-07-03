@@ -57,99 +57,92 @@ public:
     BiquadDF1() {}
     ~BiquadDF1() {}
     
-    void initStateVariables(){
-        x1=0.f;
-        x2=0.f;
-        y1=0.f;
-        y2=0.f;
-    }
+  void initStateVariables(){
+    x1=0.f;
+    x2=0.f;
+    y1=0.f;
+    y2=0.f;
+  }
     
-    // function used for PEQ, HSH, LSH
-    void setCoeffs(float normalizedFrequency, float Q, float dbGain){
-        
-        float alpha, c, omega, d, e, gamma, beta ;
-        
-        omega = 2*M_PI*normalizedFrequency ;
-        c = cosf(omega) ;
-        alpha = sinf(omega)/(2*Q);
-        d = powf(10,dbGain/40.f);
-        gamma = alpha*powf(10,fabsf(dbGain)/40.f);
-        e = powf(10,fabsf(dbGain)/20.f);
-        beta = 2*alpha*powf(e,0.5f);
-        
-        switch (fType)
-        {
-            case PEQ: // Parametric EQ
-                a[0]=1+gamma/d;
-                a[1]=-2*c/a[0];
-                a[2]=(1-gamma/d)/a[0];
-                b[0]=(1+gamma*d)/a[0];
-                b[1]=a[1];
-                b[2]=(1-gamma*d)/a[0];
-                a[0]=1;
-                break;
-                
-            case HSH: // High Shelf
-                if (dbGain >0){
-                    a[0]=2*(1+alpha);
-                    a[1]=-4*c/a[0];
-                    a[2]=2*(1-alpha)/a[0];
-                    b[0]=((1+e)-(1-e)*c+beta)/a[0];
-                    b[1]=2*((1-e)-(1+e)*c)/a[0];
-                    b[2]=((1+e)-(1-e)*c-beta)/a[0];
-                    a[0]=1;
-                }
-                else {
-                    a[0]=(1+e)-(1-e)*c+beta;
-                    a[1]=2*((1-e)-(1+e)*c)/a[0];
-                    a[2]=((1+e)-(1-e)*c-beta)/a[0];
-                    b[0]=2*(1+alpha)/a[0];
-                    b[1]=-4*c/a[0];
-                    b[2]=2*(1-alpha)/a[0];
-                    a[0]=1;
-                }
-                break;
-                
-            case LSH: // Low Shelf
-                if (dbGain >0){
-                    a[0]=2*(1+alpha);
-                    a[1]=-4*c/a[0];
-                    a[2]=2*(1-alpha)/a[0];
-                    b[0]=((1+e)+(1-e)*c+beta)/a[0];
-                    b[1]=-(2*((1-e)+(1+e)*c))/a[0];
-                    b[2]=((1+e)+(1-e)*c-beta)/a[0];
-                    a[0]=1;
-                    
-                }
-                else {
-                    a[0]=(1+e)+(1-e)*c+beta;
-                    a[1]=-2*((1-e)+(1+e)*c)/a[0];
-                    a[2]=((1+e)+(1-e)*c-beta)/a[0];
-                    b[0]=(2*(1+alpha))/a[0];
-                    b[1]=-4*c/a[0];
-                    b[2]=2*(1-alpha)/a[0];
-                    a[0]=1;
-                }
-                break;
-        }
-        
-    }
+  // function used for PEQ, HSH, LSH
+  void setCoeffs(float normalizedFrequency, float Q, float dbGain){        
+    float alpha, c, omega, d, e, gamma, beta ;        
+    omega = 2*M_PI*normalizedFrequency ;
+    c = cosf(omega) ;
+    alpha = sinf(omega)/(2*Q);
+    d = powf(10,dbGain/40.f);
+    gamma = alpha*powf(10,fabsf(dbGain)/40.f);
+    e = powf(10,fabsf(dbGain)/20.f);
+    beta = 2*alpha*powf(e,0.5f);        
+    switch (fType)
+      {
+      case PEQ: // Parametric EQ
+	a[0]=1+gamma/d;
+	a[1]=-2*c/a[0];
+	a[2]=(1-gamma/d)/a[0];
+	b[0]=(1+gamma*d)/a[0];
+	b[1]=a[1];
+	b[2]=(1-gamma*d)/a[0];
+	a[0]=1;
+	break;                
+      case HSH: // High Shelf
+	if (dbGain >0){
+	  a[0]=2*(1+alpha);
+	  a[1]=-4*c/a[0];
+	  a[2]=2*(1-alpha)/a[0];
+	  b[0]=((1+e)-(1-e)*c+beta)/a[0];
+	  b[1]=2*((1-e)-(1+e)*c)/a[0];
+	  b[2]=((1+e)-(1-e)*c-beta)/a[0];
+	  a[0]=1;
+	}
+	else {
+	  a[0]=(1+e)-(1-e)*c+beta;
+	  a[1]=2*((1-e)-(1+e)*c)/a[0];
+	  a[2]=((1+e)-(1-e)*c-beta)/a[0];
+	  b[0]=2*(1+alpha)/a[0];
+	  b[1]=-4*c/a[0];
+	  b[2]=2*(1-alpha)/a[0];
+	  a[0]=1;
+	}
+	break;                
+      case LSH: // Low Shelf
+	if (dbGain >0){
+	  a[0]=2*(1+alpha);
+	  a[1]=-4*c/a[0];
+	  a[2]=2*(1-alpha)/a[0];
+	  b[0]=((1+e)+(1-e)*c+beta)/a[0];
+	  b[1]=-(2*((1-e)+(1+e)*c))/a[0];
+	  b[2]=((1+e)+(1-e)*c-beta)/a[0];
+	  a[0]=1;                    
+	}
+	else {
+	  a[0]=(1+e)+(1-e)*c+beta;
+	  a[1]=-2*((1-e)+(1+e)*c)/a[0];
+	  a[2]=((1+e)+(1-e)*c-beta)/a[0];
+	  b[0]=(2*(1+alpha))/a[0];
+	  b[1]=-4*c/a[0];
+	  b[2]=2*(1-alpha)/a[0];
+	  a[0]=1;
+	}
+	break;
+      }        
+  }
     
-    void process (int numSamples, float* buf){
-        float out;
-        for (int i=0;i<numSamples;i++){
-            out = b[0]*buf[i]+b[1]*x1+b[2]*x2-a[1]*y1-a[2]*y2 ;
-            y2 = y1;
-            y1 = out;
-            x2 = x1;
-            x1 = buf[i];
-            buf[i]=out;
-        }
+  void process (int numSamples, float* buf){
+    float out;
+    for (int i=0;i<numSamples;i++){
+      out = b[0]*buf[i]+b[1]*x1+b[2]*x2-a[1]*y1-a[2]*y2 ;
+      y2 = y1;
+      y1 = out;
+      x2 = x1;
+      x1 = buf[i];
+      buf[i]=out;
     }
+  }
     
-    void setType (filterType typ){
-        fType = typ;
-    }
+  void setType (filterType typ){
+    fType = typ;
+  }
     
 private:
     float a[3] ; // ai coefficients
@@ -158,65 +151,86 @@ private:
     filterType fType;
 };
 
-/**
- * Parametric EQ OWL Patch
- */
-class FourBandsEqPatch : public Patch {
+class FourBandsEq {
+private:
+    BiquadDF1 band1, band2, band3, band4; // filters
+    float fn1, fn2, fn3, fn4; // cutoffs frequencies, normalized
 public:
-  FourBandsEqPatch() {
-    registerParameter(PARAMETER_A, "Low", "Low");
-    registerParameter(PARAMETER_B, "Lo-Mid", "Lo-Mid");
-    registerParameter(PARAMETER_C, "Hi-Mid", "Hi-Mid");
-    registerParameter(PARAMETER_D, "High", "High");
-      
+  FourBandsEq(double samplerate) {
     band1.initStateVariables();
     band1.setType(LSH);
-    fn1=100/getSampleRate();
-    band1.setCoeffs(fn1, Q_BUTTERWORTH, getDbGain(PARAMETER_A));
+    fn1=100/samplerate;
       
     band2.initStateVariables();
     band2.setType(PEQ);
-    fn2=250/getSampleRate();
-    band2.setCoeffs(fn2, Q_BUTTERWORTH, getDbGain(PARAMETER_B));
+    fn2=250/samplerate;
       
     band3.initStateVariables();
     band3.setType(PEQ);
-    fn3=1500/getSampleRate();
-    band3.setCoeffs(fn3, Q_BUTTERWORTH, getDbGain(PARAMETER_C));
+    fn3=1500/samplerate;
       
     band4.initStateVariables();
     band4.setType(PEQ);
-    fn4=4000/getSampleRate();
-    band4.setCoeffs(fn4, Q_BUTTERWORTH, getDbGain(PARAMETER_D));
-  }    
+    fn4=4000/samplerate;
+  }
 
-  void processAudio(AudioBuffer &buffer){
+  void setCoeffs(float a, float b, float c, float d){
     // update filter coefficients
-    band1.setCoeffs(fn1, Q_BUTTERWORTH, getDbGain(PARAMETER_A));
-    band2.setCoeffs(fn2, Q_BUTTERWORTH, getDbGain(PARAMETER_B));
-    band3.setCoeffs(fn3, Q_BUTTERWORTH, getDbGain(PARAMETER_C));
-    band4.setCoeffs(fn4, Q_BUTTERWORTH, getDbGain(PARAMETER_D));
-      
+    band1.setCoeffs(fn1, Q_BUTTERWORTH, a);
+    band2.setCoeffs(fn2, Q_BUTTERWORTH, b);
+    band3.setCoeffs(fn3, Q_BUTTERWORTH, c);
+    band4.setCoeffs(fn4, Q_BUTTERWORTH, d);
+  }
+
+  void process(int numSamples, float* buf){      
     // process
-      float numSamples = buffer.getSize();
-    float* buf = buffer.getSamples(0);
     band1.process(numSamples, buf);
     band2.process(numSamples, buf);
     band3.process(numSamples, buf);
     band4.process(numSamples, buf);
   }
+};
+
+/**
+ * Stereo parametric EQ OWL Patch
+ */
+class FourBandsEqPatch : public Patch {
+private:
+  FourBandsEq eqL;
+  FourBandsEq eqR;
+public:
+  FourBandsEqPatch() : eqL(getSampleRate()), eqR(getSampleRate()) {
+    registerParameter(PARAMETER_A, "Low", "Low");
+    registerParameter(PARAMETER_B, "Lo-Mid", "Lo-Mid");
+    registerParameter(PARAMETER_C, "Hi-Mid", "Hi-Mid");
+    registerParameter(PARAMETER_D, "High", "High");      
+  }    
+
+  void processAudio(AudioBuffer &buffer){
+    float a = getDbGain(PARAMETER_A);
+    float b = getDbGain(PARAMETER_B);
+    float c = getDbGain(PARAMETER_C);
+    float d = getDbGain(PARAMETER_D);
+    eqL.setCoeffs(a, b, c, d);
+    eqR.setCoeffs(a, b, c, d);
+ 
+    // process
+    float numSamples = buffer.getSize();
+    float* bufL = buffer.getSamples(0);
+    float* bufR = buffer.getSamples(1);
+    eqL.process(numSamples, bufL);
+    eqR.process(numSamples, bufL);
+  }
     
 private:
-    BiquadDF1 band1, band2, band3, band4; // filters
-    float fn1, fn2, fn3, fn4; // cutoffs frequencies, normalized
     
-    float getDbGain(PatchParameterId id){
-        float linGain = getParameterValue(id);
-        // linGain = 0    <-> -15 dB
-        // linGain = 0.5  <-> 0dB
-        // linGain = 1    <-> 15dB
-        return (linGain-0.5)*30;
-    }
+  float getDbGain(PatchParameterId id){
+    float linGain = getParameterValue(id);
+    // linGain = 0    <-> -15 dB
+    // linGain = 0.5  <-> 0dB
+    // linGain = 1    <-> 15dB
+    return (linGain-0.5)*30;
+  }
 };
 
 #endif // __FourBandsEqPatch_hpp__
