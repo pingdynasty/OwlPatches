@@ -48,11 +48,14 @@
 
 //#define undenormalise(sample) if(((*(unsigned int*)&sample)&0x7f800000)==0) sample=0.0f
 #include "ReverbHeader.h"
-#define undenormalise(sample) (sample)
+
+// These values assume 44.1KHz sample rate
+// they will probably be OK for 48KHz sample rate
+// but would need scaling for 96KHz (or other) sample rates.
+// The values were obtained by listening tests.
 
 const int	numcombs		= 8;
 const int	numallpasses	= 4;
-
 const int combtuningL1		= 1116;
 const int combtuningL2		= 1188;
 const int combtuningL3		= 1277;
@@ -66,20 +69,16 @@ const int allpasstuningL2	= 441;
 const int allpasstuningL3	= 341;
 const int allpasstuningL4	= 225;
 
-
-// These values assume 44.1KHz sample rate
-// they will probably be OK for 48KHz sample rate
-// but would need scaling for 96KHz (or other) sample rates.
-// The values were obtained by listening tests.
-
 class FreeVerbPatch : public Patch {
+private:
+
 public:
     FreeVerbPatch(){
         gain = fixedgain;
-        registerParameter(PARAMETER_A, "Mix");
-        registerParameter(PARAMETER_B, "Room Size");
-        registerParameter(PARAMETER_C, "Damp");
-        registerParameter(PARAMETER_D, "");
+        registerParameter(PARAMETER_A, "Room Size");
+        registerParameter(PARAMETER_B, "Damp");
+        registerParameter(PARAMETER_C, "");
+        registerParameter(PARAMETER_D, "Dry/Wet");
         
         // Tie the components to their buffers
         combL[0].setbuffer(bufcombL1,combtuningL1);
@@ -203,12 +202,11 @@ public:
     float	bufallpassL3[allpasstuningL3];
     float	bufallpassL4[allpasstuningL4];
     
-    
     void processAudio(AudioBuffer& buffer){
-        float _mix = getParameterValue(PARAMETER_A);
-        float _roomsize = getParameterValue(PARAMETER_B);
-        float _damp = getParameterValue(PARAMETER_C);
-        //    float _gain = getParameterValue(PARAMETER_D);
+        float _roomsize = getParameterValue(PARAMETER_A);
+        float _damp = getParameterValue(PARAMETER_B);
+        float _mix = getParameterValue(PARAMETER_D);
+        //    float _gain = getParameterValue(PARAMETER_C);
         setdry(1.0f-_mix);
         setwet(_mix);
         setroomsize(_roomsize);

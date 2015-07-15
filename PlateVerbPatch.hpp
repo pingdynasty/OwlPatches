@@ -27,7 +27,6 @@
 #pragma once
 #include "ReverbHeader.h"
 #include "StompBox.h"
-#define undenormalise(sample) (sample)
 
 const int	plate_numcombs		= 6;
 const int	plate_numallpasses1	= 4;
@@ -48,13 +47,15 @@ const int plate_allpasstuningL5	= 1800;
 const int plate_allpasstuningL6	= 2656;
 
 class PlateVerbPatch : public Patch {
+private:
+
 public:
     PlateVerbPatch(){
         gain = fixedgain;
-        registerParameter(PARAMETER_A, "Mix");
-        registerParameter(PARAMETER_B, "Room Size");
-        registerParameter(PARAMETER_C, "Damp");
-        registerParameter(PARAMETER_D, "");
+        registerParameter(PARAMETER_A, "Room Size");
+        registerParameter(PARAMETER_B, "Damp");
+        registerParameter(PARAMETER_C, "");
+        registerParameter(PARAMETER_D, "Dry/Wet");
         
         // Tie the components to their buffers
         combL[0].setbuffer(bufcombL1,plate_combtuningL1);
@@ -163,10 +164,10 @@ public:
     float	bufallpassL6[plate_allpasstuningL6];
     
     void processAudio(AudioBuffer& buffer){
-        float _mix = getParameterValue(PARAMETER_A);
-        float _roomsize = getParameterValue(PARAMETER_B);
-        float _damp = getParameterValue(PARAMETER_C);
-        //    float _gain = getParameterValue(PARAMETER_D);
+        float _mix = getParameterValue(PARAMETER_D);
+        float _roomsize = getParameterValue(PARAMETER_A);
+        float _damp = getParameterValue(PARAMETER_B);
+        //    float _gain = getParameterValue(PARAMETER_C);
         setdry(1.0f-_mix);
         setwet(_mix);
         setroomsize(_roomsize);
