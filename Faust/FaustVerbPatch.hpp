@@ -422,12 +422,12 @@ class FaustVerb : public dsp {
 	}
 	virtual void buildUserInterface(UI* interface) {
 		interface->openVerticalBox("Freeverb");
-		interface->declare(&fslider1, "OWL", "PARAMETER_A");
+		interface->declare(&fslider1, "OWL", "PARAMETER_B");
 		interface->addHorizontalSlider("Damp", &fslider1, 0.5f, 0.0f, 1.0f, 0.025f);
-		interface->declare(&fslider2, "OWL", "PARAMETER_B");
-		interface->addHorizontalSlider("RoomSize", &fslider2, 0.5f, 0.0f, 1.0f, 0.025f);
-		interface->declare(&fslider0, "OWL", "PARAMETER_C");
-		interface->addHorizontalSlider("Wet", &fslider0, 0.3333f, 0.0f, 1.0f, 0.025f);
+		interface->declare(&fslider2, "OWL", "PARAMETER_A");
+		interface->addHorizontalSlider("Room Size", &fslider2, 0.5f, 0.0f, 1.0f, 0.025f);
+		interface->declare(&fslider0, "OWL", "PARAMETER_D");
+		interface->addHorizontalSlider("Dry/Wet", &fslider0, 0.3333f, 0.0f, 1.0f, 0.025f);
 		interface->closeBox();
 	}
 	virtual void compute (int count, FAUSTFLOAT** input, FAUSTFLOAT** output) {
