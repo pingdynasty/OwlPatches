@@ -127,7 +127,12 @@ public:
 	break;
       }        
   }
-    
+
+  void copyCoeffs(BiquadDF1& other){
+    memcpy(a, other.a, sizeof(float)*3);
+    memcpy(b, other.b, sizeof(float)*3);
+  }
+
   void process (int numSamples, float* buf){
     float out;
     for (int i=0;i<numSamples;i++){
@@ -182,6 +187,13 @@ public:
     band4.setCoeffs(fn4, Q_BUTTERWORTH, d);
   }
 
+  void copyCoeffs(FourBandsEq& other){
+    band1.copyCoeffs(other.band1);
+    band2.copyCoeffs(other.band2);
+    band3.copyCoeffs(other.band3);
+    band4.copyCoeffs(other.band4);
+  }
+
   void process(int numSamples, float* buf){      
     // process
     band1.process(numSamples, buf);
@@ -212,7 +224,7 @@ public:
     float c = getDbGain(PARAMETER_C);
     float d = getDbGain(PARAMETER_D);
     eqL.setCoeffs(a, b, c, d);
-    eqR.setCoeffs(a, b, c, d);
+    eqR.copyCoeffs(eqL);
  
     // process
     float numSamples = buffer.getSize();
