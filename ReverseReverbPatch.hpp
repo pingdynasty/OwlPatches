@@ -46,9 +46,9 @@ public:
   ReverseReverbPatch()
   {
     registerParameter(PARAMETER_A, "Reverb Length");
-    registerParameter(PARAMETER_B, "Wet/Dry Mix");
+    registerParameter(PARAMETER_B, "");
     registerParameter(PARAMETER_C, "Output Level");
-    registerParameter(PARAMETER_D, "");
+    registerParameter(PARAMETER_D, "Wet/Dry Mix");
 	reverb_index = 0;
 	reverse_flag = 0;
 	reverse_cnt = 0;
@@ -68,7 +68,7 @@ public:
 	if(reverse_cnt>reverb_time)	reverse_cnt = 0;	
 
 	
-	float wet = getParameterValue(PARAMETER_B);			//get wet/dry mix from knob		
+	float wet = getParameterValue(PARAMETER_D);			//get wet/dry mix from knob		
 	
 	float level = getParameterValue(PARAMETER_C);		//get output level from knob
 	level*=2;
