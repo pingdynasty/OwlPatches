@@ -58,7 +58,7 @@ allpasstuningL4 = 225;
 // Wet : reverberated signal
 
 roomsizeSlider  = hslider("Room Size [OWL:PARAMETER_A]", 0.5, 0, 1, 0.025)*scaleroom + offsetroom;
-dampSlider      = hslider("Damp [OWL:PARAMETER_C]",0.5, 0, 1, 0.025)*scaledamp;
+dampSlider      = hslider("Damp [OWL:PARAMETER_B]",0.5, 0, 1, 0.025)*scaledamp;
 wetSlider       = hslider("Dry/Wet [OWL:PARAMETER_D]", 0.3333, 0, 1, 0.025);
 combfeed        = roomsizeSlider;
 

@@ -570,7 +570,7 @@ class FaustVerb : public dsp {
 	
 	virtual void buildUserInterface(UI* interface) {
 		interface->openVerticalBox("Freeverb");
-		interface->declare(&fHslider2, "OWL", "PARAMETER_C");
+		interface->declare(&fHslider2, "OWL", "PARAMETER_B");
 		interface->addHorizontalSlider("Damp", &fHslider2, 0.5f, 0.f, 1.f, 0.025f);
 		interface->declare(&fHslider0, "OWL", "PARAMETER_D");
 		interface->addHorizontalSlider("Dry/Wet", &fHslider0, 0.3333f, 0.f, 1.f, 0.025f);
