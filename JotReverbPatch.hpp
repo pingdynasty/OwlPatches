@@ -271,13 +271,9 @@ void reverbInitialize(reverbBlock* this_reverb)
 }
 
 
-void reverbSetParam(reverbBlock* this_reverb, float fSampleRate, float fPercentWet, float fReverbTime, float fRoomSize, float fCutOffAbsorbsion, float fPreDelay)
+void reverbSetParam(reverbBlock* this_reverb, float fSampleRate, float fWet, float fReverbTime, float fRoomSize, float fCutOffAbsorbsion, float fPreDelay)
 {
-	float wetCoef = fPercentWet/100.0;
-	if (wetCoef > 1.0)
-		wetCoef = 1.0;
-	if (wetCoef < 0.0)
-		wetCoef = 0.0;
+        float wetCoef = fWet;
 	
 	float fReverbTimeSamples = fReverbTime*fSampleRate;		// fReverbTime (expressed in seconds if fSampleRate is Hz) is the RT60 for the room
 	if (fReverbTimeSamples > MAX_REVERB_TIME)
@@ -308,7 +304,7 @@ void reverbSetParam(reverbBlock* this_reverb, float fSampleRate, float fPercentW
 	
 	this_reverb->dry_coef	= 1.0 - wetCoef;
 	
-	wetCoef	*= 1.2 * SQRT8 * (1 - exp(-13.8155105579643*fRoomSizeSamples/fReverbTimeSamples));			// additional attenuation for small room and long reverb time  <--  exp(-13.8155105579643) = 10^(-60dB/10dB)
+	wetCoef	*= 1.6 * SQRT8 * (1 - exp(-13.8155105579643*fRoomSizeSamples/fReverbTimeSamples));			// additional attenuation for small room and long reverb time  <--  exp(-13.8155105579643) = 10^(-60dB/10dB)
     //  toss in whatever fudge factor you need here to make the reverb louder
 	this_reverb->wet_coef0	= wetCoef;
 	this_reverb->wet_coef1	= -fCutoffCoef*wetCoef;
@@ -569,7 +565,7 @@ public:
         reverbTimeSeconds = 0.4+getParameterValue(PARAMETER_B)*getParameterValue(PARAMETER_B)*9.5; // betw. 0.4 and 10s
         predelaySeconds = 0.010 + 0.02*getParameterValue(PARAMETER_A); // betw. 10 and 30ms
         cutoffFrequency = 500+getParameterValue(PARAMETER_C)*15000; // betw. 500 and 16000 Hz
-        dryWet = getParameterValue(PARAMETER_D)*99;    // betw. 0 and 100%
+        dryWet = getParameterValue(PARAMETER_D);
         reverbSetParam(&theReverbBlock, getSampleRate(), dryWet, reverbTimeSeconds, roomSizeSeconds, cutoffFrequency, predelaySeconds);
     }
     
