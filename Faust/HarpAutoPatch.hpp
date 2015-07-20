@@ -1,11 +1,11 @@
-//-----------------------------------------------------
-// name: "Kisana"
-// author: "Yann Orlarey"
-//
-// Code generated with Faust 0.9.67 (http://faust.grame.fr)
-//-----------------------------------------------------
-/* link with  */
-#include <math.h>
+/* ------------------------------------------------------------
+author: "Yann Orlarey"
+name: "Kisana"
+Code generated with Faust 2.0.a34 (http://faust.grame.fr)
+------------------------------------------------------------ */
+
+#ifndef  __HarpAuto_H__
+#define  __HarpAuto_H__
 /************************************************************************
 
 	IMPORTANT NOTE : this file contains two clearly delimited sections :
@@ -108,12 +108,14 @@
 class UI;
 
 //----------------------------------------------------------------
-//  signal processor definition
+//  Signal processor definition
 //----------------------------------------------------------------
 
 class dsp {
+
  protected:
 	int fSamplingFreq;
+    
  public:
 	dsp() {}
 	virtual ~dsp() {}
@@ -317,194 +319,372 @@ class OwlUI : public UI
 #define FAUSTFLOAT float
 #endif  
 
-typedef long double quad;
+#include <math.h>
+
+
+class HarpAutoSIG0 {
+	
+  private:
+	
+	
+  public:
+	
+	int getNumInputsHarpAutoSIG0() {
+		return 0;
+		
+	}
+	int getNumOutputsHarpAutoSIG0() {
+		return 1;
+		
+	}
+	int getInputRateHarpAutoSIG0(int channel) {
+		int rate;
+		switch (channel) {
+			default: {
+				rate = -1;
+				break;
+			}
+			
+		}
+		return rate;
+		
+	}
+	int getOutputRateHarpAutoSIG0(int channel) {
+		int rate;
+		switch (channel) {
+			case 0: {
+				rate = 0;
+				break;
+			}
+			default: {
+				rate = -1;
+				break;
+			}
+			
+		}
+		return rate;
+		
+	}
+	
+	void instanceInitHarpAutoSIG0(int samplingFreq) {
+		
+	}
+	
+	void fillHarpAutoSIG0(int count, float* output) {
+		for (int i = 0; (i < count); i = (i + 1)) {
+			output[i] = 0.f;
+			
+		}
+		
+	}
+};
+
+HarpAutoSIG0* newHarpAutoSIG0() {return (HarpAutoSIG0*) new HarpAutoSIG0(); }
+void deleteHarpAutoSIG0(HarpAutoSIG0* dsp) {delete dsp; }
+
 
 #ifndef FAUSTCLASS 
 #define FAUSTCLASS HarpAuto
 #endif
 
 class HarpAuto : public dsp {
+	
   private:
-	class SIG0 {
-	  private:
-		int 	fSamplingFreq;
-	  public:
-		int getNumInputs() 	{ return 0; }
-		int getNumOutputs() 	{ return 1; }
-		void init(int samplingFreq) {
-			fSamplingFreq = samplingFreq;
-		}
-		void fill (int count, float output[]) {
-			for (int i=0; i<count; i++) {
-				output[i] = 0.0f;
-			}
-		}
-	};
-
-
-	int 	iConst0;
-	int 	iRec3[2];
-	int 	iVec0[2];
-	int 	iRec2[2];
-	float 	ftbl0[16];
-	FAUSTFLOAT 	fslider0;
-	int 	iVec1[2];
-	int 	iRec4[2];
-	int 	iVec2[2];
-	float 	fRec1[2];
-	int 	iRec5[2];
-	FAUSTFLOAT 	fslider1;
-	int 	IOTA;
-	float 	fVec3[512];
-	float 	fRec0[3];
-	int 	iVec4[2];
-	float 	fRec7[2];
-	float 	fVec5[512];
-	float 	fRec6[3];
-	int 	iVec6[2];
-	float 	fRec9[2];
-	float 	fVec7[512];
-	float 	fRec8[3];
-	int 	iVec8[2];
-	float 	fRec11[2];
-	float 	fVec9[256];
-	float 	fRec10[3];
-	FAUSTFLOAT 	fslider2;
+	
+	float fVec5[512];
+	float fVec7[512];
+	float fVec9[512];
+	float fVec3[256];
+	float ftbl0[16];
+	float fRec0[3];
+	float fRec6[3];
+	float fRec8[3];
+	float fRec10[3];
+	int iRec1[2];
+	int iVec0[2];
+	int iRec3[2];
+	int iVec1[2];
+	int iRec4[2];
+	int iRec5[2];
+	int iVec2[2];
+	float fRec2[2];
+	int iVec4[2];
+	float fRec7[2];
+	int iVec6[2];
+	float fRec9[2];
+	int iVec8[2];
+	float fRec11[2];
+	FAUSTFLOAT fHslider0;
+	FAUSTFLOAT fHslider1;
+	FAUSTFLOAT fHslider2;
+	int fSamplingFreq;
+	int iConst0;
+	FAUSTFLOAT fHslider3;
+	int IOTA;
+	
   public:
-	static void metadata(Meta* m) 	{ 
-		m->declare("name", "Kisana");
+	
+	void static metadata(Meta* m) { 
 		m->declare("author", "Yann Orlarey");
-		m->declare("music.lib/name", "Music Library");
-		m->declare("music.lib/author", "GRAME");
-		m->declare("music.lib/copyright", "GRAME");
-		m->declare("music.lib/version", "1.0");
-		m->declare("music.lib/license", "LGPL with exception");
-		m->declare("math.lib/name", "Math Library");
 		m->declare("math.lib/author", "GRAME");
 		m->declare("math.lib/copyright", "GRAME");
-		m->declare("math.lib/version", "1.0");
 		m->declare("math.lib/license", "LGPL with exception");
+		m->declare("math.lib/name", "Math Library");
+		m->declare("math.lib/version", "1.0");
+		m->declare("music.lib/author", "GRAME");
+		m->declare("music.lib/copyright", "GRAME");
+		m->declare("music.lib/license", "LGPL with exception");
+		m->declare("music.lib/name", "Music Library");
+		m->declare("music.lib/version", "1.0");
+		m->declare("name", "Kisana");
 	}
 
-	virtual int getNumInputs() 	{ return 1; }
-	virtual int getNumOutputs() 	{ return 1; }
-	static void classInit(int samplingFreq) {
+	virtual int getNumInputs() {
+		return 1;
+		
 	}
+	virtual int getNumOutputs() {
+		return 1;
+		
+	}
+	virtual int getInputRate(int channel) {
+		int rate;
+		switch (channel) {
+			case 0: {
+				rate = 1;
+				break;
+			}
+			default: {
+				rate = -1;
+				break;
+			}
+			
+		}
+		return rate;
+		
+	}
+	virtual int getOutputRate(int channel) {
+		int rate;
+		switch (channel) {
+			case 0: {
+				rate = 1;
+				break;
+			}
+			default: {
+				rate = -1;
+				break;
+			}
+			
+		}
+		return rate;
+		
+	}
+	
+	static void classInit(int samplingFreq) {
+		
+	}
+	
 	virtual void instanceInit(int samplingFreq) {
 		fSamplingFreq = samplingFreq;
-		iConst0 = int((0.16666666666666666f * min(192000, max(1, fSamplingFreq))));
-		for (int i=0; i<2; i++) iRec3[i] = 0;
-		for (int i=0; i<2; i++) iVec0[i] = 0;
-		for (int i=0; i<2; i++) iRec2[i] = 0;
-		SIG0 sig0;
-		sig0.init(samplingFreq);
-		sig0.fill(16,ftbl0);
-		fslider0 = 0.0f;
-		for (int i=0; i<2; i++) iVec1[i] = 0;
-		for (int i=0; i<2; i++) iRec4[i] = 0;
-		for (int i=0; i<2; i++) iVec2[i] = 0;
-		for (int i=0; i<2; i++) fRec1[i] = 0;
-		for (int i=0; i<2; i++) iRec5[i] = 0;
-		fslider1 = 0.0f;
+		fHslider0 = FAUSTFLOAT(0.);
+		fHslider1 = FAUSTFLOAT(0.);
+		for (int i0 = 0; (i0 < 2); i0 = (i0 + 1)) {
+			iRec1[i0] = 0;
+			
+		}
+		HarpAutoSIG0* sig0 = newHarpAutoSIG0();
+		sig0->instanceInitHarpAutoSIG0(samplingFreq);
+		sig0->fillHarpAutoSIG0(16, ftbl0);
+		fHslider2 = FAUSTFLOAT(0.);
+		for (int i1 = 0; (i1 < 2); i1 = (i1 + 1)) {
+			iVec0[i1] = 0;
+			
+		}
+		iConst0 = (60 * min(192000, max(1, fSamplingFreq)));
+		fHslider3 = FAUSTFLOAT(360.);
+		for (int i2 = 0; (i2 < 2); i2 = (i2 + 1)) {
+			iRec3[i2] = 0;
+			
+		}
+		for (int i3 = 0; (i3 < 2); i3 = (i3 + 1)) {
+			iVec1[i3] = 0;
+			
+		}
+		for (int i4 = 0; (i4 < 2); i4 = (i4 + 1)) {
+			iRec4[i4] = 0;
+			
+		}
+		for (int i5 = 0; (i5 < 2); i5 = (i5 + 1)) {
+			iRec5[i5] = 0;
+			
+		}
+		for (int i6 = 0; (i6 < 2); i6 = (i6 + 1)) {
+			iVec2[i6] = 0;
+			
+		}
+		for (int i7 = 0; (i7 < 2); i7 = (i7 + 1)) {
+			fRec2[i7] = 0.f;
+			
+		}
 		IOTA = 0;
-		for (int i=0; i<512; i++) fVec3[i] = 0;
-		for (int i=0; i<3; i++) fRec0[i] = 0;
-		for (int i=0; i<2; i++) iVec4[i] = 0;
-		for (int i=0; i<2; i++) fRec7[i] = 0;
-		for (int i=0; i<512; i++) fVec5[i] = 0;
-		for (int i=0; i<3; i++) fRec6[i] = 0;
-		for (int i=0; i<2; i++) iVec6[i] = 0;
-		for (int i=0; i<2; i++) fRec9[i] = 0;
-		for (int i=0; i<512; i++) fVec7[i] = 0;
-		for (int i=0; i<3; i++) fRec8[i] = 0;
-		for (int i=0; i<2; i++) iVec8[i] = 0;
-		for (int i=0; i<2; i++) fRec11[i] = 0;
-		for (int i=0; i<256; i++) fVec9[i] = 0;
-		for (int i=0; i<3; i++) fRec10[i] = 0;
-		fslider2 = 0.0f;
+		for (int i8 = 0; (i8 < 256); i8 = (i8 + 1)) {
+			fVec3[i8] = 0.f;
+			
+		}
+		for (int i9 = 0; (i9 < 3); i9 = (i9 + 1)) {
+			fRec0[i9] = 0.f;
+			
+		}
+		for (int i10 = 0; (i10 < 2); i10 = (i10 + 1)) {
+			iVec4[i10] = 0;
+			
+		}
+		for (int i11 = 0; (i11 < 2); i11 = (i11 + 1)) {
+			fRec7[i11] = 0.f;
+			
+		}
+		for (int i12 = 0; (i12 < 512); i12 = (i12 + 1)) {
+			fVec5[i12] = 0.f;
+			
+		}
+		for (int i13 = 0; (i13 < 3); i13 = (i13 + 1)) {
+			fRec6[i13] = 0.f;
+			
+		}
+		for (int i14 = 0; (i14 < 2); i14 = (i14 + 1)) {
+			iVec6[i14] = 0;
+			
+		}
+		for (int i15 = 0; (i15 < 2); i15 = (i15 + 1)) {
+			fRec9[i15] = 0.f;
+			
+		}
+		for (int i16 = 0; (i16 < 512); i16 = (i16 + 1)) {
+			fVec7[i16] = 0.f;
+			
+		}
+		for (int i17 = 0; (i17 < 3); i17 = (i17 + 1)) {
+			fRec8[i17] = 0.f;
+			
+		}
+		for (int i18 = 0; (i18 < 2); i18 = (i18 + 1)) {
+			iVec8[i18] = 0;
+			
+		}
+		for (int i19 = 0; (i19 < 2); i19 = (i19 + 1)) {
+			fRec11[i19] = 0.f;
+			
+		}
+		for (int i20 = 0; (i20 < 512); i20 = (i20 + 1)) {
+			fVec9[i20] = 0.f;
+			
+		}
+		for (int i21 = 0; (i21 < 3); i21 = (i21 + 1)) {
+			fRec10[i21] = 0.f;
+			
+		}
+		deleteHarpAutoSIG0(sig0);
+		
 	}
+	
 	virtual void init(int samplingFreq) {
 		classInit(samplingFreq);
 		instanceInit(samplingFreq);
 	}
+	
 	virtual void buildUserInterface(UI* interface) {
-		interface->openVerticalBox("HarpAuto");
-		interface->declare(&fslider2, "OWL", "PARAMETER_A");
-		interface->addHorizontalSlider("Master", &fslider2, 0.0f, 0.0f, 1.0f, 0.01f);
-		interface->declare(&fslider1, "OWL", "PARAMETER_C");
-		interface->addHorizontalSlider("Timbre", &fslider1, 0.0f, 0.0f, 1.0f, 0.01f);
-		interface->openVerticalBox("loop48");
-		interface->declare(&fslider0, "1", "");
-		interface->declare(&fslider0, "OWL", "PARAMETER_B");
-		interface->addHorizontalSlider("Note", &fslider0, 0.0f, 0.0f, 4.0f, 1.0f);
+		interface->openVerticalBox("0x00");
+		interface->declare(&fHslider0, "OWL", "PARAMETER_D");
+		interface->addHorizontalSlider("Master", &fHslider0, 0.f, 0.f, 1.f, 0.01f);
+		interface->declare(&fHslider2, "OWL", "PARAMETER_A");
+		interface->addHorizontalSlider("Note", &fHslider2, 0.f, 0.f, 4.f, 1.f);
+		interface->declare(&fHslider3, "OWL", "PARAMETER_B");
+		interface->addHorizontalSlider("Rate", &fHslider3, 360.f, 120.f, 640.f, 1.f);
+		interface->declare(&fHslider1, "OWL", "PARAMETER_C");
+		interface->addHorizontalSlider("Timbre", &fHslider1, 0.f, 0.f, 1.f, 0.01f);
 		interface->closeBox();
-		interface->closeBox();
+		
 	}
-	virtual void compute (int count, FAUSTFLOAT** input, FAUSTFLOAT** output) {
-		int 	iSlow0 = int(float(fslider0));
-		int 	iSlow1 = (iSlow0 <= 0.0f);
-		float 	fSlow2 = float(fslider1);
-		float 	fSlow3 = (1 - fSlow2);
-		float 	fSlow4 = (1 + fSlow2);
-		float 	fSlow5 = (1.2889677372867592f * float(fslider2));
-		FAUSTFLOAT* input0 = input[0];
-		FAUSTFLOAT* output0 = output[0];
-		for (int i=0; i<count; i++) {
-			float fTemp0 = (float)input0[i];
-			iRec3[0] = ((1 + iRec3[1]) % iConst0);
+	
+	virtual void compute(int count, FAUSTFLOAT** inputs, FAUSTFLOAT** outputs) {
+		FAUSTFLOAT* input0 = inputs[0];
+		FAUSTFLOAT* output0 = outputs[0];
+		float fSlow0 = (1.28897f * float(fHslider0));
+		float fSlow1 = float(fHslider1);
+		float fSlow2 = (1.f + fSlow1);
+		float fSlow3 = (1.f - fSlow1);
+		int iSlow4 = int(float(fHslider2));
+		int iSlow5 = int((float(iConst0) / float(fHslider3)));
+		int iSlow6 = int((float(iSlow4) <= 0.f));
+		for (int i = 0; (i < count); i = (i + 1)) {
+			float fTemp0 = float(input0[i]);
+			iRec1[0] = (12345 + (1103515245 * iRec1[1]));
+			iVec0[0] = iSlow4;
+			iRec3[0] = ((1 + iRec3[1]) % iSlow5);
 			int iTemp1 = int((iRec3[0] == 0));
-			iVec0[0] = iTemp1;
-			iRec2[0] = ((iVec0[0] + iRec2[1]) % 15);
-			iVec1[0] = iSlow0;
-			iRec4[0] = ((int(iVec0[1]))?0:(iRec4[1] + abs((iSlow0 - iVec1[1]))));
-			ftbl0[((int((iVec0[0] & ((iRec4[0] > 0) | iSlow1))))?iRec2[0]:15)] = iSlow0;
-			float fTemp2 = ftbl0[iRec2[0]];
-			int iTemp3 = (fabsf((fTemp2 - 3)) < 0.5f);
-			iVec2[0] = iTemp3;
-			fRec1[0] = ((fRec1[1] + ((iVec2[0] - iVec2[1]) > 0.0f)) - (0.00373727388790102f * (fRec1[1] > 0.0f)));
-			iRec5[0] = (12345 + (1103515245 * iRec5[1]));
-			fVec3[IOTA&511] = ((0.4947882913184981f * ((fSlow4 * fRec0[1]) + (fSlow3 * fRec0[2]))) + (4.656612875245797e-10f * (iRec5[0] * (fRec1[0] > 0.0f))));
-			fRec0[0] = fVec3[(IOTA-266)&511];
-			int iTemp4 = (fabsf((fTemp2 - 2)) < 0.5f);
-			iVec4[0] = iTemp4;
-			fRec7[0] = ((fRec7[1] + ((iVec4[0] - iVec4[1]) > 0.0f)) - (0.003329532516070381f * (fRec7[1] > 0.0f)));
-			fVec5[IOTA&511] = ((0.4941537998866976f * ((fSlow4 * fRec6[1]) + (fSlow3 * fRec6[2]))) + (4.656612875245797e-10f * (iRec5[0] * (fRec7[0] > 0.0f))));
-			fRec6[0] = fVec5[(IOTA-299)&511];
-			int iTemp5 = (fabsf((fTemp2 - 1)) < 0.5f);
-			iVec6[0] = iTemp5;
-			fRec9[0] = ((fRec9[1] + ((iVec6[0] - iVec6[1]) > 0.0f)) - (0.00296627625057368f * (fRec9[1] > 0.0f)));
-			fVec7[IOTA&511] = ((0.4934425764844625f * ((fSlow4 * fRec8[1]) + (fSlow3 * fRec8[2]))) + (4.656612875245797e-10f * (iRec5[0] * (fRec9[0] > 0.0f))));
-			fRec8[0] = fVec7[(IOTA-336)&511];
-			int iTemp6 = (fabsf((fTemp2 - 4)) < 0.5f);
-			iVec8[0] = iTemp6;
-			fRec11[0] = ((fRec11[1] + ((iVec8[0] - iVec8[1]) > 0.0f)) - (0.004444392698205774f * (fRec11[1] > 0.0f)));
-			fVec9[IOTA&255] = ((0.49561384415280396f * ((fSlow4 * fRec10[1]) + (fSlow3 * fRec10[2]))) + (4.656612875245797e-10f * (iRec5[0] * (fRec11[0] > 0.0f))));
-			fRec10[0] = fVec9[(IOTA-224)&255];
-			output0[i] = (FAUSTFLOAT)(fTemp0 + (fSlow5 * (fRec10[0] + ((fRec8[0] + (1.0884227821644648f * fRec6[0])) + (1.0884227821644648f * fRec0[0])))));
-			// post processing
-			fRec10[2] = fRec10[1]; fRec10[1] = fRec10[0];
-			fRec11[1] = fRec11[0];
-			iVec8[1] = iVec8[0];
-			fRec8[2] = fRec8[1]; fRec8[1] = fRec8[0];
-			fRec9[1] = fRec9[0];
-			iVec6[1] = iVec6[0];
-			fRec6[2] = fRec6[1]; fRec6[1] = fRec6[0];
-			fRec7[1] = fRec7[0];
-			iVec4[1] = iVec4[0];
-			fRec0[2] = fRec0[1]; fRec0[1] = fRec0[0];
-			IOTA = IOTA+1;
-			iRec5[1] = iRec5[0];
-			fRec1[1] = fRec1[0];
-			iVec2[1] = iVec2[0];
-			iRec4[1] = iRec4[0];
-			iVec1[1] = iVec1[0];
-			iRec2[1] = iRec2[0];
+			iVec1[0] = iTemp1;
+			int iSel0 = 0;
+			if (int(iVec1[1]) != 0) {
+				iSel0 = 0;
+				
+			} else {
+				iSel0 = (iRec4[1] + abs((iSlow4 - iVec0[1])));
+				
+			}
+			iRec4[0] = iSel0;
+			iRec5[0] = ((iTemp1 + iRec5[1]) % 15);
+			ftbl0[(int((iTemp1 & ((iRec4[0] > 0) | iSlow6)))?iRec5[0]:15)] = float(iSlow4);
+			int iTemp2 = int((fabsf((ftbl0[iRec5[0]] - 4.f)) < 0.5f));
+			iVec2[0] = iTemp2;
+			fRec2[0] = ((fRec2[1] + float(int((float((iTemp2 - iVec2[1])) > 0.f)))) - (0.00444439f * float(int((fRec2[1] > 0.f)))));
+			fVec3[(IOTA & 255)] = ((0.495614f * ((fSlow2 * fRec0[1]) + (fSlow3 * fRec0[2]))) + (4.65661e-10f * float((iRec1[0] * int((fRec2[0] > 0.f))))));
+			fRec0[0] = fVec3[((IOTA - 224) & 255)];
+			int iTemp3 = int((fabsf((ftbl0[iRec5[0]] - 1.f)) < 0.5f));
+			iVec4[0] = iTemp3;
+			fRec7[0] = ((fRec7[1] + float(int((float((iTemp3 - iVec4[1])) > 0.f)))) - (0.00296628f * float(int((fRec7[1] > 0.f)))));
+			fVec5[(IOTA & 511)] = ((0.493443f * ((fSlow2 * fRec6[1]) + (fSlow3 * fRec6[2]))) + (4.65661e-10f * float((iRec1[0] * int((fRec7[0] > 0.f))))));
+			fRec6[0] = fVec5[((IOTA - 336) & 511)];
+			int iTemp4 = int((fabsf((ftbl0[iRec5[0]] - 2.f)) < 0.5f));
+			iVec6[0] = iTemp4;
+			fRec9[0] = ((fRec9[1] + float(int((float((iTemp4 - iVec6[1])) > 0.f)))) - (0.00332953f * float(int((fRec9[1] > 0.f)))));
+			fVec7[(IOTA & 511)] = ((0.494154f * ((fSlow2 * fRec8[1]) + (fSlow3 * fRec8[2]))) + (4.65661e-10f * float((iRec1[0] * int((fRec9[0] > 0.f))))));
+			fRec8[0] = fVec7[((IOTA - 299) & 511)];
+			int iTemp5 = int((fabsf((ftbl0[iRec5[0]] - 3.f)) < 0.5f));
+			iVec8[0] = iTemp5;
+			fRec11[0] = ((fRec11[1] + float(int((float((iTemp5 - iVec8[1])) > 0.f)))) - (0.00373727f * float(int((fRec11[1] > 0.f)))));
+			fVec9[(IOTA & 511)] = ((0.494788f * ((fSlow2 * fRec10[1]) + (fSlow3 * fRec10[2]))) + (4.65661e-10f * float((iRec1[0] * int((fRec11[0] > 0.f))))));
+			fRec10[0] = fVec9[((IOTA - 266) & 511)];
+			output0[i] = FAUSTFLOAT(((fSlow0 * (fRec0[0] + ((fRec6[0] + (1.08842f * fRec8[0])) + (1.08842f * fRec10[0])))) + fTemp0));
+			iRec1[1] = iRec1[0];
 			iVec0[1] = iVec0[0];
 			iRec3[1] = iRec3[0];
+			iVec1[1] = iVec1[0];
+			iRec4[1] = iRec4[0];
+			iRec5[1] = iRec5[0];
+			iVec2[1] = iVec2[0];
+			fRec2[1] = fRec2[0];
+			IOTA = (IOTA + 1);
+			fRec0[2] = fRec0[1];
+			fRec0[1] = fRec0[0];
+			iVec4[1] = iVec4[0];
+			fRec7[1] = fRec7[0];
+			fRec6[2] = fRec6[1];
+			fRec6[1] = fRec6[0];
+			iVec6[1] = iVec6[0];
+			fRec9[1] = fRec9[0];
+			fRec8[2] = fRec8[1];
+			fRec8[1] = fRec8[0];
+			iVec8[1] = iVec8[0];
+			fRec11[1] = fRec11[0];
+			fRec10[2] = fRec10[1];
+			fRec10[1] = fRec10[0];
+			
 		}
+		
 	}
-};
 
+	
+};
 
 
 /***************************END USER SECTION ***************************/
@@ -565,3 +745,5 @@ public:
 
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////
+
+#endif

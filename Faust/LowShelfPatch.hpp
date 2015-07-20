@@ -1,9 +1,9 @@
-//-----------------------------------------------------
-//
-// Code generated with Faust 0.9.67 (http://faust.grame.fr)
-//-----------------------------------------------------
-/* link with  */
-#include <math.h>
+/* ------------------------------------------------------------
+Code generated with Faust 2.0.a34 (http://faust.grame.fr)
+------------------------------------------------------------ */
+
+#ifndef  __LowShelf_H__
+#define  __LowShelf_H__
 /************************************************************************
 
 	IMPORTANT NOTE : this file contains two clearly delimited sections :
@@ -106,12 +106,14 @@
 class UI;
 
 //----------------------------------------------------------------
-//  signal processor definition
+//  Signal processor definition
 //----------------------------------------------------------------
 
 class dsp {
+
  protected:
 	int fSamplingFreq;
+    
  public:
 	dsp() {}
 	virtual ~dsp() {}
@@ -315,97 +317,155 @@ class OwlUI : public UI
 #define FAUSTFLOAT float
 #endif  
 
-typedef long double quad;
+#include <math.h>
+
 
 #ifndef FAUSTCLASS 
 #define FAUSTCLASS LowShelf
 #endif
 
 class LowShelf : public dsp {
+	
   private:
-	FAUSTFLOAT 	fslider0;
-	FAUSTFLOAT 	fslider1;
-	float 	fConst0;
-	FAUSTFLOAT 	fslider2;
-	float 	fRec0[3];
+	
+	float fRec0[3];
+	FAUSTFLOAT fHslider0;
+	int fSamplingFreq;
+	float fConst0;
+	FAUSTFLOAT fHslider1;
+	FAUSTFLOAT fHslider2;
+	
   public:
-	static void metadata(Meta* m) 	{ 
-		m->declare("maxmsp.lib/name", "MaxMSP compatibility Library");
+	
+	void static metadata(Meta* m) { 
+		m->declare("math.lib/author", "GRAME");
+		m->declare("math.lib/copyright", "GRAME");
+		m->declare("math.lib/license", "LGPL with exception");
+		m->declare("math.lib/name", "Math Library");
+		m->declare("math.lib/version", "1.0");
 		m->declare("maxmsp.lib/author", "GRAME");
 		m->declare("maxmsp.lib/copyright", "GRAME");
-		m->declare("maxmsp.lib/version", "1.1");
 		m->declare("maxmsp.lib/license", "LGPL");
-		m->declare("music.lib/version", "1.0");
-		m->declare("music.lib/name", "Music Library");
+		m->declare("maxmsp.lib/name", "MaxMSP compatibility Library");
+		m->declare("maxmsp.lib/version", "1.1");
 		m->declare("music.lib/author", "GRAME");
 		m->declare("music.lib/copyright", "GRAME");
 		m->declare("music.lib/license", "LGPL with exception");
-		m->declare("math.lib/name", "Math Library");
-		m->declare("math.lib/author", "GRAME");
-		m->declare("math.lib/copyright", "GRAME");
-		m->declare("math.lib/version", "1.0");
-		m->declare("math.lib/license", "LGPL with exception");
+		m->declare("music.lib/name", "Music Library");
+		m->declare("music.lib/version", "1.0");
 	}
 
-	virtual int getNumInputs() 	{ return 1; }
-	virtual int getNumOutputs() 	{ return 1; }
-	static void classInit(int samplingFreq) {
+	virtual int getNumInputs() {
+		return 1;
+		
 	}
+	virtual int getNumOutputs() {
+		return 1;
+		
+	}
+	virtual int getInputRate(int channel) {
+		int rate;
+		switch (channel) {
+			case 0: {
+				rate = 1;
+				break;
+			}
+			default: {
+				rate = -1;
+				break;
+			}
+			
+		}
+		return rate;
+		
+	}
+	virtual int getOutputRate(int channel) {
+		int rate;
+		switch (channel) {
+			case 0: {
+				rate = 1;
+				break;
+			}
+			default: {
+				rate = -1;
+				break;
+			}
+			
+		}
+		return rate;
+		
+	}
+	
+	static void classInit(int samplingFreq) {
+		
+	}
+	
 	virtual void instanceInit(int samplingFreq) {
 		fSamplingFreq = samplingFreq;
-		fslider0 = 1.0f;
-		fslider1 = 1e+03f;
-		fConst0 = (6.283185307179586f / float(min(192000, max(1, fSamplingFreq))));
-		fslider2 = 0.0f;
-		for (int i=0; i<3; i++) fRec0[i] = 0;
+		fHslider0 = FAUSTFLOAT(0.);
+		fConst0 = (6.28319f / float(min(192000, max(1, fSamplingFreq))));
+		fHslider1 = FAUSTFLOAT(1000.);
+		fHslider2 = FAUSTFLOAT(1.);
+		for (int i0 = 0; (i0 < 3); i0 = (i0 + 1)) {
+			fRec0[i0] = 0.f;
+			
+		}
+		
 	}
+	
 	virtual void init(int samplingFreq) {
 		classInit(samplingFreq);
 		instanceInit(samplingFreq);
 	}
+	
 	virtual void buildUserInterface(UI* interface) {
-		interface->openVerticalBox("LowShelf");
-		interface->declare(&fslider1, "OWL", "PARAMETER_B");
-		interface->declare(&fslider1, "style", "knob");
-		interface->addHorizontalSlider("Freq", &fslider1, 1e+03f, 1e+02f, 1e+04f, 1.0f);
-		interface->declare(&fslider2, "OWL", "PARAMETER_A");
-		interface->declare(&fslider2, "style", "knob");
-		interface->declare(&fslider2, "unit", "dB");
-		interface->addHorizontalSlider("Gain", &fslider2, 0.0f, -1e+01f, 1e+01f, 0.1f);
-		interface->declare(&fslider0, "OWL", "PARAMETER_C");
-		interface->declare(&fslider0, "style", "knob");
-		interface->addHorizontalSlider("Q", &fslider0, 1.0f, 0.01f, 1e+02f, 0.01f);
+		interface->openVerticalBox("0x00");
+		interface->declare(&fHslider1, "OWL", "PARAMETER_B");
+		interface->declare(&fHslider1, "style", "knob");
+		interface->addHorizontalSlider("Freq", &fHslider1, 1000.f, 100.f, 10000.f, 1.f);
+		interface->declare(&fHslider0, "OWL", "PARAMETER_A");
+		interface->declare(&fHslider0, "style", "knob");
+		interface->declare(&fHslider0, "unit", "dB");
+		interface->addHorizontalSlider("Gain", &fHslider0, 0.f, -10.f, 10.f, 0.1f);
+		interface->declare(&fHslider2, "OWL", "PARAMETER_C");
+		interface->declare(&fHslider2, "style", "knob");
+		interface->addHorizontalSlider("Q", &fHslider2, 1.f, 0.01f, 100.f, 0.01f);
 		interface->closeBox();
+		
 	}
-	virtual void compute (int count, FAUSTFLOAT** input, FAUSTFLOAT** output) {
-		float 	fSlow0 = (fConst0 * max((float)0, float(fslider1)));
-		float 	fSlow1 = powf(10,(0.025f * float(fslider2)));
-		float 	fSlow2 = ((sqrtf(fSlow1) * sinf(fSlow0)) / max(0.001f, float(fslider0)));
-		float 	fSlow3 = cosf(fSlow0);
-		float 	fSlow4 = ((fSlow1 - 1) * fSlow3);
-		float 	fSlow5 = (fSlow1 + fSlow4);
-		float 	fSlow6 = ((1 + fSlow5) - fSlow2);
-		float 	fSlow7 = (1 + fSlow1);
-		float 	fSlow8 = (fSlow7 * fSlow3);
-		float 	fSlow9 = (0 - (2 * ((fSlow1 + fSlow8) - 1)));
-		float 	fSlow10 = (1 + (fSlow5 + fSlow2));
-		float 	fSlow11 = (1.0f / fSlow10);
-		float 	fSlow12 = (0 - ((fSlow4 + fSlow2) - fSlow7));
-		float 	fSlow13 = (2 * (0 - ((1 + fSlow8) - fSlow1)));
-		float 	fSlow14 = ((1 + (fSlow1 + fSlow2)) - fSlow4);
-		float 	fSlow15 = (fSlow1 / fSlow10);
-		FAUSTFLOAT* input0 = input[0];
-		FAUSTFLOAT* output0 = output[0];
-		for (int i=0; i<count; i++) {
-			float fTemp0 = (float)input0[i];
-			fRec0[0] = (fTemp0 - (fSlow11 * ((fSlow9 * fRec0[1]) + (fSlow6 * fRec0[2]))));
-			output0[i] = (FAUSTFLOAT)(fSlow15 * (((fSlow14 * fRec0[0]) + (fSlow13 * fRec0[1])) + (fSlow12 * fRec0[2])));
-			// post processing
-			fRec0[2] = fRec0[1]; fRec0[1] = fRec0[0];
+	
+	virtual void compute(int count, FAUSTFLOAT** inputs, FAUSTFLOAT** outputs) {
+		FAUSTFLOAT* input0 = inputs[0];
+		FAUSTFLOAT* output0 = outputs[0];
+		float fSlow0 = powf(10.f, (0.025f * float(fHslider0)));
+		float fSlow1 = (fConst0 * max(0.f, float(fHslider1)));
+		float fSlow2 = cosf(fSlow1);
+		float fSlow3 = ((fSlow0 - 1.f) * fSlow2);
+		float fSlow4 = (fSlow0 + fSlow3);
+		float fSlow5 = ((sqrtf(fSlow0) * sinf(fSlow1)) / max(0.001f, float(fHslider2)));
+		float fSlow6 = (1.f + (fSlow4 + fSlow5));
+		float fSlow7 = (fSlow0 / fSlow6);
+		float fSlow8 = ((1.f + (fSlow0 + fSlow5)) - fSlow3);
+		float fSlow9 = (1.f / fSlow6);
+		float fSlow10 = (1.f + fSlow0);
+		float fSlow11 = (fSlow10 * fSlow2);
+		float fSlow12 = (0.f - (2.f * ((fSlow0 + fSlow11) - 1.f)));
+		float fSlow13 = ((1.f + fSlow4) - fSlow5);
+		float fSlow14 = (2.f * (0.f - ((1.f + fSlow11) - fSlow0)));
+		float fSlow15 = (0.f - ((fSlow3 + fSlow5) - fSlow10));
+		for (int i = 0; (i < count); i = (i + 1)) {
+			float fTemp0 = float(input0[i]);
+			fRec0[0] = (fTemp0 - (fSlow9 * ((fSlow12 * fRec0[1]) + (fSlow13 * fRec0[2]))));
+			output0[i] = FAUSTFLOAT((fSlow7 * (((fSlow8 * fRec0[0]) + (fSlow14 * fRec0[1])) + (fSlow15 * fRec0[2]))));
+			fRec0[2] = fRec0[1];
+			fRec0[1] = fRec0[0];
+			
 		}
+		
 	}
-};
 
+	
+};
 
 
 /***************************END USER SECTION ***************************/
@@ -466,3 +526,5 @@ public:
 
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////
+
+#endif

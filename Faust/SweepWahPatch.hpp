@@ -2,8 +2,8 @@
 Code generated with Faust 2.0.a34 (http://faust.grame.fr)
 ------------------------------------------------------------ */
 
-#ifndef  __StereoEcho_H__
-#define  __StereoEcho_H__
+#ifndef  __SweepWah_H__
+#define  __SweepWah_H__
 /************************************************************************
 
 	IMPORTANT NOTE : this file contains two clearly delimited sections :
@@ -40,8 +40,8 @@ Code generated with Faust 2.0.a34 (http://faust.grame.fr)
  ************************************************************************
  ************************************************************************/
 
-#ifndef __StereoEchoPatch_h__
-#define __StereoEchoPatch_h__
+#ifndef __SweepWahPatch_h__
+#define __SweepWahPatch_h__
 
 #include "StompBox.h"
 #include <cstddef>
@@ -317,44 +317,86 @@ class OwlUI : public UI
 #define FAUSTFLOAT float
 #endif  
 
+#include <math.h>
 
+float faustpower2_f(float value) {
+	return (value * value);
+	
+}
 
 #ifndef FAUSTCLASS 
-#define FAUSTCLASS StereoEcho
+#define FAUSTCLASS SweepWah
 #endif
 
-class StereoEcho : public dsp {
+class SweepWah : public dsp {
 	
   private:
 	
-	float fRec0[65536];
-	float fRec1[65536];
+	float fRec0[3];
+	int iVec0[2];
+	float fRec2[2];
+	float fRec3[2];
+	float fRec1[2];
+	float fRec4[2];
+	float fRec5[2];
 	FAUSTFLOAT fHslider0;
-	FAUSTFLOAT fHslider1;
-	int IOTA;
 	int fSamplingFreq;
+	int iConst0;
+	float fConst1;
+	FAUSTFLOAT fHslider1;
+	float fConst2;
+	FAUSTFLOAT fHslider2;
+	FAUSTFLOAT fHslider3;
+	float fConst3;
 	
   public:
 	
 	void static metadata(Meta* m) { 
+		m->declare("effect.lib/author", "Julius O. Smith (jos at ccrma.stanford.edu)");
+		m->declare("effect.lib/copyright", "Julius O. Smith III");
+		m->declare("effect.lib/exciter_author", "Priyanka Shekar (pshekar@ccrma.stanford.edu)");
+		m->declare("effect.lib/exciter_copyright", "Copyright (c) 2013 Priyanka Shekar");
+		m->declare("effect.lib/exciter_license", "MIT License (MIT)");
+		m->declare("effect.lib/exciter_name", "Harmonic Exciter");
+		m->declare("effect.lib/exciter_version", "1.0");
+		m->declare("effect.lib/license", "STK-4.3");
+		m->declare("effect.lib/name", "Faust Audio Effect Library");
+		m->declare("effect.lib/version", "1.33");
+		m->declare("filter.lib/author", "Julius O. Smith (jos at ccrma.stanford.edu)");
+		m->declare("filter.lib/copyright", "Julius O. Smith III");
+		m->declare("filter.lib/license", "STK-4.3");
+		m->declare("filter.lib/name", "Faust Filter Library");
+		m->declare("filter.lib/reference", "https://ccrma.stanford.edu/~jos/filters/");
+		m->declare("filter.lib/version", "1.29");
+		m->declare("math.lib/author", "GRAME");
+		m->declare("math.lib/copyright", "GRAME");
+		m->declare("math.lib/license", "LGPL with exception");
+		m->declare("math.lib/name", "Math Library");
+		m->declare("math.lib/version", "1.0");
+		m->declare("music.lib/author", "GRAME");
+		m->declare("music.lib/copyright", "GRAME");
+		m->declare("music.lib/license", "LGPL with exception");
+		m->declare("music.lib/name", "Music Library");
+		m->declare("music.lib/version", "1.0");
+		m->declare("oscillator.lib/author", "Julius O. Smith (jos at ccrma.stanford.edu)");
+		m->declare("oscillator.lib/copyright", "Julius O. Smith III");
+		m->declare("oscillator.lib/license", "STK-4.3");
+		m->declare("oscillator.lib/name", "Faust Oscillator Library");
+		m->declare("oscillator.lib/version", "1.11");
 	}
 
 	virtual int getNumInputs() {
-		return 2;
+		return 1;
 		
 	}
 	virtual int getNumOutputs() {
-		return 2;
+		return 1;
 		
 	}
 	virtual int getInputRate(int channel) {
 		int rate;
 		switch (channel) {
 			case 0: {
-				rate = 1;
-				break;
-			}
-			case 1: {
 				rate = 1;
 				break;
 			}
@@ -374,10 +416,6 @@ class StereoEcho : public dsp {
 				rate = 1;
 				break;
 			}
-			case 1: {
-				rate = 1;
-				break;
-			}
 			default: {
 				rate = -1;
 				break;
@@ -394,15 +432,40 @@ class StereoEcho : public dsp {
 	
 	virtual void instanceInit(int samplingFreq) {
 		fSamplingFreq = samplingFreq;
-		fHslider0 = FAUSTFLOAT(0.);
-		fHslider1 = FAUSTFLOAT(0.);
-		IOTA = 0;
-		for (int i0 = 0; (i0 < 65536); i0 = (i0 + 1)) {
-			fRec0[i0] = 0.f;
+		fHslider0 = FAUSTFLOAT(0.5);
+		for (int i0 = 0; (i0 < 2); i0 = (i0 + 1)) {
+			iVec0[i0] = 0;
 			
 		}
-		for (int i1 = 0; (i1 < 65536); i1 = (i1 + 1)) {
-			fRec1[i1] = 0.f;
+		iConst0 = min(192000, max(1, fSamplingFreq));
+		fConst1 = (1413.72f / float(iConst0));
+		fHslider1 = FAUSTFLOAT(0.8);
+		fConst2 = (6.28319f / float(iConst0));
+		fHslider2 = FAUSTFLOAT(4.);
+		for (int i1 = 0; (i1 < 2); i1 = (i1 + 1)) {
+			fRec2[i1] = 0.f;
+			
+		}
+		for (int i2 = 0; (i2 < 2); i2 = (i2 + 1)) {
+			fRec3[i2] = 0.f;
+			
+		}
+		fHslider3 = FAUSTFLOAT(0.8);
+		fConst3 = (2827.43f / float(iConst0));
+		for (int i3 = 0; (i3 < 2); i3 = (i3 + 1)) {
+			fRec1[i3] = 0.f;
+			
+		}
+		for (int i4 = 0; (i4 < 2); i4 = (i4 + 1)) {
+			fRec4[i4] = 0.f;
+			
+		}
+		for (int i5 = 0; (i5 < 2); i5 = (i5 + 1)) {
+			fRec5[i5] = 0.f;
+			
+		}
+		for (int i6 = 0; (i6 < 3); i6 = (i6 + 1)) {
+			fRec0[i6] = 0.f;
 			
 		}
 		
@@ -414,30 +477,53 @@ class StereoEcho : public dsp {
 	}
 	
 	virtual void buildUserInterface(UI* interface) {
-		interface->openVerticalBox("stereoecho");
+		interface->openVerticalBox("0x00");
+		interface->declare(&fHslider0, "OWL", "PARAMETER_D");
+		interface->addHorizontalSlider("Dry/Wet", &fHslider0, 0.5f, 0.f, 1.f, 0.01f);
+		interface->declare(&fHslider2, "OWL", "PARAMETER_C");
+		interface->declare(&fHslider2, "unit", "Hz");
+		interface->addHorizontalSlider("Frequency", &fHslider2, 4.f, 0.f, 12.f, 0.001f);
+		interface->declare(&fHslider3, "OWL", "PARAMETER_B");
+		interface->addHorizontalSlider("High", &fHslider3, 0.8f, 0.f, 1.f, 0.01f);
 		interface->declare(&fHslider1, "OWL", "PARAMETER_A");
-		interface->addHorizontalSlider("Delay", &fHslider1, 0.f, 0.f, 1000.f, 0.1f);
-		interface->declare(&fHslider0, "OWL", "PARAMETER_B");
-		interface->addHorizontalSlider("Feedback", &fHslider0, 0.f, 0.f, 1.f, 0.01f);
+		interface->addHorizontalSlider("Low", &fHslider1, 0.8f, 0.f, 1.f, 0.01f);
 		interface->closeBox();
 		
 	}
 	
 	virtual void compute(int count, FAUSTFLOAT** inputs, FAUSTFLOAT** outputs) {
 		FAUSTFLOAT* input0 = inputs[0];
-		FAUSTFLOAT* input1 = inputs[1];
 		FAUSTFLOAT* output0 = outputs[0];
-		FAUSTFLOAT* output1 = outputs[1];
 		float fSlow0 = float(fHslider0);
-		int iSlow1 = int((1 + int((48.f * float(fHslider1)))));
+		float fSlow1 = (0.5f * float(fHslider1));
+		float fSlow2 = (fConst2 * float(fHslider2));
+		float fSlow3 = sinf(fSlow2);
+		float fSlow4 = cosf(fSlow2);
+		float fSlow5 = (0.f - fSlow3);
+		float fSlow6 = float(fHslider3);
+		float fSlow7 = (1.f - fSlow0);
 		for (int i = 0; (i < count); i = (i + 1)) {
 			float fTemp0 = float(input0[i]);
-			float fTemp1 = float(input1[i]);
-			fRec0[(IOTA & 65535)] = ((fSlow0 * fRec0[((IOTA - iSlow1) & 65535)]) + fTemp0);
-			output0[i] = FAUSTFLOAT(fRec0[((IOTA - 0) & 65535)]);
-			fRec1[(IOTA & 65535)] = ((fSlow0 * fRec1[((IOTA - iSlow1) & 65535)]) + fTemp1);
-			output1[i] = FAUSTFLOAT(fRec1[((IOTA - 0) & 65535)]);
-			IOTA = (IOTA + 1);
+			iVec0[0] = 1;
+			fRec2[0] = ((fSlow3 * fRec3[1]) + (fSlow4 * fRec2[1]));
+			fRec3[0] = ((1.f + ((fSlow4 * fRec3[1]) + (fSlow5 * fRec2[1]))) - float(iVec0[1]));
+			float fTemp1 = (1.f + fRec2[0]);
+			float fTemp2 = ((fSlow1 * fTemp1) + (fSlow6 * (1.f - (0.5f * fTemp1))));
+			float fTemp3 = powf(2.f, (2.3f * fTemp2));
+			float fTemp4 = (1.f - (fConst1 * (fTemp3 / powf(2.f, (1.f + (2.f * (1.f - fTemp2)))))));
+			fRec1[0] = ((0.999f * fRec1[1]) + (0.001f * (0.f - (2.f * (fTemp4 * cosf((fConst3 * fTemp3)))))));
+			fRec4[0] = ((0.999f * fRec4[1]) + (0.001f * faustpower2_f(fTemp4)));
+			fRec5[0] = ((0.999f * fRec5[1]) + (0.0001f * powf(4.f, fTemp2)));
+			fRec0[0] = (0.f - (((fRec1[0] * fRec0[1]) + (fRec4[0] * fRec0[2])) - (fRec5[0] * fTemp0)));
+			output0[i] = FAUSTFLOAT(((fSlow0 * (fRec0[0] - fRec0[1])) + (fSlow7 * fTemp0)));
+			iVec0[1] = iVec0[0];
+			fRec2[1] = fRec2[0];
+			fRec3[1] = fRec3[0];
+			fRec1[1] = fRec1[0];
+			fRec4[1] = fRec4[0];
+			fRec5[1] = fRec5[0];
+			fRec0[2] = fRec0[1];
+			fRec0[1] = fRec0[0];
 			
 		}
 		
@@ -455,18 +541,18 @@ class StereoEcho : public dsp {
 
 /**************************************************************************************
 
-	StereoEchoPatch : an OWL patch that calls Faust generated DSP code
+	SweepWahPatch : an OWL patch that calls Faust generated DSP code
 	
 ***************************************************************************************/
 
-class StereoEchoPatch : public Patch
+class SweepWahPatch : public Patch
 {
-    StereoEcho   fDSP;
+    SweepWah   fDSP;
     OwlUI	fUI;
     
 public:
 
-    StereoEchoPatch() : fUI(this)
+    SweepWahPatch() : fUI(this)
     {
         fDSP.init(int(getSampleRate()));		// Init Faust code with the OWL sampling rate
         fDSP.buildUserInterface(&fUI);			// Maps owl parameters and faust widgets 
@@ -501,7 +587,7 @@ public:
 
 };
 
-#endif // __StereoEchoPatch_h__
+#endif // __SweepWahPatch_h__
 
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////

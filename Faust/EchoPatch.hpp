@@ -1,14 +1,14 @@
-//-----------------------------------------------------
-// name: "echo"
-// version: "1.0"
-// author: "Grame"
-// license: "BSD"
-// copyright: "(c)GRAME 2006"
-//
-// Code generated with Faust 0.9.67 (http://faust.grame.fr)
-//-----------------------------------------------------
-/* link with  */
-#include <math.h>
+/* ------------------------------------------------------------
+author: "Grame"
+copyright: "(c)GRAME 2006"
+license: "BSD"
+name: "echo"
+version: "1.0"
+Code generated with Faust 2.0.a34 (http://faust.grame.fr)
+------------------------------------------------------------ */
+
+#ifndef  __Echo_H__
+#define  __Echo_H__
 /************************************************************************
 
 	IMPORTANT NOTE : this file contains two clearly delimited sections :
@@ -111,12 +111,14 @@
 class UI;
 
 //----------------------------------------------------------------
-//  signal processor definition
+//  Signal processor definition
 //----------------------------------------------------------------
 
 class dsp {
+
  protected:
 	int fSamplingFreq;
+    
  public:
 	dsp() {}
 	virtual ~dsp() {}
@@ -320,77 +322,134 @@ class OwlUI : public UI
 #define FAUSTFLOAT float
 #endif  
 
-typedef long double quad;
+#include <math.h>
+
 
 #ifndef FAUSTCLASS 
 #define FAUSTCLASS Echo
 #endif
 
 class Echo : public dsp {
+	
   private:
-	FAUSTFLOAT 	fslider0;
-	float 	fConst0;
-	FAUSTFLOAT 	fslider1;
-	int 	IOTA;
-	float 	fRec0[131072];
+	
+	float fRec0[131072];
+	FAUSTFLOAT fHslider0;
+	int fSamplingFreq;
+	float fConst0;
+	FAUSTFLOAT fHslider1;
+	int IOTA;
+	
   public:
-	static void metadata(Meta* m) 	{ 
-		m->declare("name", "echo");
-		m->declare("version", "1.0");
+	
+	void static metadata(Meta* m) { 
 		m->declare("author", "Grame");
-		m->declare("license", "BSD");
 		m->declare("copyright", "(c)GRAME 2006");
-		m->declare("music.lib/name", "Music Library");
-		m->declare("music.lib/author", "GRAME");
-		m->declare("music.lib/copyright", "GRAME");
-		m->declare("music.lib/version", "1.0");
-		m->declare("music.lib/license", "LGPL with exception");
-		m->declare("math.lib/name", "Math Library");
+		m->declare("license", "BSD");
 		m->declare("math.lib/author", "GRAME");
 		m->declare("math.lib/copyright", "GRAME");
-		m->declare("math.lib/version", "1.0");
 		m->declare("math.lib/license", "LGPL with exception");
+		m->declare("math.lib/name", "Math Library");
+		m->declare("math.lib/version", "1.0");
+		m->declare("music.lib/author", "GRAME");
+		m->declare("music.lib/copyright", "GRAME");
+		m->declare("music.lib/license", "LGPL with exception");
+		m->declare("music.lib/name", "Music Library");
+		m->declare("music.lib/version", "1.0");
+		m->declare("name", "echo");
+		m->declare("version", "1.0");
 	}
 
-	virtual int getNumInputs() 	{ return 1; }
-	virtual int getNumOutputs() 	{ return 1; }
-	static void classInit(int samplingFreq) {
+	virtual int getNumInputs() {
+		return 1;
+		
 	}
+	virtual int getNumOutputs() {
+		return 1;
+		
+	}
+	virtual int getInputRate(int channel) {
+		int rate;
+		switch (channel) {
+			case 0: {
+				rate = 1;
+				break;
+			}
+			default: {
+				rate = -1;
+				break;
+			}
+			
+		}
+		return rate;
+		
+	}
+	virtual int getOutputRate(int channel) {
+		int rate;
+		switch (channel) {
+			case 0: {
+				rate = 1;
+				break;
+			}
+			default: {
+				rate = -1;
+				break;
+			}
+			
+		}
+		return rate;
+		
+	}
+	
+	static void classInit(int samplingFreq) {
+		
+	}
+	
 	virtual void instanceInit(int samplingFreq) {
 		fSamplingFreq = samplingFreq;
-		fslider0 = 0.0f;
-		fConst0 = (0.001f * min(192000, max(1, fSamplingFreq)));
-		fslider1 = 0.0f;
+		fHslider0 = FAUSTFLOAT(0.);
+		fConst0 = (0.001f * float(min(192000, max(1, fSamplingFreq))));
+		fHslider1 = FAUSTFLOAT(0.);
 		IOTA = 0;
-		for (int i=0; i<131072; i++) fRec0[i] = 0;
+		for (int i0 = 0; (i0 < 131072); i0 = (i0 + 1)) {
+			fRec0[i0] = 0.f;
+			
+		}
+		
 	}
+	
 	virtual void init(int samplingFreq) {
 		classInit(samplingFreq);
 		instanceInit(samplingFreq);
 	}
+	
 	virtual void buildUserInterface(UI* interface) {
 		interface->openVerticalBox("echo-simple");
 		interface->openVerticalBox("echo  1000");
-		interface->addHorizontalSlider("feedback", &fslider1, 0.0f, 0.0f, 1e+02f, 0.1f);
-		interface->addHorizontalSlider("millisecond", &fslider0, 0.0f, 0.0f, 1e+03f, 0.1f);
+		interface->addHorizontalSlider("feedback", &fHslider0, 0.f, 0.f, 100.f, 0.1f);
+		interface->addHorizontalSlider("millisecond", &fHslider1, 0.f, 0.f, 1000.f, 0.1f);
 		interface->closeBox();
 		interface->closeBox();
+		
 	}
-	virtual void compute (int count, FAUSTFLOAT** input, FAUSTFLOAT** output) {
-		int 	iSlow0 = int((1 + int((int((int((fConst0 * float(fslider0))) - 1)) & 65535))));
-		float 	fSlow1 = (0.01f * float(fslider1));
-		FAUSTFLOAT* input0 = input[0];
-		FAUSTFLOAT* output0 = output[0];
-		for (int i=0; i<count; i++) {
-			float fTemp0 = (float)input0[i];
-			fRec0[IOTA&131071] = (fTemp0 + (fSlow1 * fRec0[(IOTA-iSlow0)&131071]));
-			output0[i] = (FAUSTFLOAT)fRec0[(IOTA-0)&131071];
-			// post processing
-			IOTA = IOTA+1;
+	
+	virtual void compute(int count, FAUSTFLOAT** inputs, FAUSTFLOAT** outputs) {
+		FAUSTFLOAT* input0 = inputs[0];
+		FAUSTFLOAT* output0 = outputs[0];
+		float fSlow0 = (0.01f * float(fHslider0));
+		int iSlow1 = int((1 + int((int((int((fConst0 * float(fHslider1))) - 1)) & 65535))));
+		for (int i = 0; (i < count); i = (i + 1)) {
+			float fTemp0 = float(input0[i]);
+			fRec0[(IOTA & 131071)] = ((fSlow0 * fRec0[((IOTA - iSlow1) & 131071)]) + fTemp0);
+			output0[i] = FAUSTFLOAT(fRec0[((IOTA - 0) & 131071)]);
+			IOTA = (IOTA + 1);
+			
 		}
+		
 	}
-};
 
+	
+};
 
 
 /***************************END USER SECTION ***************************/
@@ -451,3 +510,5 @@ public:
 
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////
+
+#endif

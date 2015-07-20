@@ -1,19 +1,11 @@
-//-----------------------------------------------------
-// name: "Harpe"
-// author: "Grame"
-//
-// Code generated with Faust 0.9.67 (http://faust.grame.fr)
-//-----------------------------------------------------
-/* link with  */
-#ifndef FAUSTPOWER
-#define FAUSTPOWER
-#include <cmath>
-template <int N> inline float faustpower(float x)          { return powf(x,N); } 
-template <int N> inline double faustpower(double x)        { return pow(x,N); }
-template <int N> inline int faustpower(int x)              { return faustpower<N/2>(x) * faustpower<N-N/2>(x); } 
-template <> 	 inline int faustpower<0>(int x)            { return 1; }
-template <> 	 inline int faustpower<1>(int x)            { return x; }
-#endif
+/* ------------------------------------------------------------
+author: "Grame"
+name: "Harpe"
+Code generated with Faust 2.0.a34 (http://faust.grame.fr)
+------------------------------------------------------------ */
+
+#ifndef  __Harp_H__
+#define  __Harp_H__
 /************************************************************************
 
 	IMPORTANT NOTE : this file contains two clearly delimited sections :
@@ -116,12 +108,14 @@ template <> 	 inline int faustpower<1>(int x)            { return x; }
 class UI;
 
 //----------------------------------------------------------------
-//  signal processor definition
+//  Signal processor definition
 //----------------------------------------------------------------
 
 class dsp {
+
  protected:
 	int fSamplingFreq;
+    
  public:
 	dsp() {}
 	virtual ~dsp() {}
@@ -325,174 +319,315 @@ class OwlUI : public UI
 #define FAUSTFLOAT float
 #endif  
 
-typedef long double quad;
+
+float faustpower2_f(float value) {
+	return (value * value);
+	
+}
 
 #ifndef FAUSTCLASS 
 #define FAUSTCLASS Harp
 #endif
 
 class Harp : public dsp {
+	
   private:
-	FAUSTFLOAT 	fslider0;
-	float 	fRec2[2];
-	int 	iVec0[2];
-	float 	fRec1[2];
-	int 	iRec3[2];
-	FAUSTFLOAT 	fslider1;
-	FAUSTFLOAT 	fslider2;
-	int 	IOTA;
-	float 	fVec1[64];
-	float 	fRec0[3];
-	int 	iVec2[2];
-	float 	fRec5[2];
-	float 	fVec3[64];
-	float 	fRec4[3];
-	int 	iVec4[2];
-	float 	fRec7[2];
-	float 	fVec5[128];
-	float 	fRec6[3];
-	int 	iVec6[2];
-	float 	fRec9[2];
-	float 	fVec7[128];
-	float 	fRec8[3];
-	int 	iVec8[2];
-	float 	fRec11[2];
-	float 	fVec9[128];
-	float 	fRec10[3];
-	int 	iVec10[2];
-	float 	fRec13[2];
-	float 	fVec11[128];
-	float 	fRec12[3];
+	
+	float fVec1[128];
+	float fVec3[128];
+	float fVec5[128];
+	float fVec7[128];
+	float fVec9[64];
+	float fVec11[64];
+	float fRec0[3];
+	float fRec4[3];
+	float fRec6[3];
+	float fRec8[3];
+	float fRec10[3];
+	float fRec12[3];
+	int iRec1[2];
+	float fRec3[2];
+	int iVec0[2];
+	float fRec2[2];
+	int iVec2[2];
+	float fRec5[2];
+	int iVec4[2];
+	float fRec7[2];
+	int iVec6[2];
+	float fRec9[2];
+	int iVec8[2];
+	float fRec11[2];
+	int iVec10[2];
+	float fRec13[2];
+	FAUSTFLOAT fHslider0;
+	FAUSTFLOAT fHslider1;
+	FAUSTFLOAT fHslider2;
+	int IOTA;
+	int fSamplingFreq;
+	
   public:
-	static void metadata(Meta* m) 	{ 
-		m->declare("name", "Harpe");
+	
+	void static metadata(Meta* m) { 
 		m->declare("author", "Grame");
+		m->declare("name", "Harpe");
 	}
 
-	virtual int getNumInputs() 	{ return 0; }
-	virtual int getNumOutputs() 	{ return 2; }
-	static void classInit(int samplingFreq) {
+	virtual int getNumInputs() {
+		return 0;
+		
 	}
+	virtual int getNumOutputs() {
+		return 2;
+		
+	}
+	virtual int getInputRate(int channel) {
+		int rate;
+		switch (channel) {
+			default: {
+				rate = -1;
+				break;
+			}
+			
+		}
+		return rate;
+		
+	}
+	virtual int getOutputRate(int channel) {
+		int rate;
+		switch (channel) {
+			case 0: {
+				rate = 1;
+				break;
+			}
+			case 1: {
+				rate = 1;
+				break;
+			}
+			default: {
+				rate = -1;
+				break;
+			}
+			
+		}
+		return rate;
+		
+	}
+	
+	static void classInit(int samplingFreq) {
+		
+	}
+	
 	virtual void instanceInit(int samplingFreq) {
 		fSamplingFreq = samplingFreq;
-		fslider0 = 0.0f;
-		for (int i=0; i<2; i++) fRec2[i] = 0;
-		for (int i=0; i<2; i++) iVec0[i] = 0;
-		for (int i=0; i<2; i++) fRec1[i] = 0;
-		for (int i=0; i<2; i++) iRec3[i] = 0;
-		fslider1 = 0.5f;
-		fslider2 = 0.005f;
+		fHslider0 = FAUSTFLOAT(0.005);
+		fHslider1 = FAUSTFLOAT(0.5);
+		for (int i0 = 0; (i0 < 2); i0 = (i0 + 1)) {
+			iRec1[i0] = 0;
+			
+		}
+		fHslider2 = FAUSTFLOAT(0.);
+		for (int i1 = 0; (i1 < 2); i1 = (i1 + 1)) {
+			fRec3[i1] = 0.f;
+			
+		}
+		for (int i2 = 0; (i2 < 2); i2 = (i2 + 1)) {
+			iVec0[i2] = 0;
+			
+		}
+		for (int i3 = 0; (i3 < 2); i3 = (i3 + 1)) {
+			fRec2[i3] = 0.f;
+			
+		}
 		IOTA = 0;
-		for (int i=0; i<64; i++) fVec1[i] = 0;
-		for (int i=0; i<3; i++) fRec0[i] = 0;
-		for (int i=0; i<2; i++) iVec2[i] = 0;
-		for (int i=0; i<2; i++) fRec5[i] = 0;
-		for (int i=0; i<64; i++) fVec3[i] = 0;
-		for (int i=0; i<3; i++) fRec4[i] = 0;
-		for (int i=0; i<2; i++) iVec4[i] = 0;
-		for (int i=0; i<2; i++) fRec7[i] = 0;
-		for (int i=0; i<128; i++) fVec5[i] = 0;
-		for (int i=0; i<3; i++) fRec6[i] = 0;
-		for (int i=0; i<2; i++) iVec6[i] = 0;
-		for (int i=0; i<2; i++) fRec9[i] = 0;
-		for (int i=0; i<128; i++) fVec7[i] = 0;
-		for (int i=0; i<3; i++) fRec8[i] = 0;
-		for (int i=0; i<2; i++) iVec8[i] = 0;
-		for (int i=0; i<2; i++) fRec11[i] = 0;
-		for (int i=0; i<128; i++) fVec9[i] = 0;
-		for (int i=0; i<3; i++) fRec10[i] = 0;
-		for (int i=0; i<2; i++) iVec10[i] = 0;
-		for (int i=0; i<2; i++) fRec13[i] = 0;
-		for (int i=0; i<128; i++) fVec11[i] = 0;
-		for (int i=0; i<3; i++) fRec12[i] = 0;
+		for (int i4 = 0; (i4 < 128); i4 = (i4 + 1)) {
+			fVec1[i4] = 0.f;
+			
+		}
+		for (int i5 = 0; (i5 < 3); i5 = (i5 + 1)) {
+			fRec0[i5] = 0.f;
+			
+		}
+		for (int i6 = 0; (i6 < 2); i6 = (i6 + 1)) {
+			iVec2[i6] = 0;
+			
+		}
+		for (int i7 = 0; (i7 < 2); i7 = (i7 + 1)) {
+			fRec5[i7] = 0.f;
+			
+		}
+		for (int i8 = 0; (i8 < 128); i8 = (i8 + 1)) {
+			fVec3[i8] = 0.f;
+			
+		}
+		for (int i9 = 0; (i9 < 3); i9 = (i9 + 1)) {
+			fRec4[i9] = 0.f;
+			
+		}
+		for (int i10 = 0; (i10 < 2); i10 = (i10 + 1)) {
+			iVec4[i10] = 0;
+			
+		}
+		for (int i11 = 0; (i11 < 2); i11 = (i11 + 1)) {
+			fRec7[i11] = 0.f;
+			
+		}
+		for (int i12 = 0; (i12 < 128); i12 = (i12 + 1)) {
+			fVec5[i12] = 0.f;
+			
+		}
+		for (int i13 = 0; (i13 < 3); i13 = (i13 + 1)) {
+			fRec6[i13] = 0.f;
+			
+		}
+		for (int i14 = 0; (i14 < 2); i14 = (i14 + 1)) {
+			iVec6[i14] = 0;
+			
+		}
+		for (int i15 = 0; (i15 < 2); i15 = (i15 + 1)) {
+			fRec9[i15] = 0.f;
+			
+		}
+		for (int i16 = 0; (i16 < 128); i16 = (i16 + 1)) {
+			fVec7[i16] = 0.f;
+			
+		}
+		for (int i17 = 0; (i17 < 3); i17 = (i17 + 1)) {
+			fRec8[i17] = 0.f;
+			
+		}
+		for (int i18 = 0; (i18 < 2); i18 = (i18 + 1)) {
+			iVec8[i18] = 0;
+			
+		}
+		for (int i19 = 0; (i19 < 2); i19 = (i19 + 1)) {
+			fRec11[i19] = 0.f;
+			
+		}
+		for (int i20 = 0; (i20 < 64); i20 = (i20 + 1)) {
+			fVec9[i20] = 0.f;
+			
+		}
+		for (int i21 = 0; (i21 < 3); i21 = (i21 + 1)) {
+			fRec10[i21] = 0.f;
+			
+		}
+		for (int i22 = 0; (i22 < 2); i22 = (i22 + 1)) {
+			iVec10[i22] = 0;
+			
+		}
+		for (int i23 = 0; (i23 < 2); i23 = (i23 + 1)) {
+			fRec13[i23] = 0.f;
+			
+		}
+		for (int i24 = 0; (i24 < 64); i24 = (i24 + 1)) {
+			fVec11[i24] = 0.f;
+			
+		}
+		for (int i25 = 0; (i25 < 3); i25 = (i25 + 1)) {
+			fRec12[i25] = 0.f;
+			
+		}
+		
 	}
+	
 	virtual void init(int samplingFreq) {
 		classInit(samplingFreq);
 		instanceInit(samplingFreq);
 	}
+	
 	virtual void buildUserInterface(UI* interface) {
-		interface->openVerticalBox("Harp");
-		interface->declare(&fslider2, "OWL", "PARAMETER_B");
-		interface->declare(&fslider2, "osc", "/1/fader3");
-		interface->addHorizontalSlider("Attenuation", &fslider2, 0.005f, 0.0f, 0.01f, 0.001f);
-		interface->declare(&fslider0, "OWL", "PARAMETER_C");
-		interface->declare(&fslider0, "osc", "/accxyz/1 -10 10");
-		interface->addHorizontalSlider("Hand", &fslider0, 0.0f, 0.0f, 1.0f, 0.01f);
-		interface->declare(&fslider1, "OWL", "PARAMETER_A");
-		interface->declare(&fslider1, "osc", "/accxyz/0 -10 10");
-		interface->declare(&fslider1, "unit", "f");
-		interface->addHorizontalSlider("Level", &fslider1, 0.5f, 0.0f, 1.0f, 0.01f);
+		interface->openVerticalBox("0x00");
+		interface->declare(&fHslider0, "OWL", "PARAMETER_B");
+		interface->declare(&fHslider0, "osc", "/1/fader3");
+		interface->addHorizontalSlider("Attenuation", &fHslider0, 0.005f, 0.f, 0.01f, 0.001f);
+		interface->declare(&fHslider2, "OWL", "PARAMETER_C");
+		interface->declare(&fHslider2, "osc", "/accxyz/1 -10 10");
+		interface->addHorizontalSlider("Hand", &fHslider2, 0.f, 0.f, 1.f, 0.01f);
+		interface->declare(&fHslider1, "OWL", "PARAMETER_A");
+		interface->declare(&fHslider1, "osc", "/accxyz/0 -10 10");
+		interface->declare(&fHslider1, "unit", "f");
+		interface->addHorizontalSlider("Level", &fHslider1, 0.5f, 0.f, 1.f, 0.01f);
 		interface->closeBox();
+		
 	}
-	virtual void compute (int count, FAUSTFLOAT** input, FAUSTFLOAT** output) {
-		float 	fSlow0 = (0.09999999999999998f * float(fslider0));
-		float 	fSlow1 = (4.656612875245797e-10f * faustpower<2>(float(fslider1)));
-		float 	fSlow2 = (0.5f * (1.0f - float(fslider2)));
-		FAUSTFLOAT* output0 = output[0];
-		FAUSTFLOAT* output1 = output[1];
-		for (int i=0; i<count; i++) {
-			fRec2[0] = ((0.9f * fRec2[1]) + fSlow0);
-			float fTemp0 = max(fRec2[0], fRec2[1]);
-			float fTemp1 = min(fRec2[0], fRec2[1]);
-			int iTemp2 = ((fTemp1 < 0.9166666666666666f) & (0.9166666666666666f < fTemp0));
+	
+	virtual void compute(int count, FAUSTFLOAT** inputs, FAUSTFLOAT** outputs) {
+		FAUSTFLOAT* output0 = outputs[0];
+		FAUSTFLOAT* output1 = outputs[1];
+		float fSlow0 = (0.5f * (1.f - float(fHslider0)));
+		float fSlow1 = (4.65661e-10f * faustpower2_f(float(fHslider1)));
+		float fSlow2 = (0.1f * float(fHslider2));
+		for (int i = 0; (i < count); i = (i + 1)) {
+			iRec1[0] = (12345 + (1103515245 * iRec1[1]));
+			fRec3[0] = ((0.9f * fRec3[1]) + fSlow2);
+			float fTemp0 = min(fRec3[0], fRec3[1]);
+			float fTemp1 = max(fRec3[0], fRec3[1]);
+			int iTemp2 = (int((fTemp0 < 0.0833333f)) & int((0.0833333f < fTemp1)));
 			iVec0[0] = iTemp2;
-			fRec1[0] = ((fRec1[1] + ((iVec0[0] - iVec0[1]) > 0.0f)) - (0.019954648526077097f * (fRec1[1] > 0.0f)));
-			iRec3[0] = (12345 + (1103515245 * iRec3[1]));
-			fVec1[IOTA&63] = ((fSlow2 * (fRec0[1] + fRec0[2])) + (fSlow1 * (iRec3[0] * (fRec1[0] > 0.0f))));
-			fRec0[0] = fVec1[(IOTA-49)&63];
-			int iTemp3 = ((fTemp1 < 0.75f) & (0.75f < fTemp0));
+			fRec2[0] = ((fRec2[1] + float(int((float((iTemp2 - iVec0[1])) > 0.f)))) - (0.00997732f * float(int((fRec2[1] > 0.f)))));
+			fVec1[(IOTA & 127)] = ((fSlow0 * (fRec0[1] + fRec0[2])) + (fSlow1 * float((iRec1[0] * int((fRec2[0] > 0.f))))));
+			fRec0[0] = fVec1[((IOTA - 99) & 127)];
+			int iTemp3 = (int((fTemp0 < 0.25f)) & int((0.25f < fTemp1)));
 			iVec2[0] = iTemp3;
-			fRec5[0] = ((fRec5[1] + ((iVec2[0] - iVec2[1]) > 0.0f)) - (0.01737153051475259f * (fRec5[1] > 0.0f)));
-			fVec3[IOTA&63] = ((fSlow2 * (fRec4[1] + fRec4[2])) + (fSlow1 * (iRec3[0] * (fRec5[0] > 0.0f))));
-			fRec4[0] = fVec3[(IOTA-56)&63];
-			int iTemp4 = ((fTemp1 < 0.5833333333333334f) & (0.5833333333333334f < fTemp0));
+			fRec5[0] = ((fRec5[1] + float(int((float((iTemp3 - iVec2[1])) > 0.f)))) - (0.0114609f * float(int((fRec5[1] > 0.f)))));
+			fVec3[(IOTA & 127)] = ((fSlow0 * (fRec4[1] + fRec4[2])) + (fSlow1 * float((iRec1[0] * int((fRec5[0] > 0.f))))));
+			fRec4[0] = fVec3[((IOTA - 86) & 127)];
+			int iTemp4 = (int((fTemp0 < 0.416667f)) & int((0.416667f < fTemp1)));
 			iVec4[0] = iTemp4;
-			fRec7[0] = ((fRec7[1] + ((iVec4[0] - iVec4[1]) > 0.0f)) - (0.015122795674933676f * (fRec7[1] > 0.0f)));
-			fVec5[IOTA&127] = ((fSlow2 * (fRec6[1] + fRec6[2])) + (fSlow1 * (iRec3[0] * (fRec7[0] > 0.0f))));
-			fRec6[0] = fVec5[(IOTA-65)&127];
-			int iTemp5 = ((fTemp1 < 0.4166666666666667f) & (0.4166666666666667f < fTemp0));
+			fRec7[0] = ((fRec7[1] + float(int((float((iTemp4 - iVec4[1])) > 0.f)))) - (0.0131652f * float(int((fRec7[1] > 0.f)))));
+			fVec5[(IOTA & 127)] = ((fSlow0 * (fRec6[1] + fRec6[2])) + (fSlow1 * float((iRec1[0] * int((fRec7[0] > 0.f))))));
+			fRec6[0] = fVec5[((IOTA - 74) & 127)];
+			int iTemp5 = (int((fTemp0 < 0.583333f)) & int((0.583333f < fTemp1)));
 			iVec6[0] = iTemp5;
-			fRec9[0] = ((fRec9[1] + ((iVec6[0] - iVec6[1]) > 0.0f)) - (0.013165158293425702f * (fRec9[1] > 0.0f)));
-			fVec7[IOTA&127] = ((fSlow2 * (fRec8[1] + fRec8[2])) + (fSlow1 * (iRec3[0] * (fRec9[0] > 0.0f))));
-			fRec8[0] = fVec7[(IOTA-74)&127];
-			int iTemp6 = ((fTemp1 < 0.25f) & (0.25f < fTemp0));
+			fRec9[0] = ((fRec9[1] + float(int((float((iTemp5 - iVec6[1])) > 0.f)))) - (0.0151228f * float(int((fRec9[1] > 0.f)))));
+			fVec7[(IOTA & 127)] = ((fSlow0 * (fRec8[1] + fRec8[2])) + (fSlow1 * float((iRec1[0] * int((fRec9[0] > 0.f))))));
+			fRec8[0] = fVec7[((IOTA - 65) & 127)];
+			int iTemp6 = (int((fTemp0 < 0.75f)) & int((0.75f < fTemp1)));
 			iVec8[0] = iTemp6;
-			fRec11[0] = ((fRec11[1] + ((iVec8[0] - iVec8[1]) > 0.0f)) - (0.011460935968224386f * (fRec11[1] > 0.0f)));
-			fVec9[IOTA&127] = ((fSlow2 * (fRec10[1] + fRec10[2])) + (fSlow1 * (iRec3[0] * (fRec11[0] > 0.0f))));
-			fRec10[0] = fVec9[(IOTA-86)&127];
-			int iTemp7 = ((fTemp1 < 0.08333333333333333f) & (0.08333333333333333f < fTemp0));
+			fRec11[0] = ((fRec11[1] + float(int((float((iTemp6 - iVec8[1])) > 0.f)))) - (0.0173715f * float(int((fRec11[1] > 0.f)))));
+			fVec9[(IOTA & 63)] = ((fSlow0 * (fRec10[1] + fRec10[2])) + (fSlow1 * float((iRec1[0] * int((fRec11[0] > 0.f))))));
+			fRec10[0] = fVec9[((IOTA - 56) & 63)];
+			int iTemp7 = (int((fTemp0 < 0.916667f)) & int((0.916667f < fTemp1)));
 			iVec10[0] = iTemp7;
-			fRec13[0] = ((fRec13[1] + ((iVec10[0] - iVec10[1]) > 0.0f)) - (0.009977324263038548f * (fRec13[1] > 0.0f)));
-			fVec11[IOTA&127] = ((fSlow2 * (fRec12[1] + fRec12[2])) + (fSlow1 * (iRec3[0] * (fRec13[0] > 0.0f))));
-			fRec12[0] = fVec11[(IOTA-99)&127];
-			output0[i] = (FAUSTFLOAT)((((((0.9574271077563381f * fRec12[0]) + (0.8660254037844386f * fRec10[0])) + (0.7637626158259733f * fRec8[0])) + (0.6454972243679028f * fRec6[0])) + (0.5f * fRec4[0])) + (0.2886751345948129f * fRec0[0]));
-			output1[i] = (FAUSTFLOAT)((((((0.28867513459481287f * fRec12[0]) + (0.5f * fRec10[0])) + (0.6454972243679028f * fRec8[0])) + (0.7637626158259734f * fRec6[0])) + (0.8660254037844386f * fRec4[0])) + (0.9574271077563381f * fRec0[0]));
-			// post processing
-			fRec12[2] = fRec12[1]; fRec12[1] = fRec12[0];
-			fRec13[1] = fRec13[0];
-			iVec10[1] = iVec10[0];
-			fRec10[2] = fRec10[1]; fRec10[1] = fRec10[0];
-			fRec11[1] = fRec11[0];
-			iVec8[1] = iVec8[0];
-			fRec8[2] = fRec8[1]; fRec8[1] = fRec8[0];
-			fRec9[1] = fRec9[0];
-			iVec6[1] = iVec6[0];
-			fRec6[2] = fRec6[1]; fRec6[1] = fRec6[0];
-			fRec7[1] = fRec7[0];
-			iVec4[1] = iVec4[0];
-			fRec4[2] = fRec4[1]; fRec4[1] = fRec4[0];
-			fRec5[1] = fRec5[0];
-			iVec2[1] = iVec2[0];
-			fRec0[2] = fRec0[1]; fRec0[1] = fRec0[0];
-			IOTA = IOTA+1;
-			iRec3[1] = iRec3[0];
-			fRec1[1] = fRec1[0];
+			fRec13[0] = ((fRec13[1] + float(int((float((iTemp7 - iVec10[1])) > 0.f)))) - (0.0199546f * float(int((fRec13[1] > 0.f)))));
+			fVec11[(IOTA & 63)] = ((fSlow0 * (fRec12[1] + fRec12[2])) + (fSlow1 * float((iRec1[0] * int((fRec13[0] > 0.f))))));
+			fRec12[0] = fVec11[((IOTA - 49) & 63)];
+			output0[i] = FAUSTFLOAT(((((((0.957427f * fRec0[0]) + (0.866025f * fRec4[0])) + (0.763763f * fRec6[0])) + (0.645497f * fRec8[0])) + (0.5f * fRec10[0])) + (0.288675f * fRec12[0])));
+			output1[i] = FAUSTFLOAT(((((((0.288675f * fRec0[0]) + (0.5f * fRec4[0])) + (0.645497f * fRec6[0])) + (0.763763f * fRec8[0])) + (0.866025f * fRec10[0])) + (0.957427f * fRec12[0])));
+			iRec1[1] = iRec1[0];
+			fRec3[1] = fRec3[0];
 			iVec0[1] = iVec0[0];
 			fRec2[1] = fRec2[0];
+			IOTA = (IOTA + 1);
+			fRec0[2] = fRec0[1];
+			fRec0[1] = fRec0[0];
+			iVec2[1] = iVec2[0];
+			fRec5[1] = fRec5[0];
+			fRec4[2] = fRec4[1];
+			fRec4[1] = fRec4[0];
+			iVec4[1] = iVec4[0];
+			fRec7[1] = fRec7[0];
+			fRec6[2] = fRec6[1];
+			fRec6[1] = fRec6[0];
+			iVec6[1] = iVec6[0];
+			fRec9[1] = fRec9[0];
+			fRec8[2] = fRec8[1];
+			fRec8[1] = fRec8[0];
+			iVec8[1] = iVec8[0];
+			fRec11[1] = fRec11[0];
+			fRec10[2] = fRec10[1];
+			fRec10[1] = fRec10[0];
+			iVec10[1] = iVec10[0];
+			fRec13[1] = fRec13[0];
+			fRec12[2] = fRec12[1];
+			fRec12[1] = fRec12[0];
+			
 		}
+		
 	}
-};
 
+	
+};
 
 
 /***************************END USER SECTION ***************************/
@@ -553,3 +688,5 @@ public:
 
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////
+
+#endif
