@@ -102,9 +102,8 @@ public:
     int   bufidx;
 };
 
-const float	muted			= 0;
-const float	fixedgain		= 0.015f;
-const float scalewet		= 3;
+const float fixedgain		= 0.015f;
+const float scalewet		= 5;
 const float scaledry		= 2;
 const float scaledamp		= 0.4f;
 const float scaleroom		= 0.28f;
@@ -113,6 +112,5 @@ const float initialroom		= 0.5f;
 const float initialdamp		= 0.5f;
 const float initialwet		= 1/scalewet;
 const float initialdry		= 0;
-//const int	stereospread	= 23;
 
 #endif

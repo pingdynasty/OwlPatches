@@ -45,6 +45,7 @@ const int plate_allpasstuningL3	= 379;
 const int plate_allpasstuningL4	= 277;
 const int plate_allpasstuningL5	= 1800;
 const int plate_allpasstuningL6	= 2656;
+const float plate_scalewet	= 7;
 
 class PlateVerbPatch : public Patch {
 private:
@@ -114,7 +115,7 @@ public:
     
     void setwet(float value)
     {
-        wet = value*scalewet;
+        wet = value*plate_scalewet;
     }
 
     
