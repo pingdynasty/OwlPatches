@@ -57,7 +57,8 @@ with {
     iir = component("filter.lib").iir;
 
     //wah = vslider("Wah", 0, 0, 1, 0.01) : *(9) : +(1) : log10;
-    wah = vslider("Wah[style:knob][OWL:PARAMETER_A]", 0, 0, 1, 0.01);
+    wah = vslider("Wah[style:knob][OWL:PARAMETER_A]", 0, 0, 1, 0.01) +
+          vslider("Super Wah[style:knob][OWL:PARAMETER_E]", 0, 0, 1, 0.01) ;
 };
 
 process = dunwah2;
