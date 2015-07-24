@@ -36,7 +36,6 @@ public:
 	float fParam3;
 	float fParam4;
 	float fParam5;
-	float fParam6;
 	fParam1 = getParameterValue(PARAMETER_A); // Comb Width
 	fParam2 = getParameterValue(PARAMETER_B); // Delay
 	fParam3 = getParameterValue(PARAMETER_D); // Balance
