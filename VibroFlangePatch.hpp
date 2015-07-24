@@ -50,6 +50,9 @@
 
 // for vibrato, turn C and D all the way down
 
+#ifndef TWOPI 
+#define TWOPI 6.2831853f
+#endif /* TWOPI */
 
 class BaseOscillator {
 public:
