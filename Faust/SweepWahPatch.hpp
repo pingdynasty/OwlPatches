@@ -319,11 +319,6 @@ class OwlUI : public UI
 
 #include <math.h>
 
-float faustpower2_f(float value) {
-	return (value * value);
-	
-}
-
 #ifndef FAUSTCLASS 
 #define FAUSTCLASS SweepWah
 #endif
@@ -491,6 +486,10 @@ class SweepWah : public dsp {
 		
 	}
 	
+float faustpower2_f(float value) {
+	return (value * value);
+	
+}
 	virtual void compute(int count, FAUSTFLOAT** inputs, FAUSTFLOAT** outputs) {
 		FAUSTFLOAT* input0 = inputs[0];
 		FAUSTFLOAT* output0 = outputs[0];
@@ -584,7 +583,6 @@ public:
             fDSP.compute(buffer.getSize(), ins, outs);
         }
     }
-
 };
 
 #endif // __SweepWahPatch_h__

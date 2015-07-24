@@ -1,18 +1,10 @@
-//-----------------------------------------------------
-// name: "Overdrive"
-//
-// Code generated with Faust 0.9.67 (http://faust.grame.fr)
-//-----------------------------------------------------
-/* link with  */
-#ifndef FAUSTPOWER
-#define FAUSTPOWER
-#include <cmath>
-template <int N> inline float faustpower(float x)          { return powf(x,N); } 
-template <int N> inline double faustpower(double x)        { return pow(x,N); }
-template <int N> inline int faustpower(int x)              { return faustpower<N/2>(x) * faustpower<N-N/2>(x); } 
-template <> 	 inline int faustpower<0>(int x)            { return 1; }
-template <> 	 inline int faustpower<1>(int x)            { return x; }
-#endif
+/* ------------------------------------------------------------
+name: "Overdrive"
+Code generated with Faust 2.0.a34 (http://faust.grame.fr)
+------------------------------------------------------------ */
+
+#ifndef  __GuitarixOverdrive_H__
+#define  __GuitarixOverdrive_H__
 /************************************************************************
 
 	IMPORTANT NOTE : this file contains two clearly delimited sections :
@@ -115,12 +107,14 @@ template <> 	 inline int faustpower<1>(int x)            { return x; }
 class UI;
 
 //----------------------------------------------------------------
-//  signal processor definition
+//  Signal processor definition
 //----------------------------------------------------------------
 
 class dsp {
+
  protected:
 	int fSamplingFreq;
+    
  public:
 	dsp() {}
 	virtual ~dsp() {}
@@ -324,85 +318,145 @@ class OwlUI : public UI
 #define FAUSTFLOAT float
 #endif  
 
-typedef long double quad;
+
+float faustpower2_f(float value) {
+	return (value * value);
+	
+}
 
 #ifndef FAUSTCLASS 
 #define FAUSTCLASS GuitarixOverdrive
 #endif
 
 class GuitarixOverdrive : public dsp {
+	
   private:
-	FAUSTFLOAT 	fslider0;
-	FAUSTFLOAT 	fslider1;
-	float 	fRec0[2];
+	
+	float fRec0[2];
+	FAUSTFLOAT fVslider0;
+	FAUSTFLOAT fVslider1;
+	int fSamplingFreq;
+	
   public:
-	static void metadata(Meta* m) 	{ 
-		m->declare("name", "Overdrive");
+	
+	void static metadata(Meta* m) { 
 		m->declare("category", "Distortion");
-		m->declare("music.lib/name", "Music Library");
-		m->declare("music.lib/author", "GRAME");
-		m->declare("music.lib/copyright", "GRAME");
-		m->declare("music.lib/version", "1.0");
-		m->declare("music.lib/license", "LGPL with exception");
-		m->declare("math.lib/name", "Math Library");
-		m->declare("math.lib/author", "GRAME");
-		m->declare("math.lib/copyright", "GRAME");
-		m->declare("math.lib/version", "1.0");
-		m->declare("math.lib/license", "LGPL with exception");
-		m->declare("filter.lib/name", "Faust Filter Library");
 		m->declare("filter.lib/author", "Julius O. Smith (jos at ccrma.stanford.edu)");
 		m->declare("filter.lib/copyright", "Julius O. Smith III");
-		m->declare("filter.lib/version", "1.29");
 		m->declare("filter.lib/license", "STK-4.3");
+		m->declare("filter.lib/name", "Faust Filter Library");
 		m->declare("filter.lib/reference", "https://ccrma.stanford.edu/~jos/filters/");
+		m->declare("filter.lib/version", "1.29");
+		m->declare("math.lib/author", "GRAME");
+		m->declare("math.lib/copyright", "GRAME");
+		m->declare("math.lib/license", "LGPL with exception");
+		m->declare("math.lib/name", "Math Library");
+		m->declare("math.lib/version", "1.0");
+		m->declare("music.lib/author", "GRAME");
+		m->declare("music.lib/copyright", "GRAME");
+		m->declare("music.lib/license", "LGPL with exception");
+		m->declare("music.lib/name", "Music Library");
+		m->declare("music.lib/version", "1.0");
+		m->declare("name", "Overdrive");
 	}
 
-	virtual int getNumInputs() 	{ return 1; }
-	virtual int getNumOutputs() 	{ return 1; }
-	static void classInit(int samplingFreq) {
+	virtual int getNumInputs() {
+		return 1;
+		
 	}
+	virtual int getNumOutputs() {
+		return 1;
+		
+	}
+	virtual int getInputRate(int channel) {
+		int rate;
+		switch (channel) {
+			case 0: {
+				rate = 1;
+				break;
+			}
+			default: {
+				rate = -1;
+				break;
+			}
+			
+		}
+		return rate;
+		
+	}
+	virtual int getOutputRate(int channel) {
+		int rate;
+		switch (channel) {
+			case 0: {
+				rate = 1;
+				break;
+			}
+			default: {
+				rate = -1;
+				break;
+			}
+			
+		}
+		return rate;
+		
+	}
+	
+	static void classInit(int samplingFreq) {
+		
+	}
+	
 	virtual void instanceInit(int samplingFreq) {
 		fSamplingFreq = samplingFreq;
-		fslider0 = 1e+02f;
-		fslider1 = 1.0f;
-		for (int i=0; i<2; i++) fRec0[i] = 0;
+		fVslider0 = FAUSTFLOAT(100.);
+		fVslider1 = FAUSTFLOAT(1.);
+		for (int i0 = 0; (i0 < 2); i0 = (i0 + 1)) {
+			fRec0[i0] = 0.f;
+			
+		}
+		
 	}
+	
 	virtual void init(int samplingFreq) {
 		classInit(samplingFreq);
 		instanceInit(samplingFreq);
 	}
+	
 	virtual void buildUserInterface(UI* interface) {
-		interface->openVerticalBox("GuitarixOverdrive");
-		interface->declare(&fslider1, "OWL", "PARAMETER_A");
-		interface->declare(&fslider1, "style", "knob");
-		interface->addVerticalSlider("Drive", &fslider1, 1.0f, 1.0f, 2e+01f, 0.1f);
-		interface->declare(&fslider0, "OWL", "PARAMETER_D");
-		interface->declare(&fslider0, "style", "knob");
-		interface->declare(&fslider0, "tooltip", "percentage of processed signal in output signal");
-		interface->addVerticalSlider("Wet/Dry", &fslider0, 1e+02f, 0.0f, 1e+02f, 1.0f);
+		interface->openVerticalBox("0x00");
+		interface->declare(&fVslider1, "OWL", "PARAMETER_A");
+		interface->declare(&fVslider1, "style", "knob");
+		interface->addVerticalSlider("Drive", &fVslider1, 1.f, 1.f, 20.f, 0.1f);
+		interface->declare(&fVslider0, "OWL", "PARAMETER_D");
+		interface->declare(&fVslider0, "style", "knob");
+		interface->declare(&fVslider0, "tooltip", "percentage of processed signal in output signal");
+		interface->addVerticalSlider("Wet/Dry", &fVslider0, 100.f, 0.f, 100.f, 1.f);
 		interface->closeBox();
+		
 	}
-	virtual void compute (int count, FAUSTFLOAT** input, FAUSTFLOAT** output) {
-		float 	fSlow0 = float(fslider0);
-		float 	fSlow1 = (0.01f * fSlow0);
-		float 	fSlow2 = float(fslider1);
-		float 	fSlow3 = (fSlow2 - 1);
-		float 	fSlow4 = (0.0001f * faustpower<2>(fSlow0));
-		float 	fSlow5 = (0.0010000000000000009f * powf(10,(0.05f * (0 - (0.5f * fSlow2)))));
-		float 	fSlow6 = (1 - fSlow1);
-		FAUSTFLOAT* input0 = input[0];
-		FAUSTFLOAT* output0 = output[0];
-		for (int i=0; i<count; i++) {
-			float fTemp0 = (float)input0[i];
+	
+	virtual void compute(int count, FAUSTFLOAT** inputs, FAUSTFLOAT** outputs) {
+		FAUSTFLOAT* input0 = inputs[0];
+		FAUSTFLOAT* output0 = outputs[0];
+		float fSlow0 = float(fVslider0);
+		float fSlow1 = (0.01f * fSlow0);
+		float fSlow2 = (1.f - fSlow1);
+		float fSlow3 = float(fVslider1);
+		float fSlow4 = (0.001f * powf(10.f, (0.05f * (0.f - (0.5f * fSlow3)))));
+		float fSlow5 = (0.0001f * faustpower2_f(fSlow0));
+		float fSlow6 = (fSlow3 - 1.f);
+		for (int i = 0; (i < count); i = (i + 1)) {
+			float fTemp0 = float(input0[i]);
+			fRec0[0] = ((0.999f * fRec0[1]) + fSlow4);
 			float fTemp1 = fabsf((fSlow1 * fTemp0));
-			fRec0[0] = ((0.999f * fRec0[1]) + fSlow5);
-			output0[i] = (FAUSTFLOAT)(fTemp0 * (fSlow6 + (fSlow1 * ((fRec0[0] * (fSlow2 + fTemp1)) / (1 + ((fSlow4 * faustpower<2>(fTemp0)) + (fSlow3 * fTemp1)))))));
-			// post processing
+			output0[i] = FAUSTFLOAT(((fSlow2 + (fSlow1 * ((fRec0[0] * (fTemp1 + fSlow3)) / (1.f + ((fSlow5 * faustpower2_f(fTemp0)) + (fSlow6 * fTemp1)))))) * fTemp0));
 			fRec0[1] = fRec0[0];
+			
 		}
+		
 	}
-};
 
+	
+};
 
 
 /***************************END USER SECTION ***************************/
@@ -463,3 +517,5 @@ public:
 
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////
+
+#endif

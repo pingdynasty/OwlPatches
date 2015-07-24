@@ -320,11 +320,6 @@ class OwlUI : public UI
 #endif  
 
 
-float faustpower2_f(float value) {
-	return (value * value);
-	
-}
-
 #ifndef FAUSTCLASS 
 #define FAUSTCLASS Harp
 #endif
@@ -550,7 +545,10 @@ class Harp : public dsp {
 		interface->closeBox();
 		
 	}
+float faustpower2_f(float value) {
+	return (value * value);
 	
+}	
 	virtual void compute(int count, FAUSTFLOAT** inputs, FAUSTFLOAT** outputs) {
 		FAUSTFLOAT* output0 = outputs[0];
 		FAUSTFLOAT* output1 = outputs[1];

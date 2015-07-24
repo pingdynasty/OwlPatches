@@ -334,6 +334,7 @@ class SmoothDelay : public dsp {
   private:
 	
 	float fVec0[131072];
+	float fRec5[2];
 	float fRec1[2];
 	float fRec2[2];
 	float fRec3[2];
@@ -355,6 +356,22 @@ class SmoothDelay : public dsp {
 	void static metadata(Meta* m) { 
 		m->declare("author", "Yann Orlarey");
 		m->declare("copyright", "Grame");
+		m->declare("effect.lib/author", "Julius O. Smith (jos at ccrma.stanford.edu)");
+		m->declare("effect.lib/copyright", "Julius O. Smith III");
+		m->declare("effect.lib/exciter_author", "Priyanka Shekar (pshekar@ccrma.stanford.edu)");
+		m->declare("effect.lib/exciter_copyright", "Copyright (c) 2013 Priyanka Shekar");
+		m->declare("effect.lib/exciter_license", "MIT License (MIT)");
+		m->declare("effect.lib/exciter_name", "Harmonic Exciter");
+		m->declare("effect.lib/exciter_version", "1.0");
+		m->declare("effect.lib/license", "STK-4.3");
+		m->declare("effect.lib/name", "Faust Audio Effect Library");
+		m->declare("effect.lib/version", "1.33");
+		m->declare("filter.lib/author", "Julius O. Smith (jos at ccrma.stanford.edu)");
+		m->declare("filter.lib/copyright", "Julius O. Smith III");
+		m->declare("filter.lib/license", "STK-4.3");
+		m->declare("filter.lib/name", "Faust Filter Library");
+		m->declare("filter.lib/reference", "https://ccrma.stanford.edu/~jos/filters/");
+		m->declare("filter.lib/version", "1.29");
 		m->declare("license", "STK-4.3");
 		m->declare("math.lib/author", "GRAME");
 		m->declare("math.lib/copyright", "GRAME");
@@ -418,36 +435,40 @@ class SmoothDelay : public dsp {
 	virtual void instanceInit(int samplingFreq) {
 		fSamplingFreq = samplingFreq;
 		iConst0 = min(192000, max(1, fSamplingFreq));
-		fConst1 = (0.001f * float(iConst0));
-		fHslider0 = FAUSTFLOAT(0.);
-		fConst2 = (1000.f / float(iConst0));
-		fHslider1 = FAUSTFLOAT(10.);
+		fConst1 = (1e-06f * float(iConst0));
+		fHslider0 = FAUSTFLOAT(1.);
 		for (int i0 = 0; (i0 < 2); i0 = (i0 + 1)) {
-			fRec1[i0] = 0.f;
+			fRec5[i0] = 0.f;
 			
 		}
+		fConst2 = (1000.f / float(iConst0));
+		fHslider1 = FAUSTFLOAT(10.);
 		for (int i1 = 0; (i1 < 2); i1 = (i1 + 1)) {
-			fRec2[i1] = 0.f;
+			fRec1[i1] = 0.f;
 			
 		}
 		for (int i2 = 0; (i2 < 2); i2 = (i2 + 1)) {
-			fRec3[i2] = 0.f;
+			fRec2[i2] = 0.f;
 			
 		}
 		for (int i3 = 0; (i3 < 2); i3 = (i3 + 1)) {
-			fRec4[i3] = 0.f;
+			fRec3[i3] = 0.f;
+			
+		}
+		for (int i4 = 0; (i4 < 2); i4 = (i4 + 1)) {
+			fRec4[i4] = 0.f;
 			
 		}
 		fHslider2 = FAUSTFLOAT(0.);
 		fHslider3 = FAUSTFLOAT(0.);
 		fHslider4 = FAUSTFLOAT(0.3333);
 		IOTA = 0;
-		for (int i4 = 0; (i4 < 131072); i4 = (i4 + 1)) {
-			fVec0[i4] = 0.f;
+		for (int i5 = 0; (i5 < 131072); i5 = (i5 + 1)) {
+			fVec0[i5] = 0.f;
 			
 		}
-		for (int i5 = 0; (i5 < 2); i5 = (i5 + 1)) {
-			fRec0[i5] = 0.f;
+		for (int i6 = 0; (i6 < 2); i6 = (i6 + 1)) {
+			fRec0[i6] = 0.f;
 			
 		}
 		
@@ -463,7 +484,7 @@ class SmoothDelay : public dsp {
 		interface->declare(&fHslider0, "OWL", "PARAMETER_B");
 		interface->declare(&fHslider0, "style", "knob");
 		interface->declare(&fHslider0, "unit", "ms");
-		interface->addHorizontalSlider("Delay", &fHslider0, 0.f, 0.f, 500.f, 0.1f);
+		interface->addHorizontalSlider("Delay", &fHslider0, 1.f, 0.0001f, 500.f, 0.1f);
 		interface->declare(&fHslider4, "OWL", "PARAMETER_D");
 		interface->declare(&fHslider4, "style", "knob");
 		interface->addHorizontalSlider("Dry/Wet", &fHslider4, 0.3333f, 0.f, 1.f, 0.025f);
@@ -493,12 +514,13 @@ class SmoothDelay : public dsp {
 		float fSlow6 = (1.f - fSlow4);
 		for (int i = 0; (i < count); i = (i + 1)) {
 			float fTemp0 = float(input0[i]);
+			fRec5[0] = ((0.999f * fRec5[1]) + fSlow0);
 			float fSel0 = 0.f;
-			if (int((int((fRec2[1] == 0.f)) & int((fSlow0 != fRec3[1])))) != 0) {
+			if (int((int((fRec2[1] == 0.f)) & int((fRec5[0] != fRec3[1])))) != 0) {
 				fSel0 = fSlow1;
 				
 			} else {
-				fSel0 = (int((int((fRec2[1] == 1.f)) & int((fSlow0 != fRec4[1]))))?fSlow2:0.f);
+				fSel0 = (int((int((fRec2[1] == 1.f)) & int((fRec5[0] != fRec4[1]))))?fSlow2:0.f);
 				
 			}
 			float fSel1 = 0.f;
@@ -511,12 +533,13 @@ class SmoothDelay : public dsp {
 			}
 			fRec1[0] = fSel1;
 			fRec2[0] = max(0.f, min(1.f, (fRec2[1] + fSel1)));
-			fRec3[0] = (int((int((fRec2[1] >= 1.f)) & int((fRec4[1] != fSlow0))))?fSlow0:fRec3[1]);
-			fRec4[0] = (int((int((fRec2[1] <= 0.f)) & int((fRec3[1] != fSlow0))))?fSlow0:fRec4[1]);
+			fRec3[0] = (int((int((fRec2[1] >= 1.f)) & int((fRec4[1] != fRec5[0]))))?fRec5[0]:fRec3[1]);
+			fRec4[0] = (int((int((fRec2[1] <= 0.f)) & int((fRec3[1] != fRec5[0]))))?fRec5[0]:fRec4[1]);
 			float fTemp1 = ((fSlow3 * fRec0[1]) + (fSlow5 * fTemp0));
 			fVec0[(IOTA & 131071)] = fTemp1;
 			fRec0[0] = (((1.f - fRec2[0]) * fVec0[((IOTA - int((int(fRec3[0]) & 131071))) & 131071)]) + (fRec2[0] * fVec0[((IOTA - int((int(fRec4[0]) & 131071))) & 131071)]));
 			output0[i] = FAUSTFLOAT((fRec0[0] + (fSlow6 * fTemp0)));
+			fRec5[1] = fRec5[0];
 			fRec1[1] = fRec1[0];
 			fRec2[1] = fRec2[0];
 			fRec3[1] = fRec3[0];

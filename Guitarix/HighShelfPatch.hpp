@@ -1,9 +1,9 @@
-//-----------------------------------------------------
-//
-// Code generated with Faust 0.9.67 (http://faust.grame.fr)
-//-----------------------------------------------------
-/* link with  */
-#include <math.h>
+/* ------------------------------------------------------------
+Code generated with Faust 2.0.a34 (http://faust.grame.fr)
+------------------------------------------------------------ */
+
+#ifndef  __HighShelf_H__
+#define  __HighShelf_H__
 /************************************************************************
 
 	IMPORTANT NOTE : this file contains two clearly delimited sections :
@@ -106,12 +106,14 @@
 class UI;
 
 //----------------------------------------------------------------
-//  signal processor definition
+//  Signal processor definition
 //----------------------------------------------------------------
 
 class dsp {
+
  protected:
 	int fSamplingFreq;
+    
  public:
 	dsp() {}
 	virtual ~dsp() {}
@@ -315,104 +317,168 @@ class OwlUI : public UI
 #define FAUSTFLOAT float
 #endif  
 
-typedef long double quad;
+#include <math.h>
+
 
 #ifndef FAUSTCLASS 
 #define FAUSTCLASS HighShelf
 #endif
 
 class HighShelf : public dsp {
+	
   private:
-	int 	iVec0[2];
-	int 	iConst0;
-	float 	fConst1;
-	float 	fConst2;
-	float 	fConst3;
-	float 	fConst4;
-	float 	fConst5;
-	float 	fConst6;
-	float 	fConst7;
-	float 	fConst8;
-	float 	fConst9;
-	float 	fRec1[2];
-	float 	fRec0[3];
-	float 	fConst10;
-	float 	fConst11;
-	float 	fConst12;
+	
+	float fRec0[3];
+	int iVec0[2];
+	float fRec1[2];
+	int fSamplingFreq;
+	int iConst0;
+	float fConst1;
+	float fConst2;
+	float fConst3;
+	float fConst4;
+	float fConst5;
+	float fConst6;
+	float fConst7;
+	float fConst8;
+	float fConst9;
+	float fConst10;
+	float fConst11;
+	float fConst12;
+	
   public:
-	static void metadata(Meta* m) 	{ 
-		m->declare("id", "HighShelf");
-		m->declare("maxmsp.lib/name", "MaxMSP compatibility Library");
-		m->declare("maxmsp.lib/author", "GRAME");
-		m->declare("maxmsp.lib/copyright", "GRAME");
-		m->declare("maxmsp.lib/version", "1.1");
-		m->declare("maxmsp.lib/license", "LGPL");
-		m->declare("music.lib/author", "GRAME");
-		m->declare("music.lib/name", "Music Library");
-		m->declare("music.lib/copyright", "GRAME");
-		m->declare("music.lib/version", "1.0");
-		m->declare("music.lib/license", "LGPL with exception");
-		m->declare("math.lib/name", "Math Library");
-		m->declare("math.lib/author", "GRAME");
-		m->declare("math.lib/copyright", "GRAME");
-		m->declare("math.lib/version", "1.0");
-		m->declare("math.lib/license", "LGPL with exception");
-		m->declare("filter.lib/name", "Faust Filter Library");
+	
+	void static metadata(Meta* m) { 
 		m->declare("filter.lib/author", "Julius O. Smith (jos at ccrma.stanford.edu)");
 		m->declare("filter.lib/copyright", "Julius O. Smith III");
-		m->declare("filter.lib/version", "1.29");
 		m->declare("filter.lib/license", "STK-4.3");
+		m->declare("filter.lib/name", "Faust Filter Library");
 		m->declare("filter.lib/reference", "https://ccrma.stanford.edu/~jos/filters/");
+		m->declare("filter.lib/version", "1.29");
+		m->declare("id", "HighShelf");
+		m->declare("math.lib/author", "GRAME");
+		m->declare("math.lib/copyright", "GRAME");
+		m->declare("math.lib/license", "LGPL with exception");
+		m->declare("math.lib/name", "Math Library");
+		m->declare("math.lib/version", "1.0");
+		m->declare("maxmsp.lib/author", "GRAME");
+		m->declare("maxmsp.lib/copyright", "GRAME");
+		m->declare("maxmsp.lib/license", "LGPL");
+		m->declare("maxmsp.lib/name", "MaxMSP compatibility Library");
+		m->declare("maxmsp.lib/version", "1.1");
+		m->declare("music.lib/author", "GRAME");
+		m->declare("music.lib/copyright", "GRAME");
+		m->declare("music.lib/license", "LGPL with exception");
+		m->declare("music.lib/name", "Music Library");
+		m->declare("music.lib/version", "1.0");
 	}
 
-	virtual int getNumInputs() 	{ return 1; }
-	virtual int getNumOutputs() 	{ return 1; }
-	static void classInit(int samplingFreq) {
+	virtual int getNumInputs() {
+		return 1;
+		
 	}
+	virtual int getNumOutputs() {
+		return 1;
+		
+	}
+	virtual int getInputRate(int channel) {
+		int rate;
+		switch (channel) {
+			case 0: {
+				rate = 1;
+				break;
+			}
+			default: {
+				rate = -1;
+				break;
+			}
+			
+		}
+		return rate;
+		
+	}
+	virtual int getOutputRate(int channel) {
+		int rate;
+		switch (channel) {
+			case 0: {
+				rate = 1;
+				break;
+			}
+			default: {
+				rate = -1;
+				break;
+			}
+			
+		}
+		return rate;
+		
+	}
+	
+	static void classInit(int samplingFreq) {
+		
+	}
+	
 	virtual void instanceInit(int samplingFreq) {
 		fSamplingFreq = samplingFreq;
-		for (int i=0; i<2; i++) iVec0[i] = 0;
+		for (int i0 = 0; (i0 < 2); i0 = (i0 + 1)) {
+			iVec0[i0] = 0;
+			
+		}
 		iConst0 = min(192000, max(1, fSamplingFreq));
-		fConst1 = (6.283185307179586f * (max((float)0, ((0.5f * iConst0) - 1e+02f)) / float(iConst0)));
+		fConst1 = (6.28319f * (max(0.f, ((0.5f * float(iConst0)) - 100.f)) / float(iConst0)));
 		fConst2 = cosf(fConst1);
-		fConst3 = (1.316227766016838f * fConst2);
-		fConst4 = (2 * (0 - (0.683772233983162f + fConst3)));
-		fConst5 = (0.005623413251903491f * sinf(fConst1));
-		fConst6 = (0.683772233983162f * fConst2);
-		fConst7 = ((1.316227766016838f + fConst6) - fConst5);
-		fConst8 = (fConst6 + fConst5);
-		fConst9 = (1.0f / (1.316227766016838f + fConst8));
-		for (int i=0; i<2; i++) fRec1[i] = 0;
-		for (int i=0; i<3; i++) fRec0[i] = 0;
-		fConst10 = (0.31622776601683794f * (1.316227766016838f - fConst8));
-		fConst11 = (0.31622776601683794f * ((1.316227766016838f + fConst5) - fConst6));
-		fConst12 = (0 - (0.6324555320336759f * (fConst3 - 0.683772233983162f)));
+		fConst3 = (0.683772f * fConst2);
+		fConst4 = (0.00562341f * sinf(fConst1));
+		fConst5 = (fConst3 + fConst4);
+		fConst6 = (1.f / (1.31623f + fConst5));
+		fConst7 = (1.31623f * fConst2);
+		fConst8 = (0.f - (0.632456f * (fConst7 - 0.683772f)));
+		for (int i1 = 0; (i1 < 2); i1 = (i1 + 1)) {
+			fRec1[i1] = 0.f;
+			
+		}
+		fConst9 = ((1.31623f + fConst3) - fConst4);
+		fConst10 = (2.f * (0.f - (0.683772f + fConst7)));
+		for (int i2 = 0; (i2 < 3); i2 = (i2 + 1)) {
+			fRec0[i2] = 0.f;
+			
+		}
+		fConst11 = (0.316228f * ((1.31623f + fConst4) - fConst3));
+		fConst12 = (0.316228f * (1.31623f - fConst5));
+		
 	}
+	
 	virtual void init(int samplingFreq) {
 		classInit(samplingFreq);
 		instanceInit(samplingFreq);
 	}
+	
 	virtual void buildUserInterface(UI* interface) {
-		interface->openVerticalBox("HighShelf");
+		interface->openVerticalBox("0x00");
 		interface->closeBox();
+		
 	}
-	virtual void compute (int count, FAUSTFLOAT** input, FAUSTFLOAT** output) {
-		FAUSTFLOAT* input0 = input[0];
-		FAUSTFLOAT* output0 = output[0];
-		for (int i=0; i<count; i++) {
-			float fTemp0 = (float)input0[i];
+	
+	virtual void compute(int count, FAUSTFLOAT** inputs, FAUSTFLOAT** outputs) {
+		FAUSTFLOAT* input0 = inputs[0];
+		FAUSTFLOAT* output0 = outputs[0];
+		for (int i = 0; (i < count); i = (i + 1)) {
+			float fTemp0 = float(input0[i]);
 			iVec0[0] = 1;
-			fRec1[0] = ((1e-20f * (1 - iVec0[1])) - fRec1[1]);
-			fRec0[0] = ((fTemp0 + fRec1[0]) - (fConst9 * ((fConst7 * fRec0[2]) + (fConst4 * fRec0[1]))));
-			output0[i] = (FAUSTFLOAT)(fConst9 * (((fConst12 * fRec0[1]) + (fConst11 * fRec0[0])) + (fConst10 * fRec0[2])));
-			// post processing
-			fRec0[2] = fRec0[1]; fRec0[1] = fRec0[0];
-			fRec1[1] = fRec1[0];
+			fRec1[0] = ((1e-20f * float((1 - iVec0[1]))) - fRec1[1]);
+			fRec0[0] = ((fRec1[0] + fTemp0) - (fConst6 * ((fConst9 * fRec0[2]) + (fConst10 * fRec0[1]))));
+			output0[i] = FAUSTFLOAT((fConst6 * (((fConst8 * fRec0[1]) + (fConst11 * fRec0[0])) + (fConst12 * fRec0[2]))));
 			iVec0[1] = iVec0[0];
+			fRec1[1] = fRec1[0];
+			fRec0[2] = fRec0[1];
+			fRec0[1] = fRec0[0];
+			
 		}
+		
 	}
-};
 
+	
+};
 
 
 /***************************END USER SECTION ***************************/
@@ -473,3 +539,5 @@ public:
 
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////
+
+#endif

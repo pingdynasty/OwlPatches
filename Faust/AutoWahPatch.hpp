@@ -319,10 +319,6 @@ class OwlUI : public UI
 
 #include <math.h>
 
-float faustpower2_f(float value) {
-	return (value * value);
-	
-}
 
 #ifndef FAUSTCLASS 
 #define FAUSTCLASS AutoWah
@@ -501,6 +497,10 @@ class AutoWah : public dsp {
 		
 	}
 
+float faustpower2_f(float value) {
+	return (value * value);
+	
+}
 	
 };
 

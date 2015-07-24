@@ -319,10 +319,6 @@ class OwlUI : public UI
 
 #include <math.h>
 
-float faustpower2_f(float value) {
-	return (value * value);
-	
-}
 
 #ifndef FAUSTCLASS 
 #define FAUSTCLASS StereoWah
@@ -472,7 +468,10 @@ class StereoWah : public dsp {
 		interface->closeBox();
 		
 	}
+float faustpower2_f(float value) {
+	return (value * value);
 	
+}	
 	virtual void compute(int count, FAUSTFLOAT** inputs, FAUSTFLOAT** outputs) {
 		FAUSTFLOAT* input0 = inputs[0];
 		FAUSTFLOAT* input1 = inputs[1];
@@ -563,7 +562,6 @@ public:
             fDSP.compute(buffer.getSize(), ins, outs);
         }
     }
-
 };
 
 #endif // __StereoWahPatch_h__
