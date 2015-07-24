@@ -3,7 +3,7 @@ declare name "DunWah";
 
 import("effect.lib");
 
-dunwah = *(gs) : tf2(1,-1,0,a1s,a2s)
+dunwah1 = *(gs) : tf2(1,-1,0,a1s,a2s)
 with {
     // calculated by dunwah1.py
     theta2pi = (1892.75 - 1 / (((0.000927476*wah+-0.00197293)*wah+0.002474)*wah+-0.00152132))/SR;
@@ -22,7 +22,8 @@ with {
 
     tf2 = component("filter.lib").tf2;
     //wah = vslider("Wah", 0, 0, 1, 0.01) : *(9) : +(1) : log10;
-    wah = vslider("Wah", 0, 0, 1, 0.01);
+    wah = vslider("Wah[style:knob][OWL:PARAMETER_A]", 0, 0, 1, 0.01) +
+          vslider("Super Wah[style:knob][OWL:PARAMETER_E]", 0, 0, 1, 0.01) ;
 };
 
 dunwah2 = *(gs) : iir((b0, b1, b2, b3), (A1, A2, A3))
@@ -61,4 +62,9 @@ with {
           vslider("Super Wah[style:knob][OWL:PARAMETER_E]", 0, 0, 1, 0.01) ;
 };
 
-process = dunwah2;
+stereodrywet (monofx) = _,_ <: *(1-dw), *(1-dw), monofx*dw, monofx*dw :> _,_
+	with {
+		dw = hslider("Dry/Wet[OWL:PARAMETER_D]",0.5,0,1,0.01);
+	};	
+
+process = stereodrywet(dunwah2);
