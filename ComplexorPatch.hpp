@@ -1,24 +1,23 @@
-#ifndef __LogisticFunctionPatch_hpp__
-#define __LogisticFunctionPatch_hpp__
+#ifndef __ComplexorPatch_hpp__
+#define __ComplexorPatch_hpp__
 
 #include "StompBox.h"
 
 /*
  * Complexor
- * Chaotic waveshaper based on iterated logistic map
+ * Chaotic waveshaper and dynamics processor based on iterated logistic map
  * http://en.wikipedia.org/wiki/Logistic_map
  * http://en.wikipedia.org/wiki/Feigenbaum_constants
  * http://mathworld.wolfram.com/LogisticMap.html
  */
-class LogisticFunctionPatch : public Patch {
+class ComplexorPatch : public Patch {
 private:
-  // BiquadFilter* lowpass;
   const float minR = 2.0;
   const float maxR = 4.0;
   const float maxI = 20.0;
 public:
 
-  LogisticFunctionPatch(){
+  ComplexorPatch(){
     registerParameter(PARAMETER_A, "Input");
     registerParameter(PARAMETER_B, "Iterations");
     registerParameter(PARAMETER_C, "Chaos");
@@ -61,7 +60,6 @@ public:
       right[i] = processSample(gain*right[i], iterations, r) * wet + right[i]*(1-wet);
     }
   }
-
 };
 
-#endif // __LogisticFunctionPatch_hpp__
+#endif // __ComplexorPatch_hpp__
