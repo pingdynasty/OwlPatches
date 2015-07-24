@@ -120,31 +120,22 @@ private:
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 
-class BittaPatch : public Patch {
-    
+class BittaPatch : public Patch {    
 public:
-    
-  float sampleRate;
   BitCrusher *bCrusher;
     
   BittaPatch(){
-      
-    sampleRate = 48000;
-    bCrusher = new BitCrusher(sampleRate);
-      
+    bCrusher = new BitCrusher(getSampleRate());      
     registerParameter(PARAMETER_A, "Crush");
-    registerParameter(PARAMETER_B, "Dry / Wet");
-
+    registerParameter(PARAMETER_D, "Dry/Wet");
   }
 
-  void processAudio(AudioBuffer &buffer){
-      
+  void processAudio(AudioBuffer &buffer){      
       float size = buffer.getSize();
       float* audioBlock = buffer.getSamples(0);
       bCrusher->setValue(getParameterValue(PARAMETER_A));
-      bCrusher->setDryWet(getParameterValue(PARAMETER_B));
-      bCrusher->process(size, audioBlock, audioBlock);
-      
+      bCrusher->setDryWet(getParameterValue(PARAMETER_D));
+      bCrusher->process(size, audioBlock, audioBlock);      
   }
     
 };
