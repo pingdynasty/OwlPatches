@@ -31,7 +31,7 @@
 #include "StompBox.h"
 #include "CircularBuffer.hpp"
 
-#define REQUEST_BUFFER_SIZE 32768
+#define SIMPLE_STEREO_DELAY_REQUEST_BUFFER_SIZE (64*1024)
 
 class SimpleStereoDelayPatch : public Patch {
 private:
@@ -42,35 +42,37 @@ private:
 public:
   SimpleStereoDelayPatch() : delay(0), alpha(0.04), dryWet(0.f)
   {
-    registerParameter(PARAMETER_A, "Delay");
-    registerParameter(PARAMETER_B, "Feedback");
-    registerParameter(PARAMETER_C, "");
+    registerParameter(PARAMETER_A, "Input");
+    registerParameter(PARAMETER_B, "Delay");
+    registerParameter(PARAMETER_C, "Feedback");
     registerParameter(PARAMETER_D, "Dry/Wet");
-    AudioBuffer* buffer = createMemoryBuffer(2, REQUEST_BUFFER_SIZE);
+    AudioBuffer* buffer = createMemoryBuffer(2, SIMPLE_STEREO_DELAY_REQUEST_BUFFER_SIZE);
     delayBufferL.initialise(buffer->getSamples(0), buffer->getSize());
     delayBufferR.initialise(buffer->getSamples(1), buffer->getSize());
   }
   void processAudio(AudioBuffer &buffer)
   {
-    float delayTime, feedback, dly;
-    delayTime = 0.05+0.95*getParameterValue(PARAMETER_A);
-    feedback  = getParameterValue(PARAMETER_B);
+    float gain, delayTime, feedback, dly;
+    gain = getParameterValue(PARAMETER_A)*2;
+    delayTime = 0.05+0.95*getParameterValue(PARAMETER_B);
+    feedback  = getParameterValue(PARAMETER_C);
     int32_t newDelay;
     newDelay = alpha*delayTime*(delayBufferL.getSize()-1) + (1-alpha)*delay; // Smoothing
     dryWet = alpha*getParameterValue(PARAMETER_D) + (1-alpha)*dryWet;       // Smoothing
       
-    float* x = buffer.getSamples(0);
-    float* y = buffer.getSamples(1);
+    float* left = buffer.getSamples(0);
+    float* right = buffer.getSamples(1);
     int size = buffer.getSize();
     for (int n = 0; n < size; n++)
     {
+      float sample = gain*left[n];
       dly = (delayBufferL.read(delay)*(size-1-n) + delayBufferL.read(newDelay)*n)/size;
-      delayBufferL.write(feedback * dly + x[n]);
-      x[n] = dly*dryWet + (1.f - dryWet) * x[n];  // dry/wet
-
+      delayBufferL.write(feedback * dly + sample);
+      left[n] = dly*dryWet + (1.f - dryWet) * sample;  // dry/wet
+      sample = gain*right[n];
       dly = (delayBufferR.read(delay)*(size-1-n) + delayBufferR.read(newDelay)*n)/size;
-      delayBufferR.write(feedback * dly + y[n]);
-      y[n] = dly*dryWet + (1.f - dryWet) * y[n];  // dry/wet
+      delayBufferR.write(feedback * dly + sample);
+      right[n] = dly*dryWet + (1.f - dryWet) * sample;  // dry/wet
     }
     delay=newDelay;
   }
