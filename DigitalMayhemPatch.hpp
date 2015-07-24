@@ -40,11 +40,9 @@ private:
 	float freq;
 	int update_freq_cnt;
 	float prev_freq;
-	const float fs = 48000;
-	const float pi = 3.14159;
-
+        const float fs;
 public:
-  DigitalMayhemPatch(){
+  DigitalMayhemPatch() : fs(getSampleRate()) {
     registerParameter(PARAMETER_A, "Sampling Freq");
     registerParameter(PARAMETER_B, "Mayhem Rate");
     registerParameter(PARAMETER_C, "Mayhem Freq");
@@ -85,12 +83,12 @@ public:
 		{
 			if(i%samp_freq==0)
 			{	
-				buf[i] = buf[i]*((1-mayhem)+mayhem*abs(cos(2*pi*mayhem_freq*(i+update_freq_cnt*size)/size)));
+				buf[i] = buf[i]*((1-mayhem)+mayhem*abs(cos(2*M_PI*mayhem_freq*(i+update_freq_cnt*size)/size)));
 				samp = buf[i];	
 			}
 			else
 				buf[i] = samp;
-//				buf[i] = samp*(1-mayhem)+buf[i]*mayhem*abs(cos(2*pi*mayhem_freq*(i+update_freq_cnt*size)/size));
+//				buf[i] = samp*(1-mayhem)+buf[i]*mayhem*abs(cos(2*M_PI*mayhem_freq*(i+update_freq_cnt*size)/size));
 		}
 //		update_freq_cnt++;
 //		if(update_freq_cnt == 10)
