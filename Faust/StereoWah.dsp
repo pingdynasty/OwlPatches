@@ -1,6 +1,7 @@
 import("effect.lib");
 wahwah = crybaby(wah) with {
-   wah = hslider("Wah[OWL:PARAMETER_A]",0.8,0,1,0.01);
+    wah = vslider("Wah[style:knob][OWL:PARAMETER_A]", 0, 0, 1, 0.01) +
+          vslider("WahWah[style:knob][OWL:PARAMETER_E]", 0, 0, 1, 0.01) ;
 };
 stereodrywet (monofx) = _,_ <: *(1-dw), *(1-dw), monofx*dw, monofx*dw :> _,_
 	with {
