@@ -14,14 +14,16 @@ declare license "STK-4.3";
 //-------------------------------------------------------------
 
 import("music.lib");
+import("effect.lib");
 
 smoothdelay =  (+ :sdelay(N, interp, dtime)) ~ *(fback)
 	with 
 	{ 
+		s = 0.999; // smoothing parameter (one-pole pole location)
 		N	= int(2^17); 
-		interp 	= hslider("Interpolation[unit:ms][style:knob][OWL:PARAMETER_A]",10,1,100,0.1)*SR/1000.0; 
-		dtime	= hslider("Delay[unit:ms][style:knob][OWL:PARAMETER_B]", 0, 0, 500, 0.1)*SR/1000.0;
-		fback 	= hslider("Feedback[style:knob][OWL:PARAMETER_C]",0,0,100,0.1)/100.0;
+		dtime	= hslider("Delay[unit:ms][style:knob][OWL:PARAMETER_A]", 1, 0.0001, 500, 0.1)*SR/1000.0 : smooth(s);
+		fback 	= hslider("Feedback[style:knob][OWL:PARAMETER_B]",0,0,100,0.1)/100.0;
+		interp 	= hslider("Interpolation[unit:ms][style:knob][OWL:PARAMETER_C]",10,1,100,0.1)*SR/1000.0;
 
 	};
 	
