@@ -129,10 +129,8 @@ public:
         for (int i = 0 ; i < buffer.getSize(); i++) {
             delayTime = 0.01*_time + 0.99*delayTime;
             delaySamples = (int)(delayTime * (ENVELOPEDELAY_BUFFER_SIZE-1));
-            buf[i] = mix * (v0Buf.read(delaySamples) + v1Buf.read(delaySamples) + v2Buf.read(delaySamples))+ _mix * buf[i];
-            
             setBufferFlag(buf[i]);
-            if(changeBuffer != -1){
+            if(changeBuffer >= 0){
                 if(detectZCR(buf[i])){
                     bufferFlag = changeBuffer;
                     changeBuffer = -1;
@@ -141,12 +139,13 @@ public:
             }
             
             if(bufferFlag == 2)
-                v2Buf.write(feedback[2] * buf[i]);
+                v2Buf.write(feedback[2] * (v2Buf.read(delaySamples) + buf[i]));
             else if(bufferFlag == 1)
-                v1Buf.write(feedback[1] * buf[i]);
-                
-            else
-                v0Buf.write(feedback[0] * buf[i]);
+                v1Buf.write(feedback[1] * (v1Buf.read(delaySamples) + buf[i]));
+            else if(bufferFlag == 0)
+                v0Buf.write(feedback[0] * (v0Buf.read(delaySamples) + buf[i]));
+            
+            buf[i] = mix * 0.5 * (v0Buf.read(delaySamples) + v1Buf.read(delaySamples) + v2Buf.read(delaySamples))+ _mix * buf[i];
 
         }
         

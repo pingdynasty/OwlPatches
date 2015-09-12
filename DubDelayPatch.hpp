@@ -35,20 +35,13 @@
 //#define REQUEST_BUFFER_SIZE 262144
 #define REQUEST_BUFFER_SIZE 32768
 
-#define MAXDELAYS 2.5
-#define MINDELAYS 0.05
+
 
 class DubDelayPatch : public Patch {
     
 private:
     CircularBuffer delayBuffer;
-//    unsigned int delayTime;
     ToneFilter tf;
-    // float x[2] = {0};
-    // float y[2] = {0};
-    // float a[3] = {0};
-    // float b[3] = {0};
-    float fs;
     float delayTime = 0;
     float tone = 0;
     
@@ -58,21 +51,17 @@ public:
         registerParameter(PARAMETER_B, "Feedback");
         registerParameter(PARAMETER_C, "Tone");
         registerParameter(PARAMETER_D, "Wet");
-//        static float delayTime = 0;
-//        static float tone = 0;
+
         AudioBuffer* buffer = createMemoryBuffer(1, REQUEST_BUFFER_SIZE);
-        delayBuffer.initialise(buffer->getSamples(0), buffer->getSize());
-        fs = getSampleRate();
-        
+        delayBuffer.initialise(buffer->getSamples(0), REQUEST_BUFFER_SIZE);
     }
+    
     void processAudio(AudioBuffer &buffer) {
-//        fs = getSampleRate();
 
-        float feedback, tone, wet, _delayTime, _tone, delaySamples;
-
+        float feedback, wet, _delayTime, _tone, delaySamples;
 
         _delayTime = getParameterValue(PARAMETER_A);
-        feedback = 2*getParameterValue(PARAMETER_B);
+        feedback = 2*getParameterValue(PARAMETER_B)+0.01;
         _tone = getParameterValue(PARAMETER_C);
         wet = getParameterValue(PARAMETER_D);
 
@@ -83,10 +72,9 @@ public:
         for (int i = 0 ; i < buffer.getSize(); i++) {
             delayTime = 0.01*_delayTime + 0.99*delayTime;
             delaySamples = delayTime * (delayBuffer.getSize()-1);
-            // buf[i] = (buf[i] * (1-wet) ) + wet * delayBuffer.read(delaySamples);
-            buf[i] += wet * delayBuffer.read(delaySamples);
-            // filtered = tf.processSample(feedback * buf[i],0)
-            delayBuffer.write(dist(tf.processSample(feedback * buf[i],0)));
+            buf[i] = dist(tf.processSample(buf[i] + (wet * delayBuffer.read(delaySamples))));
+//            delayBuffer.write(dist(tf.processSample(feedback * buf[i],0)));
+            delayBuffer.write(feedback * buf[i]);
         }
     }
     float dist(float x){ 		// Overdrive curve
