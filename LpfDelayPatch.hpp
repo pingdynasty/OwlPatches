@@ -33,8 +33,6 @@
 
 #include "CircularBuffer.hpp"
 
-#define LPF_DELAY_PATCH_REQUEST_BUFFER_SIZE 32768
-
 namespace LpfDelay {
 
 class ToneBiquad {
@@ -94,12 +92,13 @@ private:
 };
 
 class LpfDelayPatch : public Patch {
+  static const int REQUEST_BUFFER_SIZE = 1<<16;
 private:
-  CircularBuffer delayBuffer;
+  CircularBuffer* delayBuffer;
   int delay;
   float alpha, dryWet;
   LpfDelay::ToneBiquad filter;
-
+  StereoBiquadFilter* highpass;
 public:
   LpfDelayPatch() : delay(0), alpha(0.04), dryWet(0.f){
     registerParameter(PARAMETER_A, "Delay");
@@ -107,11 +106,16 @@ public:
     registerParameter(PARAMETER_C, "Cutoff");
     registerParameter(PARAMETER_D, "Dry/Wet");
     registerParameter(PARAMETER_E, "Cutoff Modulation");
-    AudioBuffer* buffer = createMemoryBuffer(1, LPF_DELAY_PATCH_REQUEST_BUFFER_SIZE);
-    delayBuffer.initialise(buffer->getSamples(0), buffer->getSize());
+    delayBuffer = CircularBuffer::create(REQUEST_BUFFER_SIZE);
     filter.init();
     filter.setCoeffs(getParameterValue(PARAMETER_C), getSampleRate()); // Tone
     filter.updateStateCoeffs();
+    highpass = StereoBiquadFilter::create(1);
+    highpass->setHighPass(40/(getSampleRate()/2), FilterStage::BUTTERWORTH_Q); // dc filter
+  }
+  ~LpfDelayPatch(){
+    CircularBuffer::destroy(delayBuffer);
+    StereoBiquadFilter::destroy(highpass);
   }
   void processAudio(AudioBuffer &buffer){
     float delayTime, feedback, fc, dly;
@@ -121,13 +125,14 @@ public:
     filter.setCoeffs(fc, getSampleRate());
         
     int32_t newDelay;
-    newDelay = alpha*delayTime*(delayBuffer.getSize()-1) + (1-alpha)*delay; // Smoothing
+    newDelay = alpha*delayTime*(delayBuffer->getSize()-1) + (1-alpha)*delay; // Smoothing
     dryWet = alpha*getParameterValue(PARAMETER_D) + (1-alpha)*dryWet;       // Smoothing        
     float* x = buffer.getSamples(0);
     int size = buffer.getSize();
+    highpass->process(buffer);
     for(int n = 0; n < size; n++){
-      dly = (delayBuffer.read(delay)*(size-1-n) + delayBuffer.read(newDelay)*n)/size;
-      delayBuffer.write(feedback * dly + x[n]);  //filter.processSample(x[n], size, n));
+      dly = (delayBuffer->read(delay)*(size-1-n) + delayBuffer->read(newDelay)*n)/size;
+      delayBuffer->write(feedback * dly + x[n]);  //filter.processSample(x[n], size, n));
       x[n] = filter.processSample(dly, size, n)*dryWet + (1.f - dryWet) * x[n];  // dry/wet
     }
     delay=newDelay;
