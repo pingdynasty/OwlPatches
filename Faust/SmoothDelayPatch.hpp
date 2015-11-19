@@ -481,17 +481,17 @@ class SmoothDelay : public dsp {
 	
 	virtual void buildUserInterface(UI* interface) {
 		interface->openVerticalBox("0x00");
-		interface->declare(&fHslider0, "OWL", "PARAMETER_B");
+		interface->declare(&fHslider0, "OWL", "PARAMETER_A");
 		interface->declare(&fHslider0, "style", "knob");
 		interface->declare(&fHslider0, "unit", "ms");
 		interface->addHorizontalSlider("Delay", &fHslider0, 1.f, 0.0001f, 500.f, 0.1f);
 		interface->declare(&fHslider4, "OWL", "PARAMETER_D");
 		interface->declare(&fHslider4, "style", "knob");
 		interface->addHorizontalSlider("Dry/Wet", &fHslider4, 0.3333f, 0.f, 1.f, 0.025f);
-		interface->declare(&fHslider2, "OWL", "PARAMETER_C");
+		interface->declare(&fHslider2, "OWL", "PARAMETER_B");
 		interface->declare(&fHslider2, "style", "knob");
 		interface->addHorizontalSlider("Feedback", &fHslider2, 0.f, 0.f, 100.f, 0.1f);
-		interface->declare(&fHslider1, "OWL", "PARAMETER_A");
+		interface->declare(&fHslider1, "OWL", "PARAMETER_C");
 		interface->declare(&fHslider1, "style", "knob");
 		interface->declare(&fHslider1, "unit", "ms");
 		interface->addHorizontalSlider("Interpolation", &fHslider1, 10.f, 1.f, 100.f, 0.1f);

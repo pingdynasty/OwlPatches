@@ -27,9 +27,7 @@
 #ifndef ___FlangerPatch_hpp__
 #define __FlangerPatch_hpp__
 
-#include "StompBox.h"
 #include "CircularBuffer.hpp"
-#include "math.h"
 
 #define FLANGER_BUFFER_SIZE 1024
 

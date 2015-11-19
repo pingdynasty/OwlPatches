@@ -27,8 +27,9 @@ attack		= hslider("Attack[OWL:PARAMETER_C]", 0.002, 0, 1, 0.001) : max(1/SR);
 release		= hslider("Release", 0.5, 0, 10, 0.01) : max(1/SR);
 
 // gain controls: make-up gain, compression gain meter
+//makeup_gain	= hslider("Makeup Gain[OWL:PARAMETER_D]", 0, -96, 96, 0.1);
 makeup_gain	= gain_group(hslider("Makeup Gain[OWL:PARAMETER_D]", 0, -96, 96, 0.1));
-gain(x)		= attach(x, x : gain_group(hbargraph("gain", -96, 0)));
+// gain(x)		= attach(x, x : gain_group(hbargraph("gain", -96, 0)));
 
 
 
@@ -75,6 +76,7 @@ with {
 
 process(x)	= g(x)*x
 with {
-	//g	= env2(x) : compress : gain : +(makeup_gain) : db2linear ;
-	g	= add_dc : env : compress : db2linear ;
+	g	= env2(x) : compress : +(makeup_gain) : db2linear ;
+	//g	= add_dc : env : compress : gain : +(makeup_gain) : db2linear ;
+	//g	= add_dc : env : compress : db2linear ;
 };

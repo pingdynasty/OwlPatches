@@ -467,20 +467,20 @@ class GuitarixFlangerGX : public dsp {
 		interface->declare(&fHslider2, "name", "Depth");
 		interface->declare(&fHslider2, "style", "knob");
 		interface->addHorizontalSlider("Depth", &fHslider2, 0.5f, 0.f, 5.f, 0.01f);
-		interface->declare(&fHslider3, "OWL", "PARAMETER_A");
+		interface->declare(&fHslider0, "OWL", "PARAMETER_D");
+		interface->declare(&fHslider0, "name", "Wet");
+		interface->declare(&fHslider0, "style", "knob");
+		interface->addHorizontalSlider("Dry/Wet", &fHslider0, 100.f, 0.f, 100.f, 1.f);
+		interface->declare(&fHslider3, "OWL", "PARAMETER_C");
 		interface->declare(&fHslider3, "name", "Feedback");
 		interface->declare(&fHslider3, "style", "knob");
 		interface->addHorizontalSlider("Feedback", &fHslider3, -0.707f, -0.99f, 0.99f, 0.01f);
-		interface->declare(&fHslider1, "OWL", "PARAMETER_C");
+		interface->declare(&fHslider1, "OWL", "PARAMETER_A");
 		interface->declare(&fHslider1, "log", "");
 		interface->declare(&fHslider1, "name", "Speed");
 		interface->declare(&fHslider1, "style", "knob");
 		interface->declare(&fHslider1, "unit", "Hz");
 		interface->addHorizontalSlider("Freq", &fHslider1, 0.2f, 0.05f, 10.f, 0.01f);
-		interface->declare(&fHslider0, "OWL", "PARAMETER_D");
-		interface->declare(&fHslider0, "name", "Wet");
-		interface->declare(&fHslider0, "style", "knob");
-		interface->addHorizontalSlider("Wet", &fHslider0, 100.f, 0.f, 100.f, 1.f);
 		interface->closeBox();
 		
 	}

@@ -343,6 +343,7 @@ class GuitarixCompressor : public dsp {
 	FAUSTFLOAT fEntry0;
 	FAUSTFLOAT fEntry1;
 	FAUSTFLOAT fEntry2;
+	FAUSTFLOAT fHslider2;
 	
   public:
 	
@@ -433,6 +434,7 @@ class GuitarixCompressor : public dsp {
 		fEntry0 = FAUSTFLOAT(3.);
 		fEntry1 = FAUSTFLOAT(-20.);
 		fEntry2 = FAUSTFLOAT(2.);
+		fHslider2 = FAUSTFLOAT(0.);
 		
 	}
 	
@@ -443,6 +445,10 @@ class GuitarixCompressor : public dsp {
 	
 	virtual void buildUserInterface(UI* interface) {
 		interface->openVerticalBox("0x00");
+		interface->openVerticalBox("3-gain");
+		interface->declare(&fHslider2, "OWL", "PARAMETER_D");
+		interface->addHorizontalSlider("Makeup Gain", &fHslider2, 0.f, -96.f, 96.f, 0.1f);
+		interface->closeBox();
 		interface->declare(&fHslider0, "OWL", "PARAMETER_C");
 		interface->addHorizontalSlider("Attack", &fHslider0, 0.002f, 0.f, 1.f, 0.001f);
 		interface->addNumEntry("Knee", &fEntry0, 3.f, 0.f, 20.f, 0.1f);
@@ -464,14 +470,16 @@ class GuitarixCompressor : public dsp {
 		float fSlow3 = (fSlow2 - float(fEntry1));
 		float fSlow4 = (float(fEntry2) - 1.f);
 		float fSlow5 = (1.f / (0.001f + fSlow2));
+		float fSlow6 = float(fHslider2);
 		for (int i = 0; (i < count); i = (i + 1)) {
 			float fTemp0 = float(input0[i]);
-			fRec1[0] = ((fConst2 * fRec1[1]) + (fConst3 * fabsf((fTemp0 + 1e-20f))));
-			float fTemp1 = ((fSlow0 * float(int((fRec0[1] < fRec1[0])))) + (fSlow1 * float(int((fRec0[1] >= fRec1[0])))));
-			fRec0[0] = ((fRec0[1] * fTemp1) + (fRec1[0] * (0.f - (fTemp1 - 1.f))));
-			float fTemp2 = max(0.f, ((20.f * log10f(fRec0[0])) + fSlow3));
-			float fTemp3 = (fSlow4 * min(1.f, max(0.f, (fSlow5 * fTemp2))));
-			output0[i] = FAUSTFLOAT((powf(10.f, (0.05f * ((fTemp2 * (0.f - fTemp3)) / (1.f + fTemp3)))) * fTemp0));
+			fRec1[0] = ((fConst2 * fRec1[1]) + (fConst3 * fabsf(fTemp0)));
+			float fTemp1 = max(fRec1[0], fTemp0);
+			float fTemp2 = ((fSlow0 * float(int((fRec0[1] < fTemp1)))) + (fSlow1 * float(int((fRec0[1] >= fTemp1)))));
+			fRec0[0] = ((fRec0[1] * fTemp2) + (fTemp1 * (0.f - (fTemp2 - 1.f))));
+			float fTemp3 = max(0.f, ((20.f * log10f(fRec0[0])) + fSlow3));
+			float fTemp4 = (fSlow4 * min(1.f, max(0.f, (fSlow5 * fTemp3))));
+			output0[i] = FAUSTFLOAT((powf(10.f, (0.05f * (((fTemp3 * (0.f - fTemp4)) / (1.f + fTemp4)) + fSlow6))) * fTemp0));
 			fRec1[1] = fRec1[0];
 			fRec0[1] = fRec0[0];
 			

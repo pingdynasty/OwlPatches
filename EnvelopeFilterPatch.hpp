@@ -32,127 +32,82 @@
 #ifndef __EnvelopeFilterPatch_hpp__
 #define __EnvelopeFilterPatch_hpp__
 
-#include "StompBox.h"
-#include <math.h>
-
 namespace EnvelopeFilter {
+
+#define LPF_SQRT2 1.414213562f
+#define LPF_TWOPI 6.2831853071f
+#define LPF_TWOPI_BY_SAMPLERATE 0.00014247585731f
+
   class LPF {
   public:
-    float z;
-    float x;
-    float y;
-    float r;
-    float c;
+    float z, x, y, r, c;
+
     LPF() {
       z = x = y = r = c = 0;
     }
-#define SQRT2 1.414213562f
-#define TWOPI 6.2831853071f
-#define TWOPI_BY_SAMPLERATE 0.00014247585731f
+
     // cutoff in hz/2 (min 10Hz/2), resonance 1 to 10
     float process(float input, float cutoff, float resonance) {
       if(cutoff>11025) cutoff = 11025;
-      z=cos(TWOPI_BY_SAMPLERATE*cutoff);
+      z=cos(LPF_TWOPI_BY_SAMPLERATE*cutoff);
       c = 2 - 2*z;
       float zzz = z-1;
       zzz = zzz*zzz*zzz;
-      r = (SQRT2*sqrt(-zzz)+resonance*(z-1))/(resonance*(z-1));
-
+      r = (LPF_SQRT2*sqrt(-zzz)+resonance*(z-1))/(resonance*(z-1));
       x += (input - y)*c;
       y += x;
       x *= r;
       return y; 
     }
-	  // by rbj
-	  static float fastSqrt(register float x)
-	  {
-		  
-		  if (x > 5.877471754e-39)
-		  {
-			  register float accumulator, xPower;
-			  register long intPart;
-			  register union {float f; long i;} xBits;
-			  
-			  xBits.f = x;
-			  
-			  intPart = ((xBits.i)>>23);	 /* get biased exponent */
-			  intPart -= 127;	 /* unbias it */
-			  
-			  x = (float)(xBits.i & 0x007FFFFF);	 /* mask off exponent leaving 0x800000*(mantissa - 1) */
-			  x *= 1.192092895507812e-07;	 /* divide by 0x800000 */
-			  
-			  accumulator =  1.0 + 0.49959804148061*x;
-			  xPower = x*x;
-			  accumulator += -0.12047308243453*xPower;
-			  xPower *= x;
-			  accumulator += 0.04585425015501*xPower;
-			  xPower *= x;
-			  accumulator += -0.01076564682800*xPower;
-			  
-			  if (intPart & 0x00000001)
-			  {
-				  accumulator *= SQRT2;	 /* an odd input exponent means an extra sqrt(2) in the output */
-			  }
-			  
-			  xBits.i = intPart >> 1;	 /* divide exponent by 2, lose LSB */
-			  xBits.i += 127;	 /* rebias exponent */
-			  xBits.i <<= 23;	 /* move biased exponent into exponent bits */
-			  
-			  return accumulator * xBits.f;
-		  }
-		  else
-		  {
-			  return 0.0;
-		  }
-		  
-	  }
   };
-	
-	
+
+  class Follower {
+  private:
+    float env;
+    float a, b;
+  public:
+    Follower(){
+      a = 0.9995 + (1-0.9995) * 0.05;//getParameterValue(PARAMETER_D);
+      b = 1 - a;
+      env = 0;
+    }
+    inline float follow(float input) {
+      if(input<0) input = -input;
+      env = env * a + input * b;
+      return env*env*160;	
+    }
+  };
 
 };
 
 class EnvelopeFilterPatch : public Patch {
+private:
+  EnvelopeFilter::LPF filterL, filterR;
+  EnvelopeFilter::Follower followL, followR;
+
 public:
-  EnvelopeFilter::LPF filter;
   EnvelopeFilterPatch(){
     registerParameter(PARAMETER_A, "Cutoff");
     registerParameter(PARAMETER_B, "Range");
-    registerParameter(PARAMETER_C, "Blend");
-    registerParameter(PARAMETER_D, "Q");
-    env = 0;
-    a = 0.999;
-    b = 0.001;
-  }
-  float sensitivity;
-  float env;
-  float a, b;
-  inline float follow(float input) {
-	if(input<0) input = -input;
-	env = env * a + input * b;
-	
-	return env*env*160;
-	
+    registerParameter(PARAMETER_C, "Q");
+    registerParameter(PARAMETER_D, "Dry/Wet");
   }
 	
   void processAudio(AudioBuffer& buffer){
-//    float gain = 1;//getParameterValue(PARAMETER_D);
     int size = buffer.getSize();
     float cutoff = getParameterValue(PARAMETER_A);
-	  float range = //EnvelopeFilter::LPF::fastSqrt
-	  (getParameterValue(PARAMETER_B))*1000;
-    float Q = 3+getParameterValue(PARAMETER_D)*9;
-	  float mix = getParameterValue(PARAMETER_C)*0.5;
-    sensitivity *= sensitivity*160;
-    a = 0.9995 + (1-0.9995) * 0.05;//getParameterValue(PARAMETER_D);
-    b = 1 - a;
+    float range = sqrtf(getParameterValue(PARAMETER_B))*1000;
+    float Q = 3+getParameterValue(PARAMETER_C)*9;
+    float mix = getParameterValue(PARAMETER_D);
     cutoff = 100 + cutoff * 1500;
 
-	float* x = buffer.getSamples(0);
-	float mixm1 = 1.0 - mix;
-	for(int i=0; i<size; ++i) {
-		x[i] = x[i]*mix + (mixm1)*filter.process(x[i], cutoff+follow(x[i])*range, Q);
-	}
+    float* left = buffer.getSamples(0);
+    float* right = buffer.getSamples(1);
+    float mixm1 = 1.0 - mix;
+    for(int i=0; i<size; ++i) {
+      left[i] = left[i]*mixm1 + (mix)*filterL.process(left[i], cutoff+followL.follow(left[i])*range, Q);
+      right[i] = right[i]*mixm1 + (mix)*filterR.process(right[i], cutoff+followR.follow(right[i])*range, Q);
+    }
 
   }
 };

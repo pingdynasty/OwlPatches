@@ -48,7 +48,7 @@ harpe(C,N,b) = 	hand <: par(i, N, position(i+1)
 				 	:> _,_
 	with {
 		att  = 4; 
-		bpm = hslider("Rate[OWL:PARAMETER_B]", 360, 120, 640, 1);
+		bpm = hslider("Rate[OWL:PARAMETER_B]", 360, 120, 640, 1)*2;
 		hand = hslider("Note[OWL:PARAMETER_A]", 0, 0, N, 1) : int : automat(bpm, 15, 0.0);
 		lvl  = 1;
 		pan(p) = _ <: *(sqrt(1-p)), *(sqrt(p));

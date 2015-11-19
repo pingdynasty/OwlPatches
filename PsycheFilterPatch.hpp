@@ -33,8 +33,8 @@ public:
 		buf2(0.0f),
 		phase(0.0f)
 	{
-		registerParameter(PARAMETER_A, "Resonance");
-		registerParameter(PARAMETER_B, "Cutoff", "Cutoff frequency");
+		registerParameter(PARAMETER_A, "Cutoff", "Cutoff frequency");
+		registerParameter(PARAMETER_B, "Resonance");
 		registerParameter(PARAMETER_C, "Modulation", "Resonance modulation speed");
 		registerParameter(PARAMETER_D, "Level", "Effect level");
 
@@ -162,8 +162,8 @@ private:
 		updateKnobs();
 
 		// compute filter factors
-		float resonance = PSYF_RES_MIN + PSYF_RES_MULT * knobs[PARAMETER_A];
-		float cutoff = knobs[PARAMETER_B];
+		float cutoff = knobs[PARAMETER_A];
+		float resonance = PSYF_RES_MIN + PSYF_RES_MULT * knobs[PARAMETER_B];
 		// use expression pedal if B & C =0
 		if (knobs[PARAMETER_B] == 0.0f && knobs[PARAMETER_C] == 0.0f) {
 			cutoff = knobs[PARAMETER_E];

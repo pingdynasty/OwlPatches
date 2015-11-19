@@ -42,31 +42,27 @@ private:
 public:
   SimpleStereoDelayPatch() : delay(0), alpha(0.04), dryWet(0.f)
   {
-    registerParameter(PARAMETER_A, "Input");
-    registerParameter(PARAMETER_B, "Delay");
-    registerParameter(PARAMETER_C, "Feedback");
+    registerParameter(PARAMETER_A, "Delay");
+    registerParameter(PARAMETER_B, "Feedback");
+    registerParameter(PARAMETER_C, "Input Level");
     registerParameter(PARAMETER_D, "Dry/Wet");
     AudioBuffer* buffer = createMemoryBuffer(2, SIMPLE_STEREO_DELAY_REQUEST_BUFFER_SIZE);
     delayBufferL.initialise(buffer->getSamples(0), buffer->getSize());
     delayBufferR.initialise(buffer->getSamples(1), buffer->getSize());
   }
-  void processAudio(AudioBuffer &buffer)
-  {
-    float gain, delayTime, feedback, dly;
-    gain = getParameterValue(PARAMETER_A)*2;
-    delayTime = 0.05+0.95*getParameterValue(PARAMETER_B);
-    feedback  = getParameterValue(PARAMETER_C);
+  void processAudio(AudioBuffer &buffer){
+    float gain = getParameterValue(PARAMETER_C)*2;
+    float delayTime = 0.05+0.95*getParameterValue(PARAMETER_A);
+    float feedback  = getParameterValue(PARAMETER_B);
     int32_t newDelay;
     newDelay = alpha*delayTime*(delayBufferL.getSize()-1) + (1-alpha)*delay; // Smoothing
-    dryWet = alpha*getParameterValue(PARAMETER_D) + (1-alpha)*dryWet;       // Smoothing
-      
+    dryWet = alpha*getParameterValue(PARAMETER_D) + (1-alpha)*dryWet;       // Smoothing      
     float* left = buffer.getSamples(0);
     float* right = buffer.getSamples(1);
     int size = buffer.getSize();
-    for (int n = 0; n < size; n++)
-    {
+    for (int n = 0; n < size; n++){
       float sample = gain*left[n];
-      dly = (delayBufferL.read(delay)*(size-1-n) + delayBufferL.read(newDelay)*n)/size;
+      float dly = (delayBufferL.read(delay)*(size-1-n) + delayBufferL.read(newDelay)*n)/size;
       delayBufferL.write(feedback * dly + sample);
       left[n] = dly*dryWet + (1.f - dryWet) * sample;  // dry/wet
       sample = gain*right[n];
@@ -74,7 +70,7 @@ public:
       delayBufferR.write(feedback * dly + sample);
       right[n] = dly*dryWet + (1.f - dryWet) * sample;  // dry/wet
     }
-    delay=newDelay;
+    delay = newDelay;
   }
 };
 

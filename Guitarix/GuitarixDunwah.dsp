@@ -22,8 +22,8 @@ with {
 
     tf2 = component("filter.lib").tf2;
     //wah = vslider("Wah", 0, 0, 1, 0.01) : *(9) : +(1) : log10;
-    wah = vslider("Wah[style:knob][OWL:PARAMETER_A]", 0, 0, 1, 0.01) +
-          vslider("Super Wah[style:knob][OWL:PARAMETER_E]", 0, 0, 1, 0.01) ;
+    wah = min(1.0, vslider("Wah[style:knob][OWL:PARAMETER_A]", 0, 0, 1, 0.01) +
+                   vslider("Super Wah[style:knob][OWL:PARAMETER_E]", 0, 0, 1, 0.01)) : log10;
 };
 
 dunwah2 = *(gs) : iir((b0, b1, b2, b3), (A1, A2, A3))
@@ -58,8 +58,8 @@ with {
     iir = component("filter.lib").iir;
 
     //wah = vslider("Wah", 0, 0, 1, 0.01) : *(9) : +(1) : log10;
-    wah = vslider("Wah[style:knob][OWL:PARAMETER_A]", 0, 0, 1, 0.01) +
-          vslider("Super Wah[style:knob][OWL:PARAMETER_E]", 0, 0, 1, 0.01) ;
+    wah = min(1.0, vslider("Wah[style:knob][OWL:PARAMETER_A]", 0, 0, 1, 0.01) +
+                   vslider("Super Wah[style:knob][OWL:PARAMETER_E]", 0, 0, 1, 0.01)) : log10;
 };
 
 stereodrywet (monofx) = _,_ <: *(1-dw), *(1-dw), monofx*dw, monofx*dw :> _,_

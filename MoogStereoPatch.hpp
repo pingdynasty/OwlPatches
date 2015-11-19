@@ -38,21 +38,17 @@
 #ifndef __MoogStereoPatch_hpp__
 #define __MoogStereoPatch_hpp__
 
-#include "StompBox.h"
-#include <math.h>
-
+namespace MoogStereo {
 /**
  * Moog Ladder filter class
  */
-
-enum fType
-{
+enum fType{
     LPF=0,
     HPF
 };
 
-class MoogLadder
-{
+class MoogLadder {
+
 public:
     MoogLadder();
     ~MoogLadder();
@@ -93,11 +89,9 @@ MoogLadder::MoogLadder(){
 MoogLadder::~MoogLadder(){
 }
 
-
 void MoogLadder::setType(fType t){
     type = t;
 }
-
 
 void MoogLadder::setMutiplexer(){
     switch (type)
@@ -172,8 +166,8 @@ void MoogLadder::process(int numSamples, float *buffer, float w0, float res, flo
         a=in-4*resi*(nonLinear(out4)-comp*in);
         b=processLadder(a, in1, out1);
         c=processLadder(b, out1, out2);
-        d=processLadder(c,out2,out3);
-        e=processLadder(d,out3,out4);
+        d=processLadder(c, out2, out3);
+        e=processLadder(d, out3, out4);
 		
         // Multiplexer
         output = A*a + B*b + C*c + D*d + E*e ;
@@ -189,42 +183,50 @@ void MoogLadder::process(int numSamples, float *buffer, float w0, float res, flo
     // state variables update 2
     pw0=w0;
     pres=res;
-    pmasterGain=masterGain;
-    
+    pmasterGain=masterGain;    
 }
 
+};
 
 /**
  * Moog OWL Patch
  */
 class MoogStereoPatch : public Patch {
+private:
+  int sr;
 public:
-  MoogStereoPatch() {
+  MoogStereoPatch() : sr(getSampleRate()) {
     registerParameter(PARAMETER_A, "Cutoff");
     registerParameter(PARAMETER_B, "Resonance");
     registerParameter(PARAMETER_C, "Drive");
     registerParameter(PARAMETER_D, "Master");
     registerParameter(PARAMETER_E, "Cutoff Modulation");
-    ladderL.setType(LPF);
+    ladderL.setType(MoogStereo::LPF);
     ladderL.setMutiplexer();
-    ladderL.setCoeffs(0.f);
-   
-	ladderR.setType(LPF);
-	ladderR.setMutiplexer();
-	ladderR.setCoeffs(0.f);
+    ladderL.setCoeffs(0.f);   
+    ladderR.setType(MoogStereo::LPF);
+    ladderR.setMutiplexer();
+    ladderR.setCoeffs(0.f);
+    ASSERT(getSampleRate() == 48000, "Invalid sample rate");
+    ASSERT(getBlockSize() <= 1024, "Invalid blocksize > 1024");
+    ASSERT(getBlockSize() >= 16, "Invalid blocksize < 16");
   }
 
   void processAudio(AudioBuffer &buffer){
-  float wn = 2*M_PI*getFrequency()/getSampleRate();
-  float* bufL = buffer.getSamples(0);
-  float* bufR = buffer.getSamples(1);
-  ladderL.process(buffer.getSize(), bufL, wn, getQ(), getDrive(), getMasterGain());
-  ladderR.process(buffer.getSize(), bufR, wn, getQ(), getDrive(), getMasterGain());
+    float wn = 2*M_PI*getFrequency()/sr;
+    float* bufL = buffer.getSamples(0);
+    float* bufR = buffer.getSamples(1);
+    int size = buffer.getSize();
+    float q = getQ();
+    float drive = getDrive();
+    float gain = getMasterGain();
+    ladderL.process(size, bufL, wn, q, drive, gain);
+    ladderR.process(size, bufR, wn, q, drive, gain);
   }
     
 private:
-  MoogLadder ladderL; // Moog filterL
-  MoogLadder ladderR; // Moog filterL
+  MoogStereo::MoogLadder ladderL; // Moog filterL
+  MoogStereo::MoogLadder ladderR; // Moog filterL
 
   float getFrequency() {
     float expr = 1 - getParameterValue(PARAMETER_E);

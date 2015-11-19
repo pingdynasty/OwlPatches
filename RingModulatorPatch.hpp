@@ -100,27 +100,27 @@ public:
 	RingModulator::SinOscillator oscY;
 	RingModulator::SinOscillator lfo;
 	RingModulatorPatch(){
-		registerParameter(PARAMETER_A, "Mix");
-		registerParameter(PARAMETER_B, "Frequency");
-		registerParameter(PARAMETER_C, "Mult");
-		registerParameter(PARAMETER_D, "LFO");
-		registerParameter(PARAMETER_E, "Pedal");
+		registerParameter(PARAMETER_A, "Frequency");
+		registerParameter(PARAMETER_B, "Multiply");
+		registerParameter(PARAMETER_C, "LFO");
+		registerParameter(PARAMETER_D, "Dry/Wet");
+		registerParameter(PARAMETER_E, "+Frequency");
 		oscX.frequency = 82.405f;
 		oscY.frequency = 82.405f;
 		lfo.frequency = 0.3f;
 	}
 	void processAudio(AudioBuffer& buffer){
-		float mix = getParameterValue(PARAMETER_A);
-		float oneMinusMix = 1 - mix;
-		float mult = getParameterValue(PARAMETER_C);
-		float parameterB = getParameterValue(PARAMETER_B);
+		float dry = getParameterValue(PARAMETER_D);
+		float wet = 1-dry;
+		float mult = getParameterValue(PARAMETER_B);
+		float parameterC = getParameterValue(PARAMETER_C);
 		float freq = 0;
 		bool cross = false;
-		if (parameterB>0.95){
+		if (parameterC>0.95){
 			cross = true;
 		}
 		else {
-			freq = (1 - parameterB) * mult * 9000;
+			freq = (1 - parameterC) * mult * 9000;
 		}
 		float EXP = getParameterValue(PARAMETER_E)*9000;
 		if(EXP>0.1) { // allow for the fact that it never goes to 0
@@ -129,7 +129,7 @@ public:
 		int size = buffer.getSize();
 		float* x = buffer.getSamples(0);
 		float* y = buffer.getSamples(1);
-		lfo.frequency = getParameterValue(PARAMETER_D)*20;
+		lfo.frequency = getParameterValue(PARAMETER_C)*20;
 		if(lfo.frequency==0) lfo.phase = 0;
 		mult *= freq/2.f;
 		float oscSampleX;
@@ -146,8 +146,8 @@ public:
 				oscSampleX = oscX.getSample();
 				oscSampleY = oscY.getSample();
 			}
-			x[i] = x[i] * mix + x[i] * oscSampleX * oneMinusMix;
-			y[i] = y[i] * mix + y[i] * oscSampleY * oneMinusMix;
+			x[i] = x[i] * dry + x[i] * oscSampleX * wet;
+			y[i] = y[i] * dry + y[i] * oscSampleY * wet;
 		}
 	}
 };

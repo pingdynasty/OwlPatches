@@ -39,7 +39,6 @@
 #define __MoogPatch_hpp__
 
 #include "StompBox.h"
-#include <math.h>
 
 /**
  * Moog Ladder filter class

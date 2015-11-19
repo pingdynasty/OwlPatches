@@ -25,9 +25,6 @@
 #ifndef __FourBandsEqPatch_hpp__
 #define __FourBandsEqPatch_hpp__
 
-#include "StompBox.h"
-#include <math.h>
-
 /*
  * 4 bands EQ Patch.
  * Controls :

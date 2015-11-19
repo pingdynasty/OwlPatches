@@ -319,7 +319,6 @@ class OwlUI : public UI
 
 #include <math.h>
 
-
 #ifndef FAUSTCLASS 
 #define FAUSTCLASS StereoWah
 #endif
@@ -337,7 +336,8 @@ class StereoWah : public dsp {
 	int fSamplingFreq;
 	int iConst0;
 	float fConst1;
-	FAUSTFLOAT fHslider1;
+	FAUSTFLOAT fVslider0;
+	FAUSTFLOAT fVslider1;
 	float fConst2;
 	
   public:
@@ -429,7 +429,8 @@ class StereoWah : public dsp {
 		fHslider0 = FAUSTFLOAT(0.5);
 		iConst0 = min(192000, max(1, fSamplingFreq));
 		fConst1 = (1413.72f / float(iConst0));
-		fHslider1 = FAUSTFLOAT(0.8);
+		fVslider0 = FAUSTFLOAT(0.);
+		fVslider1 = FAUSTFLOAT(0.);
 		fConst2 = (2827.43f / float(iConst0));
 		for (int i0 = 0; (i0 < 2); i0 = (i0 + 1)) {
 			fRec1[i0] = 0.f;
@@ -461,17 +462,23 @@ class StereoWah : public dsp {
 	
 	virtual void buildUserInterface(UI* interface) {
 		interface->openVerticalBox("0x00");
+		interface->declare(&fVslider0, "OWL", "PARAMETER_E");
+		interface->declare(&fVslider0, "style", "knob");
+		interface->addVerticalSlider("Aah", &fVslider0, 0.f, 0.f, 1.f, 0.01f);
 		interface->declare(&fHslider0, "OWL", "PARAMETER_D");
 		interface->addHorizontalSlider("Dry/Wet", &fHslider0, 0.5f, 0.f, 1.f, 0.01f);
-		interface->declare(&fHslider1, "OWL", "PARAMETER_A");
-		interface->addHorizontalSlider("Wah", &fHslider1, 0.8f, 0.f, 1.f, 0.01f);
+		interface->declare(&fVslider1, "OWL", "PARAMETER_A");
+		interface->declare(&fVslider1, "style", "knob");
+		interface->addVerticalSlider("Wah", &fVslider1, 0.f, 0.f, 1.f, 0.01f);
 		interface->closeBox();
 		
 	}
+	
 float faustpower2_f(float value) {
 	return (value * value);
 	
-}	
+}
+
 	virtual void compute(int count, FAUSTFLOAT** inputs, FAUSTFLOAT** outputs) {
 		FAUSTFLOAT* input0 = inputs[0];
 		FAUSTFLOAT* input1 = inputs[1];
@@ -479,7 +486,7 @@ float faustpower2_f(float value) {
 		FAUSTFLOAT* output1 = outputs[1];
 		float fSlow0 = float(fHslider0);
 		float fSlow1 = (1.f - fSlow0);
-		float fSlow2 = float(fHslider1);
+		float fSlow2 = min(1.f, (float(fVslider0) + float(fVslider1)));
 		float fSlow3 = powf(2.f, (2.3f * fSlow2));
 		float fSlow4 = (1.f - (fConst1 * (fSlow3 / powf(2.f, (1.f + (2.f * (1.f - fSlow2)))))));
 		float fSlow5 = (0.001f * (0.f - (2.f * (fSlow4 * cosf((fConst2 * fSlow3))))));
@@ -562,6 +569,7 @@ public:
             fDSP.compute(buffer.getSize(), ins, outs);
         }
     }
+
 };
 
 #endif // __StereoWahPatch_h__

@@ -31,14 +31,13 @@
 #ifndef __LpfDelayPatch_hpp__
 #define __LpfDelayPatch_hpp__
 
-#include "StompBox.h"
 #include "CircularBuffer.hpp"
-#include <math.h>
 
 #define LPF_DELAY_PATCH_REQUEST_BUFFER_SIZE 32768
 
-class ToneBiquad {
+namespace LpfDelay {
 
+class ToneBiquad {
 public:
     ToneBiquad() {}
     ~ToneBiquad() {}
@@ -92,52 +91,48 @@ private:
     float pb[3] ; // bi coefficients
     float x1, x2, y1, y2 ; // state variables to compute samples
 };
+};
 
 class LpfDelayPatch : public Patch {
-
 private:
-    CircularBuffer delayBuffer;
-    int delay;
-    float alpha, dryWet;
-    ToneBiquad filter;
+  CircularBuffer delayBuffer;
+  int delay;
+  float alpha, dryWet;
+  LpfDelay::ToneBiquad filter;
 
 public:
-    LpfDelayPatch() : delay(0), alpha(0.04), dryWet(0.f)
-    {
-        registerParameter(PARAMETER_A, "Delay");
-        registerParameter(PARAMETER_B, "Feedback");
-        registerParameter(PARAMETER_C, "Cutoff");
-        registerParameter(PARAMETER_D, "Dry/Wet");
-        registerParameter(PARAMETER_E, "Cutoff Modulation");
-        AudioBuffer* buffer = createMemoryBuffer(1, LPF_DELAY_PATCH_REQUEST_BUFFER_SIZE);
-        delayBuffer.initialise(buffer->getSamples(0), buffer->getSize());
-        filter.init();
-        filter.setCoeffs(getParameterValue(PARAMETER_C), getSampleRate()); // Tone
-        filter.updateStateCoeffs();
-    }
-    void processAudio(AudioBuffer &buffer)
-    {
-        float delayTime, feedback, fc, dly;
-        delayTime = 0.05+0.95*getParameterValue(PARAMETER_A);
-        feedback  = getParameterValue(PARAMETER_B);
-        fc = 2*powf(10,3*getParameterValue(PARAMETER_C)*(1-getParameterValue(PARAMETER_E))+1)+40;
-        filter.setCoeffs(fc, getSampleRate());
+  LpfDelayPatch() : delay(0), alpha(0.04), dryWet(0.f){
+    registerParameter(PARAMETER_A, "Delay");
+    registerParameter(PARAMETER_B, "Feedback");
+    registerParameter(PARAMETER_C, "Cutoff");
+    registerParameter(PARAMETER_D, "Dry/Wet");
+    registerParameter(PARAMETER_E, "Cutoff Modulation");
+    AudioBuffer* buffer = createMemoryBuffer(1, LPF_DELAY_PATCH_REQUEST_BUFFER_SIZE);
+    delayBuffer.initialise(buffer->getSamples(0), buffer->getSize());
+    filter.init();
+    filter.setCoeffs(getParameterValue(PARAMETER_C), getSampleRate()); // Tone
+    filter.updateStateCoeffs();
+  }
+  void processAudio(AudioBuffer &buffer){
+    float delayTime, feedback, fc, dly;
+    delayTime = 0.05+0.95*getParameterValue(PARAMETER_A);
+    feedback  = getParameterValue(PARAMETER_B);
+    fc = 2*powf(10,3*getParameterValue(PARAMETER_C)*(1-getParameterValue(PARAMETER_E))+1)+40;
+    filter.setCoeffs(fc, getSampleRate());
         
-        int32_t newDelay;
-        newDelay = alpha*delayTime*(delayBuffer.getSize()-1) + (1-alpha)*delay; // Smoothing
-        dryWet = alpha*getParameterValue(PARAMETER_D) + (1-alpha)*dryWet;       // Smoothing
-        
-        float* x = buffer.getSamples(0);
-        int size = buffer.getSize();
-        for (int n = 0; n < size; n++)
-        {
-            dly = (delayBuffer.read(delay)*(size-1-n) + delayBuffer.read(newDelay)*n)/size;
-            delayBuffer.write(feedback * dly + x[n]);  //filter.processSample(x[n], size, n));
-            x[n] = filter.processSample(dly, size, n)*dryWet + (1.f - dryWet) * x[n];  // dry/wet
-        }
-        delay=newDelay;
-        filter.updateStateCoeffs();
+    int32_t newDelay;
+    newDelay = alpha*delayTime*(delayBuffer.getSize()-1) + (1-alpha)*delay; // Smoothing
+    dryWet = alpha*getParameterValue(PARAMETER_D) + (1-alpha)*dryWet;       // Smoothing        
+    float* x = buffer.getSamples(0);
+    int size = buffer.getSize();
+    for(int n = 0; n < size; n++){
+      dly = (delayBuffer.read(delay)*(size-1-n) + delayBuffer.read(newDelay)*n)/size;
+      delayBuffer.write(feedback * dly + x[n]);  //filter.processSample(x[n], size, n));
+      x[n] = filter.processSample(dly, size, n)*dryWet + (1.f - dryWet) * x[n];  // dry/wet
     }
+    delay=newDelay;
+    filter.updateStateCoeffs();
+  }
 };
 
 #endif   // __LpfDelayPatch_hpp__

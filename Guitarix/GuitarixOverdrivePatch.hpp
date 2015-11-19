@@ -319,10 +319,6 @@ class OwlUI : public UI
 #endif  
 
 
-float faustpower2_f(float value) {
-	return (value * value);
-	
-}
 
 #ifndef FAUSTCLASS 
 #define FAUSTCLASS GuitarixOverdrive
@@ -429,11 +425,16 @@ class GuitarixOverdrive : public dsp {
 		interface->declare(&fVslider0, "OWL", "PARAMETER_D");
 		interface->declare(&fVslider0, "style", "knob");
 		interface->declare(&fVslider0, "tooltip", "percentage of processed signal in output signal");
-		interface->addVerticalSlider("Wet/Dry", &fVslider0, 100.f, 0.f, 100.f, 1.f);
+		interface->addVerticalSlider("Dry/Wet", &fVslider0, 100.f, 0.f, 100.f, 1.f);
 		interface->closeBox();
 		
 	}
 	
+float faustpower2_f(float value) {
+	return (value * value);
+	
+}
+
 	virtual void compute(int count, FAUSTFLOAT** inputs, FAUSTFLOAT** outputs) {
 		FAUSTFLOAT* input0 = inputs[0];
 		FAUSTFLOAT* output0 = outputs[0];

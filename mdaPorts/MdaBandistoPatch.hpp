@@ -53,13 +53,13 @@ private:
       }
     else
       {
-	trim1 = 0.3f*(float)pow(10.0,(4.0 * pow(fParam4,3.f)));//(0.5 + 500.0 * pow(fParam4,6.0));
-	trim2 = 0.3f*(float)pow(10.0,(4.0 * pow(fParam5,3.f)));
-	trim3 = 0.3f*(float)pow(10.0,(4.0 * pow(fParam6,3.f)));
+	trim1 = 0.3f*(float)powf(10.0,(4.0 * powf(fParam4,3.f)));//(0.5 + 500.0 * powf(fParam4,6.0));
+	trim2 = 0.3f*(float)powf(10.0,(4.0 * powf(fParam5,3.f)));
+	trim3 = 0.3f*(float)powf(10.0,(4.0 * powf(fParam6,3.f)));
       }
-    trim1 = (float)(trim1 * pow(10.0, 2.0 * fParam7 - 1.0));
-    trim2 = (float)(trim2 * pow(10.0, 2.0 * fParam8 - 1.0));
-    trim3 = (float)(trim3 * pow(10.0, 2.0 * fParam9 - 1.0));
+    trim1 = (float)(trim1 * powf(10.0, 2.0 * fParam7 - 1.0));
+    trim2 = (float)(trim2 * powf(10.0, 2.0 * fParam8 - 1.0));
+    trim3 = (float)(trim3 * powf(10.0, 2.0 * fParam9 - 1.0));
 
     switch(int(fParam1*5.0))
       {
@@ -68,8 +68,8 @@ private:
       case 2: trim1=0.0; trim2=0.0; slev=0.0; break;
       default: slev=0.5; break;
       }
-    fi1 = (float)pow(10.0,fParam2 - 1.70); fo1=(float)(1.0 - fi1);
-    fi2 = (float)pow(10.0,fParam3 - 1.05); fo2=(float)(1.0 - fi2);
+    fi1 = (float)powf(10.0,fParam2 - 1.70); fo1=(float)(1.0 - fi1);
+    fi2 = (float)powf(10.0,fParam3 - 1.05); fo2=(float)(1.0 - fi2);
   }
 public:
   void processAudio(AudioBuffer &buffer) {
@@ -169,8 +169,8 @@ void mdaBandisto::getParameterDisplay(VstInt32 index, char *text)
 	case 1: strcpy(text, "Mid"); break;
 	case 2: strcpy(text, "High"); break;
 	default: strcpy(text, "Output"); break; } break;
-    case 1: sprintf(text, "%.0f", getSampleRate() * fi1 * (0.098 + 0.09*fi1 + 0.5*pow(fi1,8.2f))); break;
-    case 2: sprintf(text, "%.0f", getSampleRate() * fi2 * (0.015 + 0.15*fi2 + 0.9*pow(fi2,8.2f))); break;
+    case 1: sprintf(text, "%.0f", getSampleRate() * fi1 * (0.098 + 0.09*fi1 + 0.5*powf(fi1,8.2f))); break;
+    case 2: sprintf(text, "%.0f", getSampleRate() * fi2 * (0.015 + 0.15*fi2 + 0.9*powf(fi2,8.2f))); break;
     case 3: sprintf(text, "%.0f", 60.0 * fParam4); break;
     case 4: sprintf(text, "%.0f", 60.0 * fParam5); break;
     case 5: sprintf(text, "%.0f", 60.0 * fParam6); break;

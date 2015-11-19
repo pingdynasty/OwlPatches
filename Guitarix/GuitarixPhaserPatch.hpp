@@ -320,6 +320,18 @@ class OwlUI : public UI
 
 #include <math.h>
 
+float faustpower2_f(float value) {
+	return (value * value);
+	
+}
+float faustpower3_f(float value) {
+	return ((value * value) * value);
+	
+}
+float faustpower4_f(float value) {
+	return (((value * value) * value) * value);
+	
+}
 
 #ifndef FAUSTCLASS 
 #define FAUSTCLASS GuitarixPhaser
@@ -540,7 +552,7 @@ class GuitarixPhaser : public dsp {
 		interface->addHorizontalSlider("NotchFreq", &fHslider3, 1.5f, 1.1f, 4.f, 0.01f);
 		interface->declare(&fHslider6, "OWL", "PARAMETER_A");
 		interface->declare(&fHslider6, "unit", "Hz");
-		interface->addHorizontalSlider("Speed", &fHslider6, 0.5f, 0.f, 10.f, 0.01f);
+		interface->addHorizontalSlider("Speed", &fHslider6, 0.5f, 0.001f, 20.f, 0.01f);
 		interface->declare(&fCheckbox0, "enum", "direct | vibrato");
 		interface->addCheckButton("VibratoMode",&fCheckbox0);
 		interface->declare(&fCheckbox1, "enum", "linear|invert");
@@ -551,18 +563,6 @@ class GuitarixPhaser : public dsp {
 		
 	}
 	
-float faustpower2_f(float value) {
-	return (value * value);
-	
-}
-float faustpower3_f(float value) {
-	return ((value * value) * value);
-	
-}
-float faustpower4_f(float value) {
-	return (((value * value) * value) * value);
-	
-}
 	virtual void compute(int count, FAUSTFLOAT** inputs, FAUSTFLOAT** outputs) {
 		FAUSTFLOAT* input0 = inputs[0];
 		FAUSTFLOAT* input1 = inputs[1];
