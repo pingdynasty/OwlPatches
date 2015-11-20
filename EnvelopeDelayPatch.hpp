@@ -24,26 +24,24 @@
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 
-//#ifndef __EnvelopeDelayPatch_hpp__
-//#define __EnvelopeDelayPatch_hpp__
+#ifndef __EnvelopeDelayPatch_hpp__
+#define __EnvelopeDelayPatch_hpp__
 
 #include "StompBox.h"
 #include "CircularBuffer.hpp"
-#include "math.h"
 
-#define ENVELOPEDELAY_BUFFER_SIZE 32768
 #ifndef LPF_10HZ_B
 #define LPF_10HZ_B 0.0003561
 #define LPF_10HZ_A 0.9993
 #endif
-#define __EnvelopeDelayPatch_hpp__
-
 
 
 class EnvelopeDelayPatch : public Patch {
-    
 private:
-    CircularBuffer v0Buf, v1Buf, v2Buf;
+  static const int BUFFER_SIZE = 32768;
+  //  static constexpr float LPF_10HZ_B = 0.0003561; // constexpr only in C++11
+  //  static constexpr float LPF_10HZ_A = 0.9993;    
+    CircularBuffer *v0Buf, *v1Buf, *v2Buf;
     int bufferFlag = 0;
     int changeBuffer = -1;
     
@@ -61,12 +59,17 @@ public:
         registerParameter(PARAMETER_C, "Time");
         registerParameter(PARAMETER_D, "Mix");
         
-        AudioBuffer* buffer = createMemoryBuffer(1, ENVELOPEDELAY_BUFFER_SIZE);
-        v0Buf.initialise(buffer->getSamples(0), ENVELOPEDELAY_BUFFER_SIZE);
-        v1Buf.initialise(buffer->getSamples(0), ENVELOPEDELAY_BUFFER_SIZE);
-        v2Buf.initialise(buffer->getSamples(0), ENVELOPEDELAY_BUFFER_SIZE);
+	v0Buf = CircularBuffer::create(BUFFER_SIZE);
+	v1Buf = CircularBuffer::create(BUFFER_SIZE);
+	v2Buf = CircularBuffer::create(BUFFER_SIZE);
     }
-    
+
+    ~EnvelopeDelayPatch() {
+        CircularBuffer::destroy(v0Buf);
+        CircularBuffer::destroy(v1Buf);
+        CircularBuffer::destroy(v2Buf);
+    }    
+
     int detectZCR(float sample){
         if((sample < 0 && prevZCRSample > 0)||(sample > 0 && prevZCRSample < 0))
             return 1;
@@ -128,7 +131,7 @@ public:
         float* buf = buffer.getSamples(0);
         for (int i = 0 ; i < buffer.getSize(); i++) {
             delayTime = 0.01*_time + 0.99*delayTime;
-            delaySamples = (int)(delayTime * (ENVELOPEDELAY_BUFFER_SIZE-1));
+            delaySamples = (int)(delayTime * (BUFFER_SIZE-1));
             setBufferFlag(buf[i]);
             if(changeBuffer >= 0){
                 if(detectZCR(buf[i])){
@@ -139,13 +142,13 @@ public:
             }
             
             if(bufferFlag == 2)
-                v2Buf.write(feedback[2] * (v2Buf.read(delaySamples) + buf[i]));
+                v2Buf->write(feedback[2] * (v2Buf->read(delaySamples) + buf[i]));
             else if(bufferFlag == 1)
-                v1Buf.write(feedback[1] * (v1Buf.read(delaySamples) + buf[i]));
+                v1Buf->write(feedback[1] * (v1Buf->read(delaySamples) + buf[i]));
             else if(bufferFlag == 0)
-                v0Buf.write(feedback[0] * (v0Buf.read(delaySamples) + buf[i]));
+                v0Buf->write(feedback[0] * (v0Buf->read(delaySamples) + buf[i]));
             
-            buf[i] = mix * 0.5 * (v0Buf.read(delaySamples) + v1Buf.read(delaySamples) + v2Buf.read(delaySamples))+ _mix * buf[i];
+            buf[i] = mix * 0.5 * (v0Buf->read(delaySamples) + v1Buf->read(delaySamples) + v2Buf->read(delaySamples))+ _mix * buf[i];
 
         }
         
@@ -157,3 +160,4 @@ public:
 
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////
+#endif /*  __EnvelopeDelayPatch_hpp__ */
