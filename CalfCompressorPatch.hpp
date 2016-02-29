@@ -95,9 +95,9 @@ namespace dsp {
     // greatest sounding compressor I've heard!
     bool rms = (detection == 0);
     bool average = (stereo_link == 0);
-    float attack_coeff = min(1.f, 1.f / (attack * srate / 4000.f));
-    float release_coeff = min(1.f, 1.f / (release * srate / 4000.f));
-    float absample = average ? (fabs(*det_left) + fabs(*det_right)) * 0.5f : max(fabs(*det_left), fabs(*det_right));
+    float attack_coeff = std::min(1.f, 1.f / (attack * srate / 4000.f));
+    float release_coeff = std::min(1.f, 1.f / (release * srate / 4000.f));
+    float absample = average ? (fabs(*det_left) + fabs(*det_right)) * 0.5f : std::max(fabs(*det_left), fabs(*det_right));
     if(rms) absample *= absample;
     dsp::sanitize(linSlope);
     linSlope += (absample - linSlope) * (absample > linSlope ? attack_coeff : release_coeff);
