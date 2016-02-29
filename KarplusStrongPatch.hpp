@@ -1,29 +1,3 @@
-////////////////////////////////////////////////////////////////////////////////////////////////////
-
-/*
-  LICENSE:
-  This program is free software: you can redistribute it and/or modify
-  it under the terms of the GNU General Public License as published by
-  the Free Software Foundation, either version 3 of the License, or
-  (at your option) any later version.
- 
-  This program is distributed in the hope that it will be useful,
-  but WITHOUT ANY WARRANTY; without even the implied warranty of
-  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-  GNU General Public License for more details.
- 
-  You should have received a copy of the GNU General Public License
-  along with this program.  If not, see <http://www.gnu.org/licenses/>.
- 
-*/
-/* 
-   See http://www.lifeorange.com/SOFTWARE/audiocpptutorial.html
-   Ported by the OWL team 2014
-*/
-
-////////////////////////////////////////////////////////////////////////////////////////////////////
-
-
 #ifndef __KarplusStrongPatch_hpp__
 #define __KarplusStrongPatch_hpp__
 
@@ -67,9 +41,9 @@ public:
 
     if(isButtonPressed(PUSHBUTTON) && !data.noteOn){
       data.noteOn = true;
-      pressButton(RED_BUTTON);
+      setButton(GREEN_BUTTON, true);
+      setButton(PUSHBUTTON, true);
     }
-
     int size = buffer.getSize();
     float* left = buffer.getSamples(0);
     float* right = buffer.getChannels() > 1 ? buffer.getSamples(1) : left;
@@ -92,7 +66,8 @@ public:
 	  // if we have reached the end of our duration
 	  data.phase = 0;
 	  data.noteOn = false;
-	  pressButton(GREEN_BUTTON);
+	  setButton(RED_BUTTON, true);
+	  setButton(PUSHBUTTON, false);
 	}else{
 	  data.phase++;
 	}
