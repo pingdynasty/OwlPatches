@@ -4,6 +4,7 @@
 #include "StompBox.h"
 #include "TapTempo.hpp"
 #include "CircularBuffer.hpp"
+#include "BiquadFilter.h"
 
 static const int RATIOS_COUNT = 9;
 static const float ratios[RATIOS_COUNT] = { 1.0/4, 

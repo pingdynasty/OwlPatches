@@ -31,6 +31,7 @@
 #include "CircularBuffer.hpp"
 #include "math.h"
 #include "ToneFilter.hpp"
+#include "BiquadFilter.h"
 
 //#define REQUEST_BUFFER_SIZE 262144
 

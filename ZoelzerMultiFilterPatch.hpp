@@ -2,6 +2,8 @@
 #define __ZoelzerMultiFilterPatch_hpp__
 
 #include "StompBox.h"
+#include "BiquadFilter.h"
+
 /**
 http://www.musicdsp.org/showArchiveComment.php?ArchiveID=37
 http://www.earlevel.com/main/2013/10/13/biquad-calculator-v2/
