@@ -4,7 +4,7 @@
 #include "StompBox.h"
 #include "CircularBuffer.hpp"
 #include "TapTempo.hpp"
-#include "BiquadFilter.h"
+#include "BiquadFilter.hpp"
 
 #if 0
 static const int RATIOS_COUNT = 9;

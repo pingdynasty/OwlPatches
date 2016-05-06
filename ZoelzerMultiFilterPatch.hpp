@@ -2,7 +2,7 @@
 #define __ZoelzerMultiFilterPatch_hpp__
 
 #include "StompBox.h"
-#include "BiquadFilter.h"
+#include "BiquadFilter.hpp"
 
 /**
 http://www.musicdsp.org/showArchiveComment.php?ArchiveID=37
