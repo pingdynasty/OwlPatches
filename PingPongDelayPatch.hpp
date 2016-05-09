@@ -3,7 +3,7 @@
 
 #include "StompBox.h"
 #include "CircularBuffer.hpp"
-#include "BiquadFilter.h"
+#include "BiquadFilter.hpp"
 
 class PingPongDelayPatch : public Patch {
 private:
