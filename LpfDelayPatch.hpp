@@ -32,7 +32,7 @@
 #define __LpfDelayPatch_hpp__
 
 #include "CircularBuffer.hpp"
-#include "BiquadFilter.hpp"
+#include "BiquadFilter.h"
 
 namespace LpfDelay {
 
