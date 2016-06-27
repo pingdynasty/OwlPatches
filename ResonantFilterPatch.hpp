@@ -60,8 +60,8 @@ private:
   float q, f, fb;
 public:
   ResonantFilterPatch() :buf0(0), buf1(0) {
-    registerParameter(PARAMETER_A, "Fc", "Cutoff Frequency");
-    registerParameter(PARAMETER_B, "Q", "Resonance");
+    registerParameter(PARAMETER_A, "Fc");
+    registerParameter(PARAMETER_B, "Q");
     registerParameter(PARAMETER_C, "");
     registerParameter(PARAMETER_D, "");
   }
