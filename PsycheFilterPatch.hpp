@@ -33,10 +33,10 @@ public:
 		buf2(0.0f),
 		phase(0.0f)
 	{
-		registerParameter(PARAMETER_A, "Cutoff", "Cutoff frequency");
+		registerParameter(PARAMETER_A, "Cutoff");
 		registerParameter(PARAMETER_B, "Resonance");
-		registerParameter(PARAMETER_C, "Modulation", "Resonance modulation speed");
-		registerParameter(PARAMETER_D, "Level", "Effect level");
+		registerParameter(PARAMETER_C, "Modulation");
+		registerParameter(PARAMETER_D, "Dry/Wet");
 
 		sampleRate = getSampleRate();
 		for (int i = 0; i < 6; i++) { knobs[i] = 0.f; }
