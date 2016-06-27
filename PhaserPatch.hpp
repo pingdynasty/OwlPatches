@@ -64,9 +64,6 @@ public:
     registerParameter(PARAMETER_D, "");
     Range( 440.f, 1600.f );
     Rate( .5f );
-    ASSERT(getSampleRate() == 48000, "Invalid sample rate");
-    ASSERT(getBlockSize() <= 1024, "Invalid blocksize > 1024");
-    ASSERT(getBlockSize() >= 16, "Invalid blocksize < 16");
   }
     
   void Range( float fMin, float fMax ){ // Hz
