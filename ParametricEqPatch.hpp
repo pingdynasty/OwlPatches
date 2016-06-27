@@ -99,11 +99,11 @@ private:
 class ParametricEqPatch : public Patch {
 public:
   ParametricEqPatch() {
-    registerParameter(PARAMETER_A, "Freq", "Freq");
-    registerParameter(PARAMETER_B, "Q", "Q");
+    registerParameter(PARAMETER_A, "Freq");
+    registerParameter(PARAMETER_B, "Q");
     registerParameter(PARAMETER_C, "");
-    registerParameter(PARAMETER_D, "Gain", "Gain");
-    registerParameter(PARAMETER_E, "FreqPedal", "FreqPedal");
+    registerParameter(PARAMETER_D, "Gain");
+    registerParameter(PARAMETER_E, "FreqPedal");
     peqL.initStateVariables();
     peqR.initStateVariables();
   }    

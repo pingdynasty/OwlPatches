@@ -209,10 +209,10 @@ private:
   FourBandsEq eqR;
 public:
   FourBandsEqPatch() : eqL(getSampleRate()), eqR(getSampleRate()) {
-    registerParameter(PARAMETER_A, "Low", "Low");
-    registerParameter(PARAMETER_B, "Lo-Mid", "Lo-Mid");
-    registerParameter(PARAMETER_C, "Hi-Mid", "Hi-Mid");
-    registerParameter(PARAMETER_D, "High", "High");      
+    registerParameter(PARAMETER_A, "Low");
+    registerParameter(PARAMETER_B, "Lo-Mid");
+    registerParameter(PARAMETER_C, "Hi-Mid");
+    registerParameter(PARAMETER_D, "High");      
   }    
 
   void processAudio(AudioBuffer &buffer){

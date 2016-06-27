@@ -58,9 +58,9 @@ class PhaserPatch : public Patch {
 public:
   //initialise to some usefull defaults...
   PhaserPatch()  : _lfoPhase( 0.f ), depth( 1.f ), feedback( .7f ), _zm1( 0.f ){
-    registerParameter(PARAMETER_A, "Rate", "Phaser speed");
-    registerParameter(PARAMETER_B, "Depth", "Depth of modulation");
-    registerParameter(PARAMETER_C, "Feedback", "Amount of feedback");
+    registerParameter(PARAMETER_A, "Rate");
+    registerParameter(PARAMETER_B, "Depth");
+    registerParameter(PARAMETER_C, "Feedback");
     registerParameter(PARAMETER_D, "");
     Range( 440.f, 1600.f );
     Rate( .5f );

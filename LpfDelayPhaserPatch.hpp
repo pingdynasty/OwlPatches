@@ -43,11 +43,11 @@ public:
               olddelaySamples (0.0f){
     AudioBuffer* buffer = createMemoryBuffer(1, REQUEST_BUFFER_SIZE);
     delayBuffer.initialise(buffer->getSamples(0), buffer->getSize());
-    registerParameter(PARAMETER_A, "Delay", "Delay time");
-    registerParameter(PARAMETER_B, "Feedback", "Delay loop feedback");
-    registerParameter(PARAMETER_C, "Fc", "Filter cutoff frequency");
-    registerParameter(PARAMETER_D, "Dry/Wet", "Dry/wet mix");
-    registerParameter(PARAMETER_E, "DepthPedal", "DepthPedal");
+    registerParameter(PARAMETER_A, "Delay");
+    registerParameter(PARAMETER_B, "Feedback");
+    registerParameter(PARAMETER_C, "Filter cutoff");
+    registerParameter(PARAMETER_D, "Dry/Wet");
+    registerParameter(PARAMETER_E, "DepthPedal");
     setCoeffs(getLpFreq()/getSampleRate(), 0.6f) ;
     setRange( 440.f, 1600.f );
     getRate( .5f );
