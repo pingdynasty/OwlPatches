@@ -30,7 +30,7 @@
 
 #include "StompBox.h"
 #include "CircularBuffer.hpp"
-#include "BiquadFilter.hpp"
+#include "BiquadFilter.h"
 
 class SimpleStereoDelayPatch : public Patch {
 private:

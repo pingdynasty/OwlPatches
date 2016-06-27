@@ -6,7 +6,7 @@ This patch does not do anything, only upsamples and downsamples the input signal
 #define __OversamplePatch_hpp__
 // #include "Oversample.hpp"
 #include "StompBox.h"
-#include "BiquadFilter.hpp"
+#include "BiquadFilter.h"
 
 
 /**
