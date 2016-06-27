@@ -5,7 +5,7 @@ declare category "Modulation";
 import("effect.lib");
 
 
-phaser_monogx = *(level): component("phaser.dsp").phaser_mono(Notches,0,width,frqmin,fratio,frqmax,freq,depth,fb,invert)
+phaser_monogx = *(level): component("GuitarixPhaser.dsp").phaser_mono(Notches,0,width,frqmin,fratio,frqmax,freq,depth,fb,invert)
 with {
   Notches = 4;
   freq  = hslider("Speed[unit:Hz][style:knob][OWL:PARAMETER_A] ", 0.5, 0, 5, 0.005);
