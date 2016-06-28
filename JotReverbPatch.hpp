@@ -675,16 +675,19 @@ void JotReverb(reverbBlock* this_reverb, float* left_input, float* right_input)
 }
 
 
-// Owl Patch that wraps the previous functions
 class JotReverbPatch : public Patch {
 public:
     JotReverbPatch(){
-        registerParameter(PARAMETER_A, "roomSize"); //  Reverb Time and Size of room
-        registerParameter(PARAMETER_B, "preDelay"); //  preDelay between direct sound and reverb
-        registerParameter(PARAMETER_C, "cutoff"); //    Tone control of the reverberant part
-        registerParameter(PARAMETER_D, "dryWet"); //    dry/wet mixing
+      ASSERT(getBlockSize() >= CHUNK_SIZE, "Unsupported blocksize");
         theReverbBlock.bigDelayBuffer = createMemoryBuffer(1, BIG_DELAY_BUFFER_SIZE)->getSamples(0);
         reverbInitialize(&theReverbBlock);
+
+	static const float delta = 0.05;
+	roomSizeSeconds = getFloatParameter("Room Size", 0.15, 0.6, 0.4, 0.0, delta);
+	predelaySeconds = getFloatParameter("Predelay", 0, 0.1, 0, 0.0, delta);
+	reverbTimeSeconds = getFloatParameter("Decay", 1, 10, 5, 0.0, delta);
+	dryWet = getFloatParameter("Dry/Wet", 0, 1.0, 0.5, 0.95, delta);
+	cutoffFrequency = getFloatParameter("Tone", 16000, 1000, 8000, 0.0, delta); // reversed range 16k to 1k
         setParams();
     }
     
@@ -693,50 +696,32 @@ public:
         int numSamples = buffer.getSize(); // works for numSamples being a multiple of CHUNK_SIZE
         int nbChannels = buffer.getChannels();
         
-        // Case Mono
-        if (nbChannels==1){
-            float* buf = buffer.getSamples(0);
-            int i=0;
-            while (i<numSamples+1-CHUNK_SIZE){
-                JotReverb(&theReverbBlock, buf+i,buf+i);
-                for (int k=0;k<CHUNK_SIZE;k++){
-                    buf[i+k]=theReverbBlock.left_output[k];
-                }
-                i += CHUNK_SIZE;
-            }
-        }
-        // Case Stereo
-        else if (nbChannels==2){
-            float* bufL = buffer.getSamples(0);
-            float* bufR = buffer.getSamples(1);
-            int i=0;
-            while (i<numSamples+1-CHUNK_SIZE){
-                JotReverb(&theReverbBlock, bufL+i,bufR+i);
-                for (int k=0;k<CHUNK_SIZE;k++){
-                    bufL[i+k]=theReverbBlock.left_output[k];
-                    bufR[i+k]=theReverbBlock.right_output[k];
-                }
-                i += CHUNK_SIZE;
-            }
-        }
+	float* bufL = buffer.getSamples(0);
+	float* bufR = buffer.getSamples(1);
+	int i=0;
+	while (i<numSamples+1-CHUNK_SIZE){
+	  JotReverb(&theReverbBlock, bufL+i,bufR+i);
+	  for (int k=0;k<CHUNK_SIZE;k++){
+	    // bufL[i+k] = theReverbBlock.left_output[k];
+	    // bufR[i+k] = theReverbBlock.right_output[k];
+	    bufL[i+k] = theReverbBlock.left_output[k]*dryWet + bufL[i+k]*(1.0-dryWet);
+	    bufR[i+k] = theReverbBlock.right_output[k]*dryWet + bufR[i+k]*(1.0-dryWet);
+	  }
+	  i += CHUNK_SIZE;
+	}
     }
     
     void setParams(){
-        roomSizeSeconds = 0.15 + 0.45*getParameterValue(PARAMETER_A)*getParameterValue(PARAMETER_A); // betw. 0.15 and 0.6s
-        reverbTimeSeconds = 1+getParameterValue(PARAMETER_A)*getParameterValue(PARAMETER_A)*9; // betw. 1 and 10s
-        predelaySeconds = getParameterValue(PARAMETER_B)*0.1; // betw. 0 and 0.1s
-        cutoffFrequency = 1000+getParameterValue(PARAMETER_C)*15000; // betw. 1000 and 16000 Hz
-        dryWet = getParameterValue(PARAMETER_D)*100;    // betw. 0 and 100%
-        reverbSetParam(&theReverbBlock, getSampleRate(), dryWet, reverbTimeSeconds, roomSizeSeconds, cutoffFrequency, predelaySeconds);
+        reverbSetParam(&theReverbBlock, getSampleRate(), 100.0, reverbTimeSeconds, roomSizeSeconds, cutoffFrequency, predelaySeconds);
     }
     
 private:
     reverbBlock theReverbBlock;
-    float cutoffFrequency;
-    float roomSizeSeconds;
-    float reverbTimeSeconds;
-    float dryWet;
-    float predelaySeconds;
+    FloatParameter cutoffFrequency;
+    FloatParameter roomSizeSeconds;
+    FloatParameter reverbTimeSeconds;
+    FloatParameter dryWet;
+    FloatParameter predelaySeconds;
 };
 
 #endif // __JotReverbPatch_hpp__
