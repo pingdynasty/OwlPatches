@@ -1,5 +1,5 @@
-#ifndef __JotReverbPatch_hpp__
-#define __JotReverbPatch_hpp__
+#ifndef __BigJotReverbPatch_hpp__
+#define __BigJotReverbPatch_hpp__
 
 #include "StompBox.h"
 
@@ -520,7 +520,7 @@ x6 -= CHUNK_SIZE;								\
 x7 -= CHUNK_SIZE;
 
 
-void JotReverb(reverbBlock* this_reverb, float* left_input, float* right_input)
+void BigJotReverb(reverbBlock* this_reverb, float* left_input, float* right_input)
 {
 	Delay(&(this_reverb->left_predelay), left_input);
 	Delay(&(this_reverb->right_predelay), right_input);
@@ -675,9 +675,9 @@ void JotReverb(reverbBlock* this_reverb, float* left_input, float* right_input)
 }
 
 
-class JotReverbPatch : public Patch {
+class BigJotReverbPatch : public Patch {
 public:
-    JotReverbPatch(){
+    BigJotReverbPatch(){
       ASSERT(getBlockSize() >= CHUNK_SIZE, "Unsupported blocksize");
         theReverbBlock.bigDelayBuffer = createMemoryBuffer(1, BIG_DELAY_BUFFER_SIZE)->getSamples(0);
         reverbInitialize(&theReverbBlock);
@@ -700,7 +700,7 @@ public:
 	float* bufR = buffer.getSamples(1);
 	int i=0;
 	while (i<numSamples+1-CHUNK_SIZE){
-	  JotReverb(&theReverbBlock, bufL+i,bufR+i);
+	  BigJotReverb(&theReverbBlock, bufL+i,bufR+i);
 	  for (int k=0;k<CHUNK_SIZE;k++){
 	    // bufL[i+k] = theReverbBlock.left_output[k];
 	    // bufR[i+k] = theReverbBlock.right_output[k];
@@ -724,4 +724,4 @@ private:
     FloatParameter predelaySeconds;
 };
 
-#endif // __JotReverbPatch_hpp__
+#endif // __BigJotReverbPatch_hpp__
