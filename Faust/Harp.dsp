@@ -10,16 +10,14 @@ declare author  "Grame";
 process = harpe(8); // 6 string harp: 2264 ARM cycles
 // process = harpe(22); // 11 string harp : 12567 ARM cycles
 
-
 //-----------------------------------------------
-// 		whoite noise generator
+// 		white noise generator
 //-----------------------------------------------
 noise 	= random / RANDMAX
 	with {
 		random 		= +(12345) ~ *(1103515245);
 		RANDMAX		= 2147483647.0;
 	};
-
 
 //-----------------------------------------------
 // 		String simulation
@@ -36,7 +34,6 @@ string(freq, att, level, trig) = noise*level
 		freq2samples(f) = 44100.0/f;
 	};
 
-
 //-----------------------------------------------
 // 		Build a N strings harpe
 //		Each string is triggered by a specific
@@ -47,9 +44,9 @@ harpe(N) = 	hand <: par(i, N, position((i+0.5)/N)
 							: pan((i+0.5)/N) )
 				 :> _,_
 	with {
-		lvl  = hslider("Level [unit:f][osc:/accxyz/0 -10 10][OWL:PARAMETER_A]", 0.5, 0, 1, 0.01)^2;
-		att  = hslider("Attenuation [osc:/1/fader3][OWL:PARAMETER_B]", 0.005, 0, 0.01, 0.001);
-		hand = hslider("Hand[osc:/accxyz/1 -10 10][OWL:PARAMETER_C]", 0, 0, 1, 0.01):smooth(0.9);
+		lvl  = hslider("Level [unit:f][os.osc:/accxyz/0 -10 10][OWL:PARAMETER_A]", 0.5, 0, 1, 0.01)^2;
+		att  = hslider("Attenuation [os.osc:/1/fader3][OWL:PARAMETER_B]", 0.005, 0, 0.01, 0.001);
+		hand = hslider("Hand[os.osc:/accxyz/1 -10 10][OWL:PARAMETER_C]", 0, 0, 1, 0.01):smooth(0.9);
 		pan(p) = _ <: *(sqrt(1-p)), *(sqrt(p));
 		position(a,x) = (min(x,x') < a) & (a < max(x, x'));
 		smooth(c) = *(1.0-c) : + ~ *(c);

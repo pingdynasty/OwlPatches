@@ -31,7 +31,6 @@ freezemode  = 0.5;
 stereospread= 23;
 allpassfeed = 0.5; //feedback of the delays used in allpass filters
 
-
 // Filter Parameters
 //------------------
 
@@ -49,7 +48,6 @@ allpasstuningL2 = 441;
 allpasstuningL3 = 341;
 allpasstuningL4 = 225;
 
-
 // Control Sliders
 //--------------------
 // Damp : filters the high frequencies of the echoes (especially active for great values of RoomSize)
@@ -62,14 +60,12 @@ dampSlider      = hslider("Damp [OWL:PARAMETER_B]",0.5, 0, 1, 0.025)*scaledamp;
 wetSlider       = hslider("Dry/Wet [OWL:PARAMETER_D]", 0.3333, 0, 1, 0.025);
 combfeed        = roomsizeSlider;
 
-
 // Comb and Allpass filters
 //-------------------------
 
 allpass(dt,fb) = (_,_ <: (*(fb),_:+:@(dt)), -) ~ _ : (!,_);
 
 comb(dt, fb, damp) = (+:@(dt)) ~ (*(1-damp) : (+ ~ *(damp)) : *(fb));
-
 
 // Reverb components
 //------------------
@@ -93,12 +89,10 @@ monoReverb(fb1, fb2, damp, spread)
 stereoReverb(fb1, fb2, damp, spread)
     = + <:  monoReverb(fb1, fb2, damp, 0), monoReverb(fb1, fb2, damp, spread);
 
-
 // fxctrl : add an input gain and a wet-dry control to a stereo FX
 //----------------------------------------------------------------
 
 fxctrl(g,w,Fx) =  _ <: (*(g) : Fx : *(w)), *(1-w) +> _;
-
 
 // Freeverb
 //---------

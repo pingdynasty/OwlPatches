@@ -7,6 +7,6 @@ declare copyright 	"(c)GRAME 2006";
 // 				A Simple Echo
 //-----------------------------------------------
 
-import("music.lib");
+import("stdfaust.lib");
 
-process = vgroup("echo-simple", echo1s);
+process = vgroup("echo-simple", ef.echo1s);
