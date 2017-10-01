@@ -484,7 +484,7 @@ void Autotalent::init(unsigned long SampleRate, unsigned long mBufSize)
     
     // Initialize formant corrector
 //    mford = 7; // should be sufficient to capture formants
-//    mfalph = pow(0.001f, (float) 80 / (SampleRate));
+//    mfalph = powf(0.001f, (float) 80 / (SampleRate));
 //    mflamb = -(0.8517*sqrt(atan(0.06583*SampleRate))-0.1916); // or about -0.88 @ 44.1kHz
 //    mfk   = (float*) calloc(mford, sizeof(float));
 //    mfb   = (float*) calloc(mford, sizeof(float));
@@ -495,7 +495,7 @@ void Autotalent::init(unsigned long SampleRate, unsigned long mBufSize)
 //    mfsmooth = (float*) calloc(mford, sizeof(float));
 //    mfhp = 0;
 //    mflp = 0;
-//    mflpa = pow(0.001f, (float) 10 / (SampleRate));
+//    mflpa = powf(0.001f, (float) 10 / (SampleRate));
 //    mfbuff = (float**) malloc((mford)*sizeof(float*));
 //    for (ti=0; ti<mford; ti++)
 //    {
@@ -503,7 +503,7 @@ void Autotalent::init(unsigned long SampleRate, unsigned long mBufSize)
 //    }
 //    mftvec = (float*) calloc(mford, sizeof(float));
 //    mfmute = 1;
-//    mfmutealph = pow(0.001f, (float)1 / (SampleRate));
+//    mfmutealph = powf(0.001f, (float)1 / (SampleRate));
     
     
     // Standard raised cosine window, max height at N/2
@@ -718,7 +718,7 @@ void Autotalent::processReplacing(float *inputBuffer, float *outputBuffer, int S
     foma = (float)1 - falph;
     flpa = mflpa;
     flamb = mflamb;
-    tf = pow((float)2,fFwarp/2)*(1+flamb)/(1-flamb);
+    tf = powf((float)2,fFwarp/2)*(1+flamb)/(1-flamb);
     frlamb = (tf - 1)/(tf + 1);
     
     maref = (float)fTune;
@@ -973,8 +973,8 @@ void Autotalent::processReplacing(float *inputBuffer, float *outputBuffer, int S
             //  ---- END Modify pitch in all kinds of ways! ----
             
             // Compute variables for pitch shifter that depend on pitch
-            minphinc = aref*pow(2,inpitch/12)/fs;
-            moutphinc = aref*pow(2,outpitch/12)/fs;
+            minphinc = aref*powf(2,inpitch/12)/fs;
+            moutphinc = aref*powf(2,outpitch/12)/fs;
             mphincfact = moutphinc/minphinc;
         }
         // ************************

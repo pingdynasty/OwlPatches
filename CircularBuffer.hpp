@@ -15,7 +15,7 @@ public:
    * write to the tail of the circular buffer 
    */
   inline void write(float value){
-    if(++writeIndex == buffer.getSize())
+    if(++writeIndex == (unsigned int)buffer.getSize())
       writeIndex = 0;
     buffer[writeIndex] = value;
   }

@@ -92,7 +92,7 @@ public:
 	    Random r;
 	    for (int i=0; i<size; ++i)
 	    {
-	      int offset = floor(maxSampleDelay * pow(r.nextFloat(), bias) + 0.5);
+	      int offset = floor(maxSampleDelay * powf(r.nextFloat(), bias) + 0.5);
 	      int readIdx = writeIdx - offset;
 	      while (readIdx<0)
 		readIdx += bufferSize;

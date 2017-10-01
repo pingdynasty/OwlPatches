@@ -66,7 +66,7 @@ public:
 	oldParam6 = fParam6;
 
 	//calcs here
-	dry = (float)(pow(10.0, (2.0 * fParam3) - 1.0));
+	dry = (float)(exp10f((2.0 * fParam3) - 1.0));
 
 	// Filter processing
 	if(fParam4>0.50)
@@ -85,30 +85,30 @@ public:
 	// Attack
 	if (fParam1>0.5)
 	{
-	    att1 = (float)pow(10.0, -1.5);
-	    att2 = (float)pow(10.0, 1.0 - 5.0 * fParam1);
+	    att1 = (float)exp10f(-1.5);
+	    att2 = (float)exp10f(1.0 - 5.0 * fParam1);
 	}
 	else
 	{
-	    att1 = (float)pow(10.0, -4.0 + 5.0 * fParam1);
-	    att2 = (float)pow(10.0, -1.5);
+	    att1 = (float)exp10f(-4.0 + 5.0 * fParam1);
+	    att2 = (float)exp10f(-1.5);
 	}
 	// Attack hold
-	rel12 = 1.f - (float)pow(10.0, -2.0 - 4.0 * fParam5);
+	rel12 = 1.f - (float)exp10f(-2.0 - 4.0 * fParam5);
 
 	// Release
 	if (fParam2>0.5)
 	{
-	    rel3 = 1.f - (float)pow(10.0, -4.5);
-	    rel4 = 1.f - (float)pow(10.0, -5.85 + 2.7 * fParam2);
+	    rel3 = 1.f - (float)exp10f(-4.5);
+	    rel4 = 1.f - (float)exp10f(-5.85 + 2.7 * fParam2);
 	}
 	else
 	{
-	    rel3 = 1.f - (float)pow(10.0, -3.15 - 2.7 * fParam2);
-	    rel4 = 1.f - (float)pow(10.0, -4.5);
+	    rel3 = 1.f - (float)exp10f(-3.15 - 2.7 * fParam2);
+	    rel4 = 1.f - (float)exp10f(-4.5);
 	}
 	// Release Hold
-	att34 = (float)pow(10.0, - 4.0 * fParam6);
+	att34 = (float)exp10f(- 4.0 * fParam6);
     }
 
     void processAudio(AudioBuffer &owlbuf)
