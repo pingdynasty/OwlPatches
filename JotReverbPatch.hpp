@@ -172,7 +172,7 @@ typedef struct {
 
 void BuildPrimeTable(char* prime_number_table)
 {
-	int max_stride = (int)sqrt((float)PRIME_NUMBER_TABLE_SIZE);
+	int max_stride = (int)sqrtf((float)PRIME_NUMBER_TABLE_SIZE);
 	
 	for(int i=0; i<PRIME_NUMBER_TABLE_SIZE; i++)
 	{
@@ -363,11 +363,11 @@ void reverbSetParam(reverbBlock* this_reverb, float fSampleRate, float fPercentW
 		fPreDelaySamples = 0.0;
 	
 	
-	float	fCutoffCoef		= exp(-6.28318530717959*fCutOff);
+	float	fCutoffCoef		= expf(-6.28318530717959*fCutOff);
 	
 	this_reverb->dry_coef	= 1.0 - wetCoef;
 	
-	wetCoef	*= SQRT8 * (1.0 - exp(-13.8155105579643*fRoomSizeSamples/fReverbTimeSamples));			// additional attenuation for small room and long reverb time  <--  exp(-13.8155105579643) = 10^(-60dB/10dB)
+	wetCoef	*= SQRT8 * (1.0 - expf(-13.8155105579643*fRoomSizeSamples/fReverbTimeSamples));			// additional attenuation for small room and long reverb time  <--  exp(-13.8155105579643) = 10^(-60dB/10dB)
     //  toss in whatever fudge factor you need here to make the reverb louder
 	this_reverb->wet_coef0	= wetCoef;
 	this_reverb->wet_coef1	= -fCutoffCoef*wetCoef;
@@ -375,7 +375,7 @@ void reverbSetParam(reverbBlock* this_reverb, float fSampleRate, float fPercentW
 	fCutoffCoef /=  (float)FindNearestPrime(this_reverb->primeNumberTable, (int)fRoomSizeSamples);
 	
 	float	fDelaySamples	= fRoomSizeSamples;
-	float	beta			= -6.90775527898214/fReverbTimeSamples;			// 6.90775527898214 = log(10^(60dB/20dB))  <-- fReverbTime is RT60
+	float	beta			= -6.90775527898214/fReverbTimeSamples;			// 6.90775527898214 = logf(10^(60dB/20dB))  <-- fReverbTime is RT60
 	float	f_prime_value;
 	int		prime_value;
 	
@@ -386,28 +386,28 @@ void reverbSetParam(reverbBlock* this_reverb, float fSampleRate, float fPercentW
 	this_reverb->delay0.delay_samples	= prime_value - CHUNK_SIZE;									// we subtract 1 CHUNK of delay, because this signal feeds back, causing an extra CHUNK delay
 	f_prime_value			= (float)prime_value;
 	this_reverb->LPF0.a1	= f_prime_value*fCutoffCoef - 1.0;
-	this_reverb->LPF0.b0	= ONE_OVER_SQRT8*exp(beta*f_prime_value)*(this_reverb->LPF0.a1);
+	this_reverb->LPF0.b0	= ONE_OVER_SQRT8*expf(beta*f_prime_value)*(this_reverb->LPF0.a1);
 	fDelaySamples *= ALPHA;
 	
 	prime_value				= FindNearestPrime(this_reverb->primeNumberTable, (int)fDelaySamples);
 	this_reverb->delay1.delay_samples	= prime_value - CHUNK_SIZE;
 	f_prime_value			= (float)prime_value;
 	this_reverb->LPF1.a1	= f_prime_value*fCutoffCoef - 1.0;
-	this_reverb->LPF1.b0	= ONE_OVER_SQRT8*exp(beta*f_prime_value)*(this_reverb->LPF1.a1);
+	this_reverb->LPF1.b0	= ONE_OVER_SQRT8*expf(beta*f_prime_value)*(this_reverb->LPF1.a1);
 	fDelaySamples *= ALPHA;
 	
 	prime_value				= FindNearestPrime(this_reverb->primeNumberTable, (int)fDelaySamples);
 	this_reverb->delay2.delay_samples	= prime_value - CHUNK_SIZE;
 	f_prime_value			= (float)prime_value;
 	this_reverb->LPF2.a1	= f_prime_value*fCutoffCoef - 1.0;
-	this_reverb->LPF2.b0	= ONE_OVER_SQRT8*exp(beta*f_prime_value)*(this_reverb->LPF2.a1);
+	this_reverb->LPF2.b0	= ONE_OVER_SQRT8*expf(beta*f_prime_value)*(this_reverb->LPF2.a1);
 	fDelaySamples *= ALPHA;
 	
 	prime_value				= FindNearestPrime(this_reverb->primeNumberTable, (int)fDelaySamples);
 	this_reverb->delay3.delay_samples	= prime_value - CHUNK_SIZE;
 	f_prime_value			= (float)prime_value;
 	this_reverb->LPF3.a1	= f_prime_value*fCutoffCoef - 1.0;
-	this_reverb->LPF3.b0	= ONE_OVER_SQRT8*exp(beta*f_prime_value)*(this_reverb->LPF3.a1);
+	this_reverb->LPF3.b0	= ONE_OVER_SQRT8*expf(beta*f_prime_value)*(this_reverb->LPF3.a1);
 	fDelaySamples *= ALPHA;
 	
 	prime_value				= FindNearestPrime(this_reverb->primeNumberTable, (int)fDelaySamples);
@@ -472,8 +472,8 @@ void Delay(delayBlock* this_delay, float* input)
 //
 //	transfer function:			H(z) = b0/(1 - (a1+1)*z^(-1))
 //
-//	for the nth delay line:		a1   = delay[n]/size * exp(-2*pi*fcutoff/Fs) - 1  =   pole - 1
-//								b0   = a1/sqrt(8) * 10^(-(60dB*delay[n]/RT60)/20dB)
+//	for the nth delay line:		a1   = delay[n]/size * expf(-2*pi*fcutoff/Fs) - 1  =   pole - 1
+//								b0   = a1/sqrtf(8) * 10^(-(60dB*delay[n]/RT60)/20dB)
 //
 void Filter(filterBlock* this_filter, float* input)
 {

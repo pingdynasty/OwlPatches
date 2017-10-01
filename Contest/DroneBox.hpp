@@ -74,7 +74,7 @@ inline float wrap(float x, const float lo = 0., const float hi = 1.)
 
 inline float midi2CPS(float pitch, float tune = 440.)
 {
-  return tune * pow(2., (pitch - 69.) / 12.);
+  return tune * exp2f((pitch - 69.) / 12.);
 }
 
 class PSmooth
@@ -155,7 +155,7 @@ public:
   // call after setting the frequency
   void setDecayTimeMs(float decayTimeMs)
   {
-    float fbk = pow(10, ((-60. / ( ( abs(decayTimeMs) * SPMS ) / mDTSamples)) / 20.));
+    float fbk = exp10f((-60. / ( ( abs(decayTimeMs) * SPMS ) / mDTSamples)) / 20.));
     mFbkScalar = CLIP(fbk, 0., MAX_FBK);
   }
   

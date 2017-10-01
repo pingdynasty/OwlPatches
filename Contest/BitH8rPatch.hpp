@@ -40,7 +40,7 @@ public:
 	  int bitStutter = (int)floor((getParameterValue(PARAMETER_B) * 50) + .5);
 	  int gain = (int)ceil((getParameterValue(PARAMETER_C) * 25) + .5); 
 	  
-	  int crushedMax = pow(2, totalBits - bitReduce) - 1;
+	  int crushedMax = exp2f(totalBits - bitReduce) - 1;
 	  int loopCount = bitStutter;	
 	  float currentSample = 0;
 

@@ -42,7 +42,7 @@ public:
 		delayBuffer_.clear();
 	}
 	void processAudio(AudioBuffer &buffer){
-		frequency_ = 10 * pow(40, getParameterValue(PARAMETER_A));
+		frequency_ = 10 * powf(40, getParameterValue(PARAMETER_A));
 		spread_ = getParameterValue(PARAMETER_B);
 		float newFeedback = getParameterValue(PARAMETER_C)*(1.0 / (numVoices_ - 1))*1.6; //this range allows to push above the limit but should be limited by the limiter below
 		depth_ = getParameterValue(PARAMETER_D);
