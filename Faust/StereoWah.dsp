@@ -1,5 +1,5 @@
-import("effect.lib");
-wahwah = crybaby(wah) with {
+import("stdfaust.lib");
+wahwah = ve.crybaby(wah) with {
     wah = min(1.0, vslider("Wah[style:knob][OWL:PARAMETER_A]", 0, 0, 1, 0.01) +
                    vslider("Aah[style:knob][OWL:PARAMETER_E]", 0, 0, 1, 0.01)) ;
 };

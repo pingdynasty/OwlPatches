@@ -5,4 +5,3 @@ F = hslider("Freq [style:knob][OWL:PARAMETER_B]", 1000, 100, 10000, 1);
 Q = hslider("Q [style:knob][OWL:PARAMETER_C]", 1, 0.01, 100, 0.01);
 
 process(x) = LPF(x,F,G,Q);
-
