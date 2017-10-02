@@ -130,7 +130,7 @@ typedef struct {
 	float           right_output[CHUNK_SIZE];
     
 	float*			bigDelayBuffer;
-	char			primeNumberTable[PRIME_NUMBER_TABLE_SIZE];
+	uin16_t			primeNumberTable[PRIME_NUMBER_TABLE_SIZE];
     
 	float			dry_coef;
 	float			wet_coef0;
@@ -375,7 +375,7 @@ void reverbSetParam(reverbBlock* this_reverb, float fSampleRate, float fPercentW
 	fCutoffCoef /=  (float)FindNearestPrime(this_reverb->primeNumberTable, (int)fRoomSizeSamples);
 	
 	float	fDelaySamples	= fRoomSizeSamples;
-	float	beta			= -6.90775527898214/fReverbTimeSamples;			// 6.90775527898214 = logf(10^(60dB/20dB))  <-- fReverbTime is RT60
+	float	beta			= -6.90775527898214/fReverbTimeSamples; // 6.90775527898214 = logf(10^(60dB/20dB))  <-- fReverbTime is RT60
 	float	f_prime_value;
 	int		prime_value;
 	
@@ -383,7 +383,7 @@ void reverbSetParam(reverbBlock* this_reverb, float fSampleRate, float fPercentW
 	this_reverb->right_predelay.delay_samples = (int)fPreDelaySamples;
 	
 	prime_value				= FindNearestPrime(this_reverb->primeNumberTable, (int)fDelaySamples);
-	this_reverb->delay0.delay_samples	= prime_value - CHUNK_SIZE;									// we subtract 1 CHUNK of delay, because this signal feeds back, causing an extra CHUNK delay
+	this_reverb->delay0.delay_samples	= prime_value - CHUNK_SIZE; // we subtract 1 CHUNK of delay, because this signal feeds back, causing an extra CHUNK delay
 	f_prime_value			= (float)prime_value;
 	this_reverb->LPF0.a1	= f_prime_value*fCutoffCoef - 1.0;
 	this_reverb->LPF0.b0	= ONE_OVER_SQRT8*expf(beta*f_prime_value)*(this_reverb->LPF0.a1);
@@ -414,30 +414,29 @@ void reverbSetParam(reverbBlock* this_reverb, float fSampleRate, float fPercentW
 	this_reverb->delay4.delay_samples	= prime_value - CHUNK_SIZE;
 	f_prime_value			= (float)prime_value;
 	this_reverb->LPF4.a1	= f_prime_value*fCutoffCoef - 1.0;
-	this_reverb->LPF4.b0	= ONE_OVER_SQRT8*exp(beta*f_prime_value)*(this_reverb->LPF4.a1);
+	this_reverb->LPF4.b0	= ONE_OVER_SQRT8*expf(beta*f_prime_value)*(this_reverb->LPF4.a1);
 	fDelaySamples *= ALPHA;
 	
 	prime_value				= FindNearestPrime(this_reverb->primeNumberTable, (int)fDelaySamples);
 	this_reverb->delay5.delay_samples	= prime_value - CHUNK_SIZE;
 	f_prime_value			= (float)prime_value;
 	this_reverb->LPF5.a1	= f_prime_value*fCutoffCoef - 1.0;
-	this_reverb->LPF5.b0	= ONE_OVER_SQRT8*exp(beta*f_prime_value)*(this_reverb->LPF5.a1);
+	this_reverb->LPF5.b0	= ONE_OVER_SQRT8*expf(beta*f_prime_value)*(this_reverb->LPF5.a1);
 	fDelaySamples *= ALPHA;
 	
 	prime_value				= FindNearestPrime(this_reverb->primeNumberTable, (int)fDelaySamples);
 	this_reverb->delay6.delay_samples	= prime_value - CHUNK_SIZE;
 	f_prime_value			= (float)prime_value;
 	this_reverb->LPF6.a1	= f_prime_value*fCutoffCoef - 1.0;
-	this_reverb->LPF6.b0	= ONE_OVER_SQRT8*exp(beta*f_prime_value)*(this_reverb->LPF6.a1);
+	this_reverb->LPF6.b0	= ONE_OVER_SQRT8*expf(beta*f_prime_value)*(this_reverb->LPF6.a1);
 	fDelaySamples *= ALPHA;
 	
 	prime_value				= FindNearestPrime(this_reverb->primeNumberTable, (int)fDelaySamples);
 	this_reverb->delay7.delay_samples	= prime_value - CHUNK_SIZE;
 	f_prime_value			= (float)prime_value;
 	this_reverb->LPF7.a1	= f_prime_value*fCutoffCoef - 1.0;
-	this_reverb->LPF7.b0	= ONE_OVER_SQRT8*exp(beta*f_prime_value)*(this_reverb->LPF7.a1);
+	this_reverb->LPF7.b0	= ONE_OVER_SQRT8*expf(beta*f_prime_value)*(this_reverb->LPF7.a1);
 }
-
 
 void Delay(delayBlock* this_delay, float* input)
 {
