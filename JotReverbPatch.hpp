@@ -131,7 +131,7 @@ typedef struct {
 	float           right_output[CHUNK_SIZE];
     
 	float*			bigDelayBuffer;
-	char			primeNumberTable[PRIME_NUMBER_TABLE_SIZE];
+	uint16_t			primeNumberTable[PRIME_NUMBER_TABLE_SIZE];
     
 	float			dry_coef;
 	float			wet_coef0;
@@ -159,7 +159,7 @@ typedef struct {
 } reverbBlock;
 
 
-void BuildPrimeTable(char* prime_number_table)
+void BuildPrimeTable(uint16_t* prime_number_table)
 {
 	int max_stride = (int)sqrt((float)PRIME_NUMBER_TABLE_SIZE);
 	
@@ -186,7 +186,7 @@ void BuildPrimeTable(char* prime_number_table)
 }
 
 
-int FindNearestPrime(char* prime_number_table, int number)
+int FindNearestPrime(uint16_t* prime_number_table, int number)
 {
 	while (prime_number_table[number] == 0)
 	{
