@@ -159,38 +159,31 @@ void MoogLadder::process(int numSamples, float *buffer, float w0, float res, flo
     float a,b,c,d,e,output;
     
     for (int i=0;i<numSamples;i++){
-        // compute perSample w0, res, gain
-        if (N>0){
-            w0i = (pw0*(N-i)+i*w0)/N;
-            resi =(pres*(N-i)+i*res)/N;
-            masterGaini=(pmasterGain*(N-i)+i*masterGain)/N;
-        }
-        else {
-            w0i = w0;
-            resi=res;
-        }
+      // compute perSample w0, res, gain
+      w0i = (pw0*(N-i)+i*w0)/N;
+      resi =(pres*(N-i)+i*res)/N;
+      masterGaini=(pmasterGain*(N-i)+i*masterGain)/N;
         
-        // update coeffs per sample
-        setCoeffs(w0i);
+      // update coeffs per sample
+      setCoeffs(w0i);
         
-        // compute sections
-        float in = nonLinear(buffer[i]* drive);
-        a=in-4*resi*(nonLinear(out4)-comp*in);
-        b=processLadder(a, in1, out1);
-        c=processLadder(b, out1, out2);
-        d=processLadder(c,out2,out3);
-        e=processLadder(d,out3,out4);
+      // compute sections
+      float in = nonLinear(buffer[i]* drive);
+      a=in-4*resi*(nonLinear(out4)-comp*in);
+      b=processLadder(a, in1, out1);
+      c=processLadder(b, out1, out2);
+      d=processLadder(c,out2,out3);
+      e=processLadder(d,out3,out4);
         
-        // Multiplexer
-        output = A*a + B*b + C*c + D*d + E*e ;
-        buffer[i] = masterGaini * output / powf(drive,0.3f);
-        // state variables update
-        in1=a;
-        out1=b;
-        out2=c;
-        out3=d;
-        out4=e;
-        
+      // Multiplexer
+      output = A*a + B*b + C*c + D*d + E*e ;
+      buffer[i] = masterGaini * output / powf(drive,0.3f);
+      // state variables update
+      in1=a;
+      out1=b;
+      out2=c;
+      out3=d;
+      out4=e;        
     }
     // state variables update 2
     pw0=w0;
@@ -230,7 +223,7 @@ private:
     float f = expr*getParameterValue(PARAMETER_A);
     // param_A = 0    <-> f=40 Hz;
     // param_A = 1    <-> f=20040 Hz;
-      return 2*powf(10,3*f+1)+40;
+    return 2*powf(10, 3*f+1)+40;
   }
         
   float getQ(){
