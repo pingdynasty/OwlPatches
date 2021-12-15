@@ -28,18 +28,18 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #define __FeedbackCombFilter_h__
 
 #include "StompBox.h"
-#include "JuceHeader.h"
-class FeedbackCombFilter : public Patch {
+class FeedbackCombFilterPatch : public Patch {
 public:
-	FeedbackCombFilter():
-		delayBuffer_(1,1)
+	FeedbackCombFilterPatch()
 	{
 		registerParameter(PARAMETER_A, "Frequency");
 		registerParameter(PARAMETER_B, "Spread");
 		registerParameter(PARAMETER_C, "Feedback");
 		registerParameter(PARAMETER_D, "Depth");
-		delayBuffer_.setSize(2, delayBufferLength_);
-		delayBuffer_.clear();
+		delayBuffer_ = AudioBuffer::create(2, delayBufferLength_);
+	}
+        ~FeedbackCombFilterPatch(){
+		AudioBuffer::destroy(delayBuffer_);
 	}
 	void processAudio(AudioBuffer &buffer){
 		frequency_ = 10 * powf(40, getParameterValue(PARAMETER_A));
@@ -60,7 +60,7 @@ public:
 			// channelData is an array of length numSamples which contains the audio for one channel
 			float* channelData = buffer.getSamples(channel);
 			// delayData is the circular buffer for implementing delay on
-			float* delayData = delayBuffer_.getSampleData(0);
+			float* delayData = delayBuffer_->getSamples(channel);
 			dpw = delayWritePosition_;
 			for (int i = 0; i < numSamples; ++i)
 			{
@@ -106,7 +106,7 @@ public:
 		delayWritePosition_ = dpw;
 	}
 private:
-	AudioSampleBuffer delayBuffer_;
+	AudioBuffer* delayBuffer_;
 	int delayWritePosition_=0;
 	int delayBufferLength_=10000;
 	float currentDelays_[4];
