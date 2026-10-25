@@ -6,7 +6,6 @@
 #include "TapTempo.hpp"
 #include "BiquadFilter.h"
 
-#if 0
 static const int RATIOS_COUNT = 9;
 static const float ratios[RATIOS_COUNT] = { 1.0/4, 
 					    1.0/3, 
@@ -17,7 +16,6 @@ static const float ratios[RATIOS_COUNT] = { 1.0/4,
 					    2.0,
 					    3.0, 
 					    4.0 };
-#endif
 class TempoSyncedPingPongDelayPatch : public Patch {
 private:
   static const int TRIGGER_LIMIT = (1<<16);
@@ -36,9 +34,9 @@ public:
     registerParameter(PARAMETER_D, "Dry/Wet");
     delayBufferL = CircularBuffer::create(TRIGGER_LIMIT);
     delayBufferR = CircularBuffer::create(TRIGGER_LIMIT);
-    highpass = StereoBiquadFilter::create(1);
+    highpass = StereoBiquadFilter::create(getSampleRate(), 1);
     highpass->setHighPass(40/(getSampleRate()/2), FilterStage::BUTTERWORTH_Q); // dc filter
-    lowpass = StereoBiquadFilter::create(1);
+    lowpass = StereoBiquadFilter::create(getSampleRate(), 1);
     lowpass->setLowPass(8000/(getSampleRate()/2), FilterStage::BUTTERWORTH_Q);
   }
   ~TempoSyncedPingPongDelayPatch(){
@@ -68,7 +66,7 @@ public:
     float dry = 1.0-wet;
     FloatArray left = buffer.getSamples(LEFT_CHANNEL);
     FloatArray right = buffer.getSamples(RIGHT_CHANNEL);
-    highpass->process(buffer);
+    highpass->process(buffer, buffer);
     for(int n=0; n<size; n++){
       float x1 = n/(float)size;
       float x0 = 1.0-x1;
@@ -80,7 +78,7 @@ public:
       left[n] = ldly*wet + left[n]*dry;
       right[n] = rdly*wet + right[n]*dry;
     }
-    lowpass->process(buffer);
+    lowpass->process(buffer, buffer);
     delayL = newDelayL;
     delayR = newDelayR;
   }

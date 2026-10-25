@@ -32,7 +32,7 @@ public:
   void setSpeed(int16_t s){
     if(abs(speed-s) > 16){
       int64_t delta = (int64_t)limit*(speed-s)/2048;
-      limit = max(1, limit+delta);
+      limit = max((int64_t)1, (int64_t)limit+delta);
       speed = s;
     }
   }
