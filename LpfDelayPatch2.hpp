@@ -32,6 +32,7 @@
 #define __LpfDelay2Patch_hpp__
 
 #include "CircularBuffer.hpp"
+#include "BiquadFilter.h"
 
 namespace LpfDelay2 {
 
@@ -97,7 +98,7 @@ private:
   CircularBuffer* delayBuffer;
   int delay;
   float alpha, dryWet;
-  LpfDelay::ToneBiquad filter;
+  LpfDelay2::ToneBiquad filter;
   StereoBiquadFilter* highpass;
 public:
   LpfDelay2Patch() : delay(0), alpha(0.04), dryWet(0.f){
@@ -110,8 +111,8 @@ public:
     filter.init();
     filter.setCoeffs(getParameterValue(PARAMETER_C), getSampleRate()); // Tone
     filter.updateStateCoeffs();
-    highpass = StereoBiquadFilter::create(1);
-    highpass->setHighPass(40/(getSampleRate()/2), FilterStage::BUTTERWORTH_Q); // dc filter
+    highpass = StereoBiquadFilter::create(getSampleRate(), 1);
+    highpass->setHighPass(40, FilterStage::BUTTERWORTH_Q); // dc filter (cutoff in Hz, v23.1 API)
   }
   ~LpfDelay2Patch(){
     CircularBuffer::destroy(delayBuffer);
@@ -135,7 +136,7 @@ public:
     dryWet = alpha*getParameterValue(PARAMETER_D) + (1-alpha)*dryWet;       // Smoothing        
     float* x = buffer.getSamples(0);
     int size = buffer.getSize();
-    highpass->process(buffer);
+    highpass->process(buffer, buffer);
     for(int n = 0; n < size; n++){
       dly = (delayBuffer->read(delay)*(size-1-n) + delayBuffer->read(newDelay)*n)/size;
       delayBuffer->write(feedback * dly + gate * x[n]);  //filter.processSample(x[n], size, n));
