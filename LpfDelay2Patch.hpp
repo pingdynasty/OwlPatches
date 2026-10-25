@@ -113,7 +113,7 @@ public:
     filter.setCoeffs(getParameterValue(PARAMETER_C), getSampleRate()); // Tone
     filter.updateStateCoeffs();
     highpass = StereoBiquadFilter::create(getSampleRate(), 1);
-    highpass->setHighPass(40, FilterStage::BUTTERWORTH_Q); // dc filter (cutoff in Hz, v23.1 API)
+    highpass->setHighPass(80, FilterStage::BUTTERWORTH_Q); // dc filter, Hz (was 40/(sr/2) on create(1), i.e. 80 Hz)
   }
   ~LpfDelay2Patch(){
     CircularBuffer::destroy(delayBuffer);

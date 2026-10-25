@@ -36,9 +36,9 @@ public:
     delayBufferL = CircularBuffer::create(TRIGGER_LIMIT);
     delayBufferR = CircularBuffer::create(TRIGGER_LIMIT/2);
     highpass = StereoBiquadFilter::create(getSampleRate(), 1);
-    highpass->setHighPass(40, FilterStage::BUTTERWORTH_Q); // dc filter (cutoff in Hz, v23.1 API)
+    highpass->setHighPass(80, FilterStage::BUTTERWORTH_Q); // dc filter, Hz (was 40/(sr/2) on create(1), i.e. 80 Hz)
     lowpass = StereoBiquadFilter::create(getSampleRate(), 1);
-    lowpass->setLowPass(8000, FilterStage::BUTTERWORTH_Q); // cutoff in Hz, v23.1 API
+    lowpass->setLowPass(16000, FilterStage::BUTTERWORTH_Q); // Hz (was 8000/(sr/2) on create(1), i.e. 16 kHz)
   }
   ~TempoSyncedStereoDelayPatch(){
     CircularBuffer::destroy(delayBufferL);
