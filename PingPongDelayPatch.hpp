@@ -20,10 +20,10 @@ public:
     registerParameter(PARAMETER_D, "Dry/Wet");
     delayBufferL = CircularBuffer::create(64*1024);  // 1.36s at 48kHz
     delayBufferR = CircularBuffer::create(64*1024);
-    highpass = StereoBiquadFilter::create(1);
-    highpass->setHighPass(40/(getSampleRate()/2), FilterStage::BUTTERWORTH_Q); // dc filter
-    lowpass = StereoBiquadFilter::create(1);
-    lowpass->setLowPass(8000/(getSampleRate()/2), FilterStage::BUTTERWORTH_Q);
+    highpass = StereoBiquadFilter::create(getSampleRate(), 1);
+    highpass->setHighPass(80, FilterStage::BUTTERWORTH_Q); // dc filter, Hz (was 40/(sr/2) on create(1), i.e. 80 Hz)
+    lowpass = StereoBiquadFilter::create(getSampleRate(), 1);
+    lowpass->setLowPass(16000, FilterStage::BUTTERWORTH_Q); // Hz (was 8000/(sr/2) on create(1), i.e. 16 kHz)
   }
   ~PingPongDelayPatch(){
     CircularBuffer::destroy(delayBufferL);
@@ -42,7 +42,7 @@ public:
     FloatArray left = buffer.getSamples(LEFT_CHANNEL);
     FloatArray right = buffer.getSamples(RIGHT_CHANNEL);
     int size = buffer.getSize();
-    highpass->process(buffer);
+    highpass->process(buffer, buffer);
     for(int n = 0; n < size; n++){
       float x1 = n/(float)size;
       float x0 = 1-x1;
@@ -53,7 +53,7 @@ public:
       left[n] = ldly*wet + left[n]*dry;
       right[n] = rdly*wet + right[n]*dry;
     }
-    lowpass->process(buffer);
+    lowpass->process(buffer, buffer);
     delayL = newDelayL;
     delayR = newDelayR;
   }

@@ -6,7 +6,7 @@ import("guitarix.lib");
 
 resonator = (+ <: (delay(4096, d-1) + delay(4096, d))/2.0)~*(1.0-a)
 with {
-d = 1 - vslider("Vibrato[style:knob][OWL:PARAMETER_C]", 1, 0, 0.99, 0.01);
+d = 1 - vslider("Vibrato[style:knob][OWL:PARAMETER_C]", 0.99, 0, 0.99, 0.01);
 a = 0.9 - vslider("Resonance[style:knob][OWL:PARAMETER_B]", 0.5, 0, 0.9, 0.01);
 };
 

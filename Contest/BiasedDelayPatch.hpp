@@ -91,7 +91,7 @@ public:
         float delaySample = linearBlend(delayBuf[oldReadIdx], delayBuf[readIdx], (float)i/bufSize);
         float v = buf[i] + delaySample * feedback;
         v = applyBias(v, bias);
-        delayBuf[writeIdx] = min(1, max(-1, v)); // Guard: hard range limits.
+        delayBuf[writeIdx] = min(1.0f, max(-1.0f, v)); // Guard: hard range limits.
         buf[i] = linearBlend(buf[i], delaySample, dryWetMix);
     
         writeIdx = (++writeIdx) % delayBufSize;

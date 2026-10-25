@@ -30,11 +30,11 @@ public:
     registerParameter(PARAMETER_B, "Frequency");
     registerParameter(PARAMETER_C, "Resonance");
     registerParameter(PARAMETER_D, "Gain");
-    filter = BiquadFilter::create(ZOELZER_FILTER_STAGES);
+    filter = BiquadFilter::create(getSampleRate(), ZOELZER_FILTER_STAGES);
   }
   void processAudio(AudioBuffer &buffer){
     int mode = getParameterValue(PARAMETER_A)*ZOELZER_MODES;
-    float fc = getParameterValue(PARAMETER_B);
+    float fc = getParameterValue(PARAMETER_B)*getSampleRate()*0.5f; // 0..1 knob = fraction of Nyquist, to Hz
     float q = getParameterValue(PARAMETER_C)*4+0.0001;
     float gain = getParameterValue(PARAMETER_D);
     switch(mode){

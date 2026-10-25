@@ -111,8 +111,8 @@ public:
     filter.init();
     filter.setCoeffs(getParameterValue(PARAMETER_C), getSampleRate()); // Tone
     filter.updateStateCoeffs();
-    highpass = StereoBiquadFilter::create(1);
-    highpass->setHighPass(40/(getSampleRate()/2), FilterStage::BUTTERWORTH_Q); // dc filter
+    highpass = StereoBiquadFilter::create(getSampleRate(), 1);
+    highpass->setHighPass(80, FilterStage::BUTTERWORTH_Q); // dc filter, Hz (was 40/(sr/2) on create(1), i.e. 80 Hz)
   }
   ~LpfDelayPatch(){
     CircularBuffer::destroy(delayBuffer);
@@ -130,7 +130,7 @@ public:
     dryWet = alpha*getParameterValue(PARAMETER_D) + (1-alpha)*dryWet;       // Smoothing        
     float* x = buffer.getSamples(0);
     int size = buffer.getSize();
-    highpass->process(buffer);
+    highpass->process(buffer, buffer);
     for(int n = 0; n < size; n++){
       dly = (delayBuffer->read(delay)*(size-1-n) + delayBuffer->read(newDelay)*n)/size;
       delayBuffer->write(feedback * dly + x[n]);  //filter.processSample(x[n], size, n));

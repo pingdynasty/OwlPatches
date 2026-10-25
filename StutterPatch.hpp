@@ -30,6 +30,12 @@
 #define __StutterPatch_hpp__
 
 #include "StompBox.h"
+#include "CircularBuffer.hpp"
+
+#ifndef REQUEST_BUFFER_SIZE
+#define REQUEST_BUFFER_SIZE 262144
+#endif
+
 
 class StutterPatch : public Patch {
 private:
@@ -115,7 +121,7 @@ public:
 
       }
       
-};
+}
     
 int fillBuffer(float* x, int maxGrain, int size)
     {
@@ -132,4 +138,5 @@ int fillBuffer(float* x, int maxGrain, int size)
         
         return i ;
     }
+};
 #endif // __TemplatePatch_hpp__
