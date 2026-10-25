@@ -11,6 +11,14 @@ public:
   CircularBuffer(float* buf, int size) : buffer(buf, size), writeIndex(0) {
   }
 
+  /**
+   * initialise the circular buffer to use an externally-allocated block of memory
+   */
+  void initialise(float* buf, int size){
+    buffer = FloatArray(buf, size);
+    writeIndex = 0;
+  }
+
   /** 
    * write to the tail of the circular buffer 
    */
@@ -57,6 +65,13 @@ public:
     float high = read(idx+1);
     float frac = index - idx;
     return low*frac + high*(1-frac);
+  }
+
+  /**
+   * alias for interpolate(): interpolated read at a fractional index back from the head
+   */
+  inline float readInterp(float index){
+    return interpolate(index);
   }
 
   FloatArray getSamples(){
