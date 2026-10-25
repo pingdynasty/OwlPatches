@@ -21,9 +21,9 @@ public:
     delayBufferL = CircularBuffer::create(64*1024);  // 1.36s at 48kHz
     delayBufferR = CircularBuffer::create(64*1024);
     highpass = StereoBiquadFilter::create(getSampleRate(), 1);
-    highpass->setHighPass(40/(getSampleRate()/2), FilterStage::BUTTERWORTH_Q); // dc filter
+    highpass->setHighPass(40, FilterStage::BUTTERWORTH_Q); // dc filter (cutoff in Hz, v23.1 API)
     lowpass = StereoBiquadFilter::create(getSampleRate(), 1);
-    lowpass->setLowPass(8000/(getSampleRate()/2), FilterStage::BUTTERWORTH_Q);
+    lowpass->setLowPass(8000, FilterStage::BUTTERWORTH_Q); // cutoff in Hz, v23.1 API
   }
   ~PingPongDelayPatch(){
     CircularBuffer::destroy(delayBufferL);

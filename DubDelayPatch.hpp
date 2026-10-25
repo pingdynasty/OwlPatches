@@ -53,8 +53,8 @@ public:
         registerParameter(PARAMETER_C, "Tone");
         registerParameter(PARAMETER_D, "Wet");
 	delayBuffer = CircularBuffer::create(REQUEST_BUFFER_SIZE);
-	highpass = BiquadFilter::create(1);
-	highpass->setHighPass(40/(getSampleRate()/2), FilterStage::BUTTERWORTH_Q); // dc filter
+	highpass = BiquadFilter::create(getSampleRate(), 1);
+	highpass->setHighPass(40, FilterStage::BUTTERWORTH_Q); // dc filter (cutoff in Hz, v23.1 API)
     }
 
     ~DubDelayPatch() {

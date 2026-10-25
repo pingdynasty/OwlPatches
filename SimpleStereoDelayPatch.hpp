@@ -50,7 +50,7 @@ public:
     delayBufferL = CircularBuffer::create(REQUEST_BUFFER_SIZE);
     delayBufferR = CircularBuffer::create(REQUEST_BUFFER_SIZE);
     highpass = StereoBiquadFilter::create(getSampleRate(), 1);
-    highpass->setHighPass(40/(getSampleRate()/2), FilterStage::BUTTERWORTH_Q); // dc filter
+    highpass->setHighPass(40, FilterStage::BUTTERWORTH_Q); // dc filter (cutoff in Hz, v23.1 API)
   }
   ~SimpleStereoDelayPatch(){
     CircularBuffer::destroy(delayBufferL);
