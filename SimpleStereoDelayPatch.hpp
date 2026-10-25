@@ -49,7 +49,7 @@ public:
     registerParameter(PARAMETER_D, "Dry/Wet");
     delayBufferL = CircularBuffer::create(REQUEST_BUFFER_SIZE);
     delayBufferR = CircularBuffer::create(REQUEST_BUFFER_SIZE);
-    highpass = StereoBiquadFilter::create(1);
+    highpass = StereoBiquadFilter::create(getSampleRate(), 1);
     highpass->setHighPass(40/(getSampleRate()/2), FilterStage::BUTTERWORTH_Q); // dc filter
   }
   ~SimpleStereoDelayPatch(){
@@ -67,7 +67,7 @@ public:
     FloatArray left = buffer.getSamples(LEFT_CHANNEL);
     FloatArray right = buffer.getSamples(RIGHT_CHANNEL);
     int size = buffer.getSize();
-    highpass->process(buffer);
+    highpass->process(buffer, buffer);
     for (int n = 0; n < size; n++){
       float sample = gain*left[n];
       float dly = (delayBufferL->read(delay)*(size-1-n) + delayBufferL->read(newDelay)*n)/size;
