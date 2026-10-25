@@ -32,14 +32,23 @@ public:
      * 1.0000000   0.0467135   1.0000000   1.0000000  -1.6359692   0.7189533  second biquad
      */
     static float coeffs[] = { 
-      /* [b,a] = ellip(4, 3, 40, 19200/(48000*4/2)); [sos,g] = tf2sos(b,a) */
-      1.00000000000e+00, -5.19191279323e-02, 1.00000000000e+00, -1.58391500480e+00, 9.32046186768e-01,
-      1.00000000000e+00, -1.29724486402e+00, 1.00000000000e+00, -1.65074162038e+00, 7.48880762740e-01
+      /* [b,a] = ellip(4, 3, 40, 19200/(48000*4/2)); [sos,g] = tf2sos(b,a)
+       * The v23.1 BiquadFilter uses Direct Form 2 Transposed, where the stored
+       * a1/a2 (coefficients[3],[4]) are the NEGATED denominator terms. tf2sos
+       * emits the raw denominator, so a1/a2 are negated here or the recursion is
+       * unstable and the output diverges to NaN/inf. The b coefficients are also
+       * normalised for unity DC gain per stage (the original tf2sos 'g' scale was
+       * never applied), so this up/downsample pass stays transparent as intended. */
+      1.78704686730e-01, -9.27819149245e-03, 1.78704686730e-01, 1.58391500480e+00, -9.32046186768e-01,
+      1.39649128602e-01, -1.81159114843e-01, 1.39649128602e-01, 1.65074162038e+00, -7.48880762740e-01
     };
     FloatArray c(coeffs, 10);
-    upfilter->setCoefficients(c);
+    // Copy into each filter's own allocated coefficient buffer. Using
+    // setCoefficients() here would repoint the buffer at this static array,
+    // which destroy()/~BiquadFilter would then delete[] -> free(): invalid pointer.
+    upfilter->getCoefficients().copyFrom(c);
     // two filters: same coefficients, different state variables
-    downfilter->setCoefficients(c);
+    downfilter->getCoefficients().copyFrom(c);
     oversampled = (float*)malloc(blocksize*4*sizeof(float));
   }
   ~Oversampler(){
